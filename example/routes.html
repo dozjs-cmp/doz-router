@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="DOZ - vdom">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Doz - routes</title>
+    <script src="../node_modules/doz/dist/doz.js?589654888"></script>
+    <script src="../dist/doz-routes.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+
+    Doz.component('doz-routes', DozRoutes);
+
+    Doz.component('home-page', {
+        template() {
+            return `
+                <div>I'm home page</div>
+            `
+        }
+    });
+
+    Doz.component('about-page', {
+        template() {
+            return `
+                <div>I'm about page</div>
+            `
+        }
+    });
+
+    Doz.component('contact-page', {
+        template() {
+            return `
+                <div>I'm contact page</div>
+            `
+        }
+    });
+
+    new Doz({
+        root: '#app',
+        template: `
+            <nav>
+                <a href="#/">Home</a> |
+                <a href="#/about">About</a> |
+                <a href="#/contact">Contact</a>
+            </nav>
+            <doz-routes>
+                <home-page d:route="/"></home-page>
+                <about-page d:route="/about"></about-page>
+                <contact-page d:route="/contact"></contact-page>
+            </doz-routes>
+        `
+    });
+
+</script>
+</body>
+</html>

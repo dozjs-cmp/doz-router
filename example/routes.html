@@ -45,6 +45,14 @@
         }
     });
 
+    Doz.component('not-found-page', {
+        template() {
+            return `
+                <div>404 page not found</div>
+            `
+        }
+    });
+
     new Doz({
         root: '#app',
         template: `
@@ -57,6 +65,7 @@
                 <home-page d:route="/"></home-page>
                 <about-page d:route="/about"></about-page>
                 <contact-page d:route="/contact"></contact-page>
+                <not-found-page d:route="/*"></not-found-page>
             </doz-routes>
         `
     });

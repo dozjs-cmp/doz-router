@@ -1,9 +1,10 @@
+const {REGEX, STORE_NAME, PATH} = require('./constants');
+
 module.exports = {
+    store: STORE_NAME,
+    autoCreateChildren: false,
     $currentView: null,
     $routes: {},
-    $REGEX: {
-        ROUTE: /d:route(?:\s+)?=(?:\s+)?"(.*)"/
-    },
     $removeCurrentView() {
         if (this.$currentView) {
             this.$currentView.destroy();
@@ -15,14 +16,16 @@ module.exports = {
         if (this.$routes.hasOwnProperty(url)) {
             this.$removeCurrentView();
             this.$currentView = this.mount(this.$routes[url]);
+        } else if (this.$routes.hasOwnProperty(PATH.NOT_FOUND)){
+            this.$removeCurrentView();
+            this.$currentView = this.mount(this.$routes[PATH.NOT_FOUND]);
         } else {
             this.$removeCurrentView();
         }
     },
-    autoCreateChildren: false,
     onAppReady() {
         this.rawChildren.forEach(item => {
-            const route = item.match(this.$REGEX.ROUTE);
+            const route = item.match(REGEX.ROUTE);
             if (route) {
                 this.$routes[route[1]] = item;
             }

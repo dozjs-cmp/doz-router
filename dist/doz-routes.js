@@ -90,12 +90,16 @@ module.exports = __webpack_require__(1);
 "use strict";
 
 
+var _require = __webpack_require__(2),
+    REGEX = _require.REGEX,
+    STORE_NAME = _require.STORE_NAME,
+    PATH = _require.PATH;
+
 module.exports = {
+    store: STORE_NAME,
+    autoCreateChildren: false,
     $currentView: null,
     $routes: {},
-    $REGEX: {
-        ROUTE: /d:route(?:\s+)?=(?:\s+)?"(.*)"/
-    },
     $removeCurrentView: function $removeCurrentView() {
         if (this.$currentView) {
             this.$currentView.destroy();
@@ -107,17 +111,18 @@ module.exports = {
         if (this.$routes.hasOwnProperty(url)) {
             this.$removeCurrentView();
             this.$currentView = this.mount(this.$routes[url]);
+        } else if (this.$routes.hasOwnProperty(PATH.NOT_FOUND)) {
+            this.$removeCurrentView();
+            this.$currentView = this.mount(this.$routes[PATH.NOT_FOUND]);
         } else {
             this.$removeCurrentView();
         }
     },
-
-    autoCreateChildren: false,
     onAppReady: function onAppReady() {
         var _this = this;
 
         this.rawChildren.forEach(function (item) {
-            var route = item.match(_this.$REGEX.ROUTE);
+            var route = item.match(REGEX.ROUTE);
             if (route) {
                 _this.$routes[route[1]] = item;
             }
@@ -129,6 +134,23 @@ module.exports = {
             return _this.$router();
         });
     }
+};
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+    REGEX: {
+        ROUTE: /d:route(?:\s+)?=(?:\s+)?"(.*)"/
+    },
+    PATH: {
+        NOT_FOUND: '/*'
+    },
+    STORE_NAME: 'doz-routes'
 };
 
 /***/ })

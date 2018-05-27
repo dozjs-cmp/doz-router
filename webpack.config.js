@@ -34,7 +34,7 @@ module.exports = {
         }),
         new WebpackAutoInject({
             PACKAGE_JSON_PATH: './package.json',
-            SHORT: 'DOZ',
+            SHORT: 'DOZ-ROUTES',
             components: {
                 InjectAsComment: true,
                 InjectByTag: true

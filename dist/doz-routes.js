@@ -1,4 +1,4 @@
-// [DOZ]  Build version: 0.0.0  
+// [DOZ-ROUTES]  Build version: 0.0.0  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -106,14 +106,16 @@ module.exports = {
             this.$currentView = null;
         }
     },
+    $setView: function $setView(path) {
+        this.$removeCurrentView();
+        this.$currentView = this.mount(path);
+    },
     $router: function $router() {
         var url = location.hash.slice(1) || '/';
         if (this.$routes.hasOwnProperty(url)) {
-            this.$removeCurrentView();
-            this.$currentView = this.mount(this.$routes[url]);
+            this.$setView(this.$routes[url]);
         } else if (this.$routes.hasOwnProperty(PATH.NOT_FOUND)) {
-            this.$removeCurrentView();
-            this.$currentView = this.mount(this.$routes[PATH.NOT_FOUND]);
+            this.$setView(this.$routes[PATH.NOT_FOUND]);
         } else {
             this.$removeCurrentView();
         }

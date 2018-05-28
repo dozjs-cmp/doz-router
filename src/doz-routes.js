@@ -11,12 +11,14 @@ module.exports = {
             this.$currentView = null;
         }
     },
-    $setView(path) {
+    $setView(view) {
         this.$removeCurrentView();
-        this.$currentView = this.mount(path);
+        this.$currentView = this.mount(view);
     },
-    $router() {
-        let url = location.hash.slice(1) || '/';
+    $router(e) {
+        //let url = location.hash.slice(1) || '/';
+        let url = decodeURI(location.pathname);
+        console.log(e)
         if (this.$routes.hasOwnProperty(url)) {
             this.$setView(this.$routes[url]);
         } else if (this.$routes.hasOwnProperty(PATH.NOT_FOUND)){
@@ -32,7 +34,9 @@ module.exports = {
                 this.$routes[route[1]] = item;
             }
         });
-        window.addEventListener('hashchange', ()=> this.$router());
-        window.addEventListener('load', ()=> this.$router());
+        window.addEventListener('popstate', ()=> this.$router());
+        window.addEventListener('DOMContentLoaded', ()=> this.$router());
+        //window.addEventListener('hashchange', ()=> this.$router());
+        //window.addEventListener('load', ()=> this.$router());
     }
 };

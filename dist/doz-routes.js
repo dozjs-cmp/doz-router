@@ -106,12 +106,14 @@ module.exports = {
             this.$currentView = null;
         }
     },
-    $setView: function $setView(path) {
+    $setView: function $setView(view) {
         this.$removeCurrentView();
-        this.$currentView = this.mount(path);
+        this.$currentView = this.mount(view);
     },
-    $router: function $router() {
-        var url = location.hash.slice(1) || '/';
+    $router: function $router(e) {
+        //let url = location.hash.slice(1) || '/';
+        var url = decodeURI(location.pathname);
+        console.log(e);
         if (this.$routes.hasOwnProperty(url)) {
             this.$setView(this.$routes[url]);
         } else if (this.$routes.hasOwnProperty(PATH.NOT_FOUND)) {
@@ -129,12 +131,14 @@ module.exports = {
                 _this.$routes[route[1]] = item;
             }
         });
-        window.addEventListener('hashchange', function () {
+        window.addEventListener('popstate', function () {
             return _this.$router();
         });
-        window.addEventListener('load', function () {
+        window.addEventListener('DOMContentLoaded', function () {
             return _this.$router();
         });
+        //window.addEventListener('hashchange', ()=> this.$router());
+        //window.addEventListener('load', ()=> this.$router());
     }
 };
 

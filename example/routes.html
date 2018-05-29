@@ -57,11 +57,11 @@
         root: '#app',
         template: `
             <nav>
-                <a href="#/">Home</a> |
-                <a href="#/about">About</a> |
-                <a href="#/contact">Contact</a>
+                <a nav-link href="/">Home</a> |
+                <a nav-link href="/about">About</a> |
+                <a nav-link href="/contact">Contact</a>
             </nav>
-            <doz-routes>
+            <doz-routes mode="history">
                 <home-page d:route="/"></home-page>
                 <about-page d:route="/about"></about-page>
                 <contact-page d:route="/contact"></contact-page>

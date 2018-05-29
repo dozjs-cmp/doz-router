@@ -51,7 +51,7 @@ describe('doz-routes', function () {
             });
 
             new Doz({
-                root: '#app',
+                base: '#app',
                 template: `
                     <nav>
                         <a id="nav-home" href="#/">Home</a> |

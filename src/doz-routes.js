@@ -4,7 +4,8 @@ module.exports = {
     store: STORE_NAME,
     autoCreateChildren: false,
     $currentView: null,
-    $routes: {},
+    $routes: [],
+    $route404: '',
     $query: '',
     $removeCurrentView() {
         if (this.$currentView) {
@@ -20,24 +21,34 @@ module.exports = {
         return path.toString().replace(/\/$/, '');
     },
     $router() {
+        let found = false;
         let path = location.hash.slice(1);
         let pathPart = path.split('?');
         path = this.$trimHash(pathPart[0]) || '/';
         this.$query = pathPart[1] || '';
 
-        if (this.$routes.hasOwnProperty(path)) {
-            this.$setView(this.$routes[path]);
-        } else if (this.$routes.hasOwnProperty(PATH.NOT_FOUND)){
-            this.$setView(this.$routes[PATH.NOT_FOUND]);
-        } else {
-            this.$removeCurrentView();
+        this.$routes.forEach(route => {
+            let re = new RegExp(route.path + '$');
+            let match = path.match(re);
+            if (match) {
+                found = true;
+                this.$setView(route.view);
+            }
+        });
+
+        if (!found) {
+            this.$setView(this.$route404);
         }
     },
     onAppReady() {
         this.rawChildren.forEach(item => {
             const route = item.match(REGEX.ROUTE);
             if (route) {
-                this.$routes[route[1]] = item;
+                if (route[1] === PATH.NOT_FOUND) {
+                    this.$route404 = item;
+                } else {
+                    this.$routes.push({path: route[1], view: item});
+                }
             }
         });
         window.addEventListener('hashchange', ()=> this.$router());

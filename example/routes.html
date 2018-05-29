@@ -45,6 +45,22 @@
         }
     });
 
+    Doz.component('profile-page', {
+        template() {
+            return `
+                <div>I'm profile me page</div>
+            `
+        }
+    });
+
+    Doz.component('user-page', {
+        template() {
+            return `
+                <div>I'm user page</div>
+            `
+        }
+    });
+
     Doz.component('not-found-page', {
         template() {
             return `
@@ -59,13 +75,17 @@
             <nav>
                 <a nav-link href="#/">Home</a> |
                 <a nav-link href="#/about">About</a> |
+                <a nav-link href="#/profile/me">Profile</a> |
+                <a nav-link href="#/user/10">User</a> |
                 <a nav-link href="#/contact">Contact</a>
             </nav>
             <doz-routes mode="history">
                 <home-page d:route="/"></home-page>
                 <about-page d:route="/about"></about-page>
                 <contact-page d:route="/contact"></contact-page>
-                <not-found-page d:route="/*"></not-found-page>
+                <profile-page d:route="/profile/me"></profile-page>
+                <user-page d:route="/user/:id"></user-page>
+                <not-found-page d:route="*"></not-found-page>
             </doz-routes>
         `
     });

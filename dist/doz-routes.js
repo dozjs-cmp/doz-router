@@ -99,7 +99,8 @@ module.exports = {
     store: STORE_NAME,
     autoCreateChildren: false,
     $currentView: null,
-    $routes: {},
+    $routes: [],
+    $route404: '',
     $query: '',
     $removeCurrentView: function $removeCurrentView() {
         if (this.$currentView) {
@@ -115,33 +116,45 @@ module.exports = {
         return path.toString().replace(/\/$/, '');
     },
     $router: function $router() {
+        var _this = this;
+
+        var found = false;
         var path = location.hash.slice(1);
         var pathPart = path.split('?');
         path = this.$trimHash(pathPart[0]) || '/';
         this.$query = pathPart[1] || '';
 
-        if (this.$routes.hasOwnProperty(path)) {
-            this.$setView(this.$routes[path]);
-        } else if (this.$routes.hasOwnProperty(PATH.NOT_FOUND)) {
-            this.$setView(this.$routes[PATH.NOT_FOUND]);
-        } else {
-            this.$removeCurrentView();
+        this.$routes.forEach(function (route) {
+            var re = new RegExp(route.path + '$');
+            var match = path.match(re);
+            if (match) {
+                found = true;
+                _this.$setView(route.view);
+            }
+        });
+
+        if (!found) {
+            this.$setView(this.$route404);
         }
     },
     onAppReady: function onAppReady() {
-        var _this = this;
+        var _this2 = this;
 
         this.rawChildren.forEach(function (item) {
             var route = item.match(REGEX.ROUTE);
             if (route) {
-                _this.$routes[route[1]] = item;
+                if (route[1] === PATH.NOT_FOUND) {
+                    _this2.$route404 = item;
+                } else {
+                    _this2.$routes.push({ path: route[1], view: item });
+                }
             }
         });
         window.addEventListener('hashchange', function () {
-            return _this.$router();
+            return _this2.$router();
         });
         window.addEventListener('load', function () {
-            return _this.$router();
+            return _this2.$router();
         });
     }
 };
@@ -158,7 +171,7 @@ module.exports = {
         ROUTE: /d:route(?:\s+)?=(?:\s+)?"(.*)"/
     },
     PATH: {
-        NOT_FOUND: '/*'
+        NOT_FOUND: '*'
     },
     STORE_NAME: 'doz-routes'
 };

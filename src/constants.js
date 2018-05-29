@@ -3,7 +3,7 @@ module.exports = {
         ROUTE: /d:route(?:\s+)?=(?:\s+)?"(.*)"/
     },
     PATH: {
-        NOT_FOUND: '/*'
+        NOT_FOUND: '*'
     },
     STORE_NAME: 'doz-routes'
 };

@@ -5,6 +5,7 @@ module.exports = {
     autoCreateChildren: false,
     $currentView: null,
     $routes: {},
+    $query: '',
     $removeCurrentView() {
         if (this.$currentView) {
             this.$currentView.destroy();
@@ -15,10 +16,17 @@ module.exports = {
         this.$removeCurrentView();
         this.$currentView = this.mount(path);
     },
+    $trimHash(path) {
+        return path.toString().replace(/\/$/, '');
+    },
     $router() {
-        let url = location.hash.slice(1) || '/';
-        if (this.$routes.hasOwnProperty(url)) {
-            this.$setView(this.$routes[url]);
+        let path = location.hash.slice(1);
+        let pathPart = path.split('?');
+        path = this.$trimHash(pathPart[0]) || '/';
+        this.$query = pathPart[1] || '';
+
+        if (this.$routes.hasOwnProperty(path)) {
+            this.$setView(this.$routes[path]);
         } else if (this.$routes.hasOwnProperty(PATH.NOT_FOUND)){
             this.$setView(this.$routes[PATH.NOT_FOUND]);
         } else {

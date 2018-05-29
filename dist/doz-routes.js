@@ -99,6 +99,7 @@ module.exports = {
     store: STORE_NAME,
     autoCreateChildren: false,
     $currentView: null,
+    $currentPath: null,
     $routes: [],
     $route404: '',
     $query: '',
@@ -108,9 +109,9 @@ module.exports = {
             this.$currentView = null;
         }
     },
-    $setView: function $setView(path) {
+    $setView: function $setView(view) {
         this.$removeCurrentView();
-        this.$currentView = this.mount(path);
+        this.$currentView = this.mount(view);
     },
     $trimHash: function $trimHash(path) {
         return path.toString().replace(/\/$/, '');
@@ -125,15 +126,19 @@ module.exports = {
         this.$query = pathPart[1] || '';
 
         this.$routes.forEach(function (route) {
+
             var re = new RegExp(route.path + '$');
             var match = path.match(re);
+
             if (match) {
                 found = true;
+                _this.$currentPath = route.path;
                 _this.$setView(route.view);
             }
         });
 
         if (!found) {
+            this.$currentPath = null;
             this.$setView(this.$route404);
         }
     },
@@ -146,7 +151,8 @@ module.exports = {
                 if (route[1] === PATH.NOT_FOUND) {
                     _this2.$route404 = item;
                 } else {
-                    _this2.$routes.push({ path: route[1], view: item });
+                    var path = _this2.$trimHash(route[1]);
+                    _this2.$routes.push({ path: path, view: item });
                 }
             }
         });

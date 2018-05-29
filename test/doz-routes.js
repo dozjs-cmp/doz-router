@@ -1,3 +1,22 @@
+const DozRoutes = require('../src/doz-routes');
+const be = require('bejs');
+
+// Mock
+DozRoutes.mount = function () {
+    return {
+        destroy() {
+        }
+    }
+};
+
+DozRoutes.rawChildren = [
+    '<div-1 d:route="/home"></div-1>',
+    '<div-2 d:route="/about/"></div-2>',
+    '<div-3 d:route="/profile/me"></div-3>',
+    '<div-4 d:route="/user/:id"></div-4>',
+    '<div-5 d:route="/news/:id/:cat/title/"></div-5>',
+    '<div-6 d:route="*"></div-6>',
+];
 
 describe('doz-routes', function () {
 
@@ -5,8 +24,7 @@ describe('doz-routes', function () {
 
     before(function () {
         this.jsdom = require('jsdom-global')();
-        global.Doz = require('doz');
-        Doz.component('doz-routes', require('../src/doz-routes'));
+        DozRoutes.onAppReady();
     });
 
     after(function () {
@@ -15,65 +33,43 @@ describe('doz-routes', function () {
 
     beforeEach(function () {
         document.body.innerHTML = '';
-        Doz.collection.removeAll();
     });
 
-    describe('create basic', function () {
-        it('should be ok', function (done) {
+    describe('$trimHash', function () {
+        it('should be remove last slash', function () {
+            be.err.equal(DozRoutes.$trimHash('/hello/'), '/hello');
+        });
+    });
 
-            // language=HTML
-            document.body.innerHTML = `
-                <div id="app"></div>
-            `;
+    describe('$setView', function () {
+        it('should be ok', function () {
+            DozRoutes.$setView('<div></div>');
+        });
+    });
 
-            Doz.component('home-page', {
-                template() {
-                    return `
-                        <div>I'm home page</div>
-                    `
-                }
-            });
-
-            Doz.component('about-page', {
-                template() {
-                    return `
-                        <div>I'm about page</div>
-                    `
-                }
-            });
-
-            Doz.component('contact-page', {
-                template() {
-                    return `
-                        <div>I'm contact page</div>
-                    `
-                }
-            });
-
-            new Doz({
-                base: '#app',
-                template: `
-                    <nav>
-                        <a id="nav-home" href="#/">Home</a> |
-                        <a id="nav-about" href="#/about">About</a> |
-                        <a id="nav-contact" href="#/contact">Contact</a>
-                    </nav>
-                    <doz-routes>
-                        <home-page d:route="/"></home-page>
-                        <about-page d:route="/about"></about-page>
-                        <contact-page d:route="/contact"></contact-page>
-                    </doz-routes>
-                `
-            });
-
-            console.log(document.querySelector('#nav-about').click());
-            document.querySelector('#nav-about').click();
-            setTimeout(()=>{
-                console.log(document.body.innerHTML) ;
-                done();
-            },1000);
-
+    describe('$router', function () {
+        it('should be "/home"', function () {
+            location.hash = '/home';
+            DozRoutes.$router();
+            be.err.equal(DozRoutes.$currentPath, '/home');
         });
 
+        it('should be "/about/"', function () {
+            location.hash = '/about/';
+            DozRoutes.$router();
+            be.err.equal(DozRoutes.$currentPath, '/about');
+        });
+
+        it('should be "/profile/me"', function () {
+            location.hash = '/profile/me';
+            DozRoutes.$router();
+            be.err.equal(DozRoutes.$currentPath, '/profile/me');
+        });
+
+        it('should be "/not-found"', function () {
+            location.hash = '/not-found';
+            DozRoutes.$router();
+            be.err.equal(DozRoutes.$currentPath, null);
+        });
     });
 });

@@ -114,7 +114,7 @@ module.exports = {
         this.$currentView = this.mount(view);
     },
     $trimHash: function $trimHash(path) {
-        return path.toString().replace(/\/$/, '');
+        return path.toString().replace(/\/$/, '').replace(/^\//, '');
     },
     $router: function $router() {
         var _this = this;
@@ -122,12 +122,12 @@ module.exports = {
         var found = false;
         var path = location.hash.slice(1);
         var pathPart = path.split('?');
-        path = this.$trimHash(pathPart[0]) || '/';
+        path = this.$trimHash(pathPart[0]) || '';
         this.$query = pathPart[1] || '';
 
         this.$routes.forEach(function (route) {
 
-            var re = new RegExp(route.path + '$');
+            var re = new RegExp('^' + route.path + '$');
             var match = path.match(re);
 
             if (match) {

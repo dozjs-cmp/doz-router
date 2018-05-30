@@ -19,19 +19,19 @@ module.exports = {
         this.$currentView = this.mount(view);
     },
     $trimHash(path) {
-        return path.toString().replace(/\/$/, '');
+        return path.toString().replace(/\/$/, '').replace(/^\//, '');
     },
     $router() {
 
         let found = false;
         let path = location.hash.slice(1);
         let pathPart = path.split('?');
-        path = this.$trimHash(pathPart[0]) || '/';
+        path = this.$trimHash(pathPart[0]) || '';
         this.$query = pathPart[1] || '';
 
         this.$routes.forEach(route => {
 
-            let re = new RegExp(route.path + '$');
+            let re = new RegExp('^' + route.path + '$');
             let match = path.match(re);
 
             if (match) {

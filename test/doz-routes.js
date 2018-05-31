@@ -28,16 +28,18 @@ describe('doz-routes', function () {
     });
 
     after(function () {
-        this.jsdom()
+        setTimeout(()=>{
+            this.jsdom()
+        },100);
     });
 
     beforeEach(function () {
-        document.body.innerHTML = '';
+        //document.body.innerHTML = '';
     });
 
     describe('$trimHash', function () {
         it('should be remove last slash', function () {
-            be.err.equal(DozRoutes.$trimHash('/hello/'), '/hello');
+            be.err.equal(DozRoutes.$trimHash('/hello/'), 'hello');
         });
     });
 
@@ -49,25 +51,37 @@ describe('doz-routes', function () {
 
     describe('$router', function () {
         it('should be "/home"', function () {
-            location.hash = '/home';
+            window.location.hash = '/home';
             DozRoutes.$router();
-            be.err.equal(DozRoutes.$currentPath, '/home');
+            be.err.equal(DozRoutes.$currentPath, 'home');
         });
 
         it('should be "/about/"', function () {
-            location.hash = '/about/';
+            window.location.hash = '/about/';
             DozRoutes.$router();
-            be.err.equal(DozRoutes.$currentPath, '/about');
+            be.err.equal(DozRoutes.$currentPath, 'about');
         });
 
         it('should be "/profile/me"', function () {
             location.hash = '/profile/me';
             DozRoutes.$router();
-            be.err.equal(DozRoutes.$currentPath, '/profile/me');
+            be.err.equal(DozRoutes.$currentPath, 'profile/me');
+        });
+
+        it('should be "/user/:id"', function () {
+            location.hash = '/user/10';
+            DozRoutes.$router();
+            be.err.equal(DozRoutes.$currentPath, 'user/10');
+        });
+
+        it('should be "/news/:id/:cat/title/"', function () {
+            location.hash = '/news/25/green/title/';
+            DozRoutes.$router();
+            be.err.equal(DozRoutes.$currentPath, 'news/25/green/title');
         });
 
         it('should be "/not-found"', function () {
-            location.hash = '/not-found';
+            window.location.hash = '/not-found';
             DozRoutes.$router();
             be.err.equal(DozRoutes.$currentPath, null);
         });

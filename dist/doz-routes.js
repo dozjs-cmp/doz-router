@@ -120,19 +120,27 @@ module.exports = {
         var _this = this;
 
         var found = false;
-        var path = location.hash.slice(1);
+        var path = window.location.hash.slice(1);
         var pathPart = path.split('?');
-        path = this.$trimHash(pathPart[0]) || '';
+        path = this.$trimHash(pathPart[0]);
         this.$query = pathPart[1] || '';
 
         this.$routes.forEach(function (route) {
 
+            //route.path = route.path.replace(/:[^\s/]+/g, '$1([\\w-]+)');
+            //route.path = route.path.replace(/:(\w+)/g, '([\\w-]+)');
+            route.path = route.path.replace(/:(\w+)/g, function (match, capture) {
+                //console.log(match, capture);
+                return '([\\w-]+)';
+            });
+            //console.log(route.path)
             var re = new RegExp('^' + route.path + '$');
             var match = path.match(re);
 
             if (match) {
+                //console.log(match)
                 found = true;
-                _this.$currentPath = route.path;
+                _this.$currentPath = path;
                 _this.$setView(route.view);
             }
         });

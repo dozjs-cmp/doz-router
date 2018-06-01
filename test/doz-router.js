@@ -30,7 +30,7 @@ DozRouter.rawChildren = [
     '<div-7 d:route="*"></div-7>',
 ];
 
-describe('doz-routes', function () {
+describe('doz-router', function () {
 
     this.timeout(5000);
 

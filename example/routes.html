@@ -37,6 +37,14 @@
         }
     });
 
+    Doz.component('extension-page', {
+        template() {
+            return `
+                <div>I'm .html page</div>
+            `
+        }
+    });
+
     Doz.component('contact-page', {
         template() {
             return `
@@ -56,11 +64,22 @@
     Doz.component('user-details-page', {
         template() {
             return `
-                <div>I'm user page with id ${this.props.id}</div>
+                <div>I'm user page with id "${this.props.id}", <a href="#/user">back</a></div>
             `
         },
         onCreate() {
             this.props.id = this.getComponentById('routes').$param['id'];
+        }
+    });
+
+    Doz.component('search-page', {
+        template() {
+            return `
+                <div>I'm search page with query "${this.props.query}"</div>
+            `
+        },
+        onCreate() {
+            this.props.query = this.getComponentById('routes').$query['t'];
         }
     });
 
@@ -87,14 +106,18 @@
                 <a nav-link href="#/">Home</a> |
                 <a nav-link href="#/about">About</a> |
                 <a nav-link href="#/profile/me">Profile</a> |
+                <a nav-link href="#/profile.html">.html</a> |
                 <a nav-link href="#/user/">User</a> |
+                <a nav-link href="#/search/?t=hello">Search</a> |
                 <a nav-link href="#/contact">Contact</a>
             </nav>
             <doz-routes d:id="routes">
                 <home-page d:route="/"></home-page>
                 <about-page d:route="/about"></about-page>
                 <contact-page d:route="/contact"></contact-page>
+                <extension-page d:route="/profile.html"></extension-page>
                 <profile-page d:route="/profile/me"></profile-page>
+                <search-page d:route="/search"></search-page>
                 <user-page d:route="/user/"></user-page>
                 <user-details-page d:route="/user/:id"></user-details-page>
                 <not-found-page d:route="*"></not-found-page>

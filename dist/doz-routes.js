@@ -95,6 +95,9 @@ var _require = __webpack_require__(2),
     PATH = _require.PATH;
 
 module.exports = {
+    props: {
+        hash: '#'
+    },
     autoCreateChildren: false,
     $currentView: null,
     $currentPath: null,
@@ -102,7 +105,13 @@ module.exports = {
     $paramMap: {},
     $param: {},
     $routeNotFound: '',
-    $query: '',
+    $query: {},
+    $queryRaw: '',
+    $queryToObject: function $queryToObject(query) {
+        if (query) return JSON.parse('{"' + query.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
+            return key === '' ? value : decodeURIComponent(value);
+        });else return {};
+    },
     $removeCurrentView: function $removeCurrentView() {
         if (this.$currentView) {
             this.$currentView.destroy();
@@ -114,16 +123,16 @@ module.exports = {
         this.$currentView = this.mount(view);
     },
     $trimHash: function $trimHash(path) {
-        return path.toString().replace(/\/$/, '').replace(/^\//, '');
+        return path.toString().replace(/\/+$/, '').replace(/^\//, '');
     },
     $navigate: function $navigate(path) {
         var _this = this;
 
         var found = false;
-        path = path || window.location.hash.slice(1);
+        path = path || window.location.hash.slice(this.props.hash.length);
         var pathPart = path.split('?');
         path = this.$trimHash(pathPart[0]);
-        this.$query = pathPart[1] || '';
+        this.$queryRaw = pathPart[1] || '';
 
         for (var i = 0; i < this.$routes.length; i++) {
             var route = this.$routes[i];
@@ -132,13 +141,13 @@ module.exports = {
 
             if (match) {
                 var _ret = function () {
+                    found = true;
                     var param = _this.$paramMap[route.path];
-
+                    _this.$query = _this.$queryToObject(_this.$queryRaw);
                     match.slice(1).forEach(function (value, i) {
                         _this.$param[param[i]] = value;
                     });
 
-                    found = true;
                     _this.$currentPath = path;
                     _this.$setView(route.view);
                     return 'break';

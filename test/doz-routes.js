@@ -13,9 +13,10 @@ DozRoutes.rawChildren = [
     '<div-1 d:route="/home"></div-1>',
     '<div-2 d:route="/about/"></div-2>',
     '<div-3 d:route="/profile/me"></div-3>',
-    '<div-4 d:route="/user/:id"></div-4>',
-    '<div-5 d:route="/news/:id/:cat/title/"></div-5>',
-    '<div-6 d:route="*"></div-6>',
+    '<div-4 d:route="/search/"></div-4>',
+    '<div-5 d:route="/user/:id"></div-5>',
+    '<div-6 d:route="/news/:id/:cat/title/"></div-6>',
+    '<div-7 d:route="*"></div-7>',
 ];
 
 describe('doz-routes', function () {
@@ -65,9 +66,15 @@ describe('doz-routes', function () {
             be.err.equal(DozRoutes.$currentPath, 'profile/me');
         });
 
+        it('should be "/search/?t=hello"', function () {
+            DozRoutes.$navigate('/search/?a=hello&b=world');
+            be.err.equal(DozRoutes.$query.a, 'hello');
+            be.err.equal(DozRoutes.$query.b, 'world');
+        });
+
         it('should be "/user/:id"', function () {
             DozRoutes.$navigate('/user/10');
-            be.err.equal(DozRoutes.$currentPath, 'user/10');
+            be.err.equal(DozRoutes.$param.id, '10');
         });
 
         it('should be "/news/:id/:cat/title/"', function () {

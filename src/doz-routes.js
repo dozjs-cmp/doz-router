@@ -1,6 +1,9 @@
 const {REGEX, PATH} = require('./constants');
 
 module.exports = {
+    props: {
+        hash: '#'
+    },
     autoCreateChildren: false,
     $currentView: null,
     $currentPath: null,
@@ -8,7 +11,16 @@ module.exports = {
     $paramMap: {},
     $param: {},
     $routeNotFound: '',
-    $query: '',
+    $query: {},
+    $queryRaw: '',
+    $queryToObject(query) {
+        if (query)
+            return JSON.parse('{"' + query.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
+                return key === '' ? value : decodeURIComponent(value)
+            });
+        else
+            return {};
+    },
     $removeCurrentView() {
         if (this.$currentView) {
             this.$currentView.destroy();
@@ -20,15 +32,15 @@ module.exports = {
         this.$currentView = this.mount(view);
     },
     $trimHash(path) {
-        return path.toString().replace(/\/$/, '').replace(/^\//, '');
+        return path.toString().replace(/\/+$/, '').replace(/^\//, '');
     },
     $navigate(path) {
 
         let found = false;
-        path = path || window.location.hash.slice(1);
+        path = path || window.location.hash.slice(this.props.hash.length);
         let pathPart = path.split('?');
         path = this.$trimHash(pathPart[0]);
-        this.$query = pathPart[1] || '';
+        this.$queryRaw = pathPart[1] || '';
 
         for (let i = 0; i < this.$routes.length; i++) {
             let route = this.$routes[i];
@@ -36,13 +48,13 @@ module.exports = {
             let match = path.match(re);
 
             if (match) {
+                found = true;
                 let param = this.$paramMap[route.path];
-
+                this.$query = this.$queryToObject(this.$queryRaw);
                 match.slice(1).forEach((value, i) => {
                     this.$param[param[i]] = value;
                 });
 
-                found = true;
                 this.$currentPath = path;
                 this.$setView(route.view);
                 break;

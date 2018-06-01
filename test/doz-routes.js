@@ -2,6 +2,17 @@ const DozRoutes = require('../src/doz-routes');
 const be = require('bejs');
 
 // Mock
+const navLink = `
+    <nav>
+        <a nav-link href="#/">Home</a> |
+        <a id="about" nav-link href="#/about">About</a> |
+        <a nav-link href="#/profile/me">Profile</a> |
+        <a nav-link href="#/search/">Search</a> |
+        <a id="user" nav-link href="#/user/10">User</a> |
+        <a nav-link href="#/news/20/green/title">Category</a>
+    </nav>
+`;
+
 DozRoutes.mount = function () {
     return {
         destroy() {
@@ -10,7 +21,7 @@ DozRoutes.mount = function () {
 };
 
 DozRoutes.rawChildren = [
-    '<div-1 d:route="/home"></div-1>',
+    '<div-1 d:route="/"></div-1>',
     '<div-2 d:route="/about/"></div-2>',
     '<div-3 d:route="/profile/me"></div-3>',
     '<div-4 d:route="/search/"></div-4>',
@@ -38,22 +49,30 @@ describe('doz-routes', function () {
         //document.body.innerHTML = '';
     });
 
-    describe('$trimHash', function () {
-        it('should be remove last slash', function () {
-            be.err.equal(DozRoutes.$trimHash('/hello/'), 'hello');
-        });
-    });
-
     describe('$setView', function () {
         it('should be ok', function () {
             DozRoutes.$setView('<div></div>');
         });
     });
 
+    describe('on ready', function () {
+        before(function () {
+            document.body.innerHTML = navLink;
+        });
+        it('should be ok', function () {
+            DozRoutes.onAppReady();
+            DozRoutes.$navigate('/about/');
+            be.err.true(document.getElementById('about').classList.contains('nav-link-active'));
+            DozRoutes.$navigate('/user/10');
+            be.err.true(document.getElementById('user').classList.contains('nav-link-active'));
+            be.err.false(document.getElementById('about').classList.contains('nav-link-active'));
+        });
+    });
+
     describe('$navigate', function () {
-        it('should be "/home"', function () {
-            DozRoutes.$navigate('/home');
-            be.err.equal(DozRoutes.$currentPath, 'home');
+        it('should be "/"', function () {
+            DozRoutes.$navigate('/');
+            be.err.equal(DozRoutes.$currentPath, '');
         });
 
         it('should be "/about/"', function () {

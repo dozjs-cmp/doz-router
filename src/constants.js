@@ -4,6 +4,5 @@ module.exports = {
     },
     PATH: {
         NOT_FOUND: '*'
-    },
-    STORE_NAME: 'doz-routes'
+    }
 };

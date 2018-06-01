@@ -53,18 +53,21 @@
         }
     });
 
-    Doz.component('user-page', {
+    Doz.component('user-details-page', {
         template() {
             return `
-                <div>I'm user page</div>
+                <div>I'm user page with id ${this.props.id}</div>
             `
+        },
+        onCreate() {
+            this.props.id = this.getComponentById('routes').$param['id'];
         }
     });
 
-    Doz.component('cat-page', {
+    Doz.component('user-page', {
         template() {
             return `
-                <div>I'm user page</div>
+                <div>I'm user page index, <a href="#/user/10">show id 10</a></div>
             `
         }
     });
@@ -87,12 +90,13 @@
                 <a nav-link href="#/user/10">User</a> |
                 <a nav-link href="#/contact">Contact</a>
             </nav>
-            <doz-routes>
+            <doz-routes d:id="routes">
                 <home-page d:route="/"></home-page>
                 <about-page d:route="/about"></about-page>
                 <contact-page d:route="/contact"></contact-page>
                 <profile-page d:route="/profile/me"></profile-page>
-                <user-page d:route="/user/:id"></user-page>
+                <user-page d:route="/user/"></user-page>
+                <user-details-page d:route="/user/:id"></user-details-page>
                 <not-found-page d:route="*"></not-found-page>
             </doz-routes>
         `

@@ -1,12 +1,13 @@
-const {REGEX, STORE_NAME, PATH} = require('./constants');
+const {REGEX, PATH} = require('./constants');
 
 module.exports = {
-    store: STORE_NAME,
     autoCreateChildren: false,
     $currentView: null,
     $currentPath: null,
     $routes: [],
-    $route404: '',
+    $paramMap: {},
+    $param: {},
+    $routeNotFound: '',
     $query: '',
     $removeCurrentView() {
         if (this.$currentView) {
@@ -21,37 +22,36 @@ module.exports = {
     $trimHash(path) {
         return path.toString().replace(/\/$/, '').replace(/^\//, '');
     },
-    $router() {
+    $navigate(path) {
 
         let found = false;
-        let path = window.location.hash.slice(1);
+        path = path || window.location.hash.slice(1);
         let pathPart = path.split('?');
         path = this.$trimHash(pathPart[0]);
         this.$query = pathPart[1] || '';
 
-        this.$routes.forEach(route => {
-
-            //route.path = route.path.replace(/:[^\s/]+/g, '$1([\\w-]+)');
-            //route.path = route.path.replace(/:(\w+)/g, '([\\w-]+)');
-            route.path = route.path.replace(/:(\w+)/g, (match, capture) => {
-                //console.log(match, capture);
-                return '([\\w-]+)';
-            });
-            //console.log(route.path)
+        for (let i = 0; i < this.$routes.length; i++) {
+            let route = this.$routes[i];
             let re = new RegExp('^' + route.path + '$');
             let match = path.match(re);
 
             if (match) {
-                //console.log(match)
+                let param = this.$paramMap[route.path];
+
+                match.slice(1).forEach((value, i) => {
+                    this.$param[param[i]] = value;
+                });
+
                 found = true;
                 this.$currentPath = path;
                 this.$setView(route.view);
+                break;
             }
-        });
+        }
 
         if (!found) {
             this.$currentPath = null;
-            this.$setView(this.$route404);
+            this.$setView(this.$routeNotFound);
         }
     },
     onAppReady() {
@@ -59,14 +59,20 @@ module.exports = {
             const route = item.match(REGEX.ROUTE);
             if (route) {
                 if (route[1] === PATH.NOT_FOUND) {
-                    this.$route404 = item;
+                    this.$routeNotFound = item;
                 } else {
+                    let param = [];
                     let path = this.$trimHash(route[1]);
+                    path = path.replace(/:(\w+)/g, (match, capture) => {
+                        param.push(capture);
+                        return '([\\w-]+)';
+                    });
+                    this.$paramMap[path] = param;
                     this.$routes.push({path, view: item});
                 }
             }
         });
-        window.addEventListener('hashchange', () => this.$router());
-        window.addEventListener('load', () => this.$router());
+        window.addEventListener('hashchange', () => this.$navigate());
+        window.addEventListener('load', () => this.$navigate());
     }
 };

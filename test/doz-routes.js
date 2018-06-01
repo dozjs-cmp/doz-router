@@ -49,40 +49,34 @@ describe('doz-routes', function () {
         });
     });
 
-    describe('$router', function () {
+    describe('$navigate', function () {
         it('should be "/home"', function () {
-            window.location.hash = '/home';
-            DozRoutes.$router();
+            DozRoutes.$navigate('/home');
             be.err.equal(DozRoutes.$currentPath, 'home');
         });
 
         it('should be "/about/"', function () {
-            window.location.hash = '/about/';
-            DozRoutes.$router();
+            DozRoutes.$navigate('/about/');
             be.err.equal(DozRoutes.$currentPath, 'about');
         });
 
         it('should be "/profile/me"', function () {
-            location.hash = '/profile/me';
-            DozRoutes.$router();
+            DozRoutes.$navigate('/profile/me');
             be.err.equal(DozRoutes.$currentPath, 'profile/me');
         });
 
         it('should be "/user/:id"', function () {
-            location.hash = '/user/10';
-            DozRoutes.$router();
+            DozRoutes.$navigate('/user/10');
             be.err.equal(DozRoutes.$currentPath, 'user/10');
         });
 
         it('should be "/news/:id/:cat/title/"', function () {
-            location.hash = '/news/25/green/title/';
-            DozRoutes.$router();
+            DozRoutes.$navigate('/news/25/green/title/');
             be.err.equal(DozRoutes.$currentPath, 'news/25/green/title');
         });
 
         it('should be "/not-found"', function () {
-            window.location.hash = '/not-found';
-            DozRoutes.$router();
+            DozRoutes.$navigate('/not-found');
             be.err.equal(DozRoutes.$currentPath, null);
         });
     });

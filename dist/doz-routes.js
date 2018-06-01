@@ -92,16 +92,16 @@ module.exports = __webpack_require__(1);
 
 var _require = __webpack_require__(2),
     REGEX = _require.REGEX,
-    STORE_NAME = _require.STORE_NAME,
     PATH = _require.PATH;
 
 module.exports = {
-    store: STORE_NAME,
     autoCreateChildren: false,
     $currentView: null,
     $currentPath: null,
     $routes: [],
-    $route404: '',
+    $paramMap: {},
+    $param: {},
+    $routeNotFound: '',
     $query: '',
     $removeCurrentView: function $removeCurrentView() {
         if (this.$currentView) {
@@ -116,38 +116,41 @@ module.exports = {
     $trimHash: function $trimHash(path) {
         return path.toString().replace(/\/$/, '').replace(/^\//, '');
     },
-    $router: function $router() {
+    $navigate: function $navigate(path) {
         var _this = this;
 
         var found = false;
-        var path = window.location.hash.slice(1);
+        path = path || window.location.hash.slice(1);
         var pathPart = path.split('?');
         path = this.$trimHash(pathPart[0]);
         this.$query = pathPart[1] || '';
 
-        this.$routes.forEach(function (route) {
-
-            //route.path = route.path.replace(/:[^\s/]+/g, '$1([\\w-]+)');
-            //route.path = route.path.replace(/:(\w+)/g, '([\\w-]+)');
-            route.path = route.path.replace(/:(\w+)/g, function (match, capture) {
-                //console.log(match, capture);
-                return '([\\w-]+)';
-            });
-            //console.log(route.path)
+        for (var i = 0; i < this.$routes.length; i++) {
+            var route = this.$routes[i];
             var re = new RegExp('^' + route.path + '$');
             var match = path.match(re);
 
             if (match) {
-                //console.log(match)
-                found = true;
-                _this.$currentPath = path;
-                _this.$setView(route.view);
+                var _ret = function () {
+                    var param = _this.$paramMap[route.path];
+
+                    match.slice(1).forEach(function (value, i) {
+                        _this.$param[param[i]] = value;
+                    });
+
+                    found = true;
+                    _this.$currentPath = path;
+                    _this.$setView(route.view);
+                    return 'break';
+                }();
+
+                if (_ret === 'break') break;
             }
-        });
+        }
 
         if (!found) {
             this.$currentPath = null;
-            this.$setView(this.$route404);
+            this.$setView(this.$routeNotFound);
         }
     },
     onAppReady: function onAppReady() {
@@ -157,18 +160,24 @@ module.exports = {
             var route = item.match(REGEX.ROUTE);
             if (route) {
                 if (route[1] === PATH.NOT_FOUND) {
-                    _this2.$route404 = item;
+                    _this2.$routeNotFound = item;
                 } else {
+                    var param = [];
                     var path = _this2.$trimHash(route[1]);
+                    path = path.replace(/:(\w+)/g, function (match, capture) {
+                        param.push(capture);
+                        return '([\\w-]+)';
+                    });
+                    _this2.$paramMap[path] = param;
                     _this2.$routes.push({ path: path, view: item });
                 }
             }
         });
         window.addEventListener('hashchange', function () {
-            return _this2.$router();
+            return _this2.$navigate();
         });
         window.addEventListener('load', function () {
-            return _this2.$router();
+            return _this2.$navigate();
         });
     }
 };
@@ -186,8 +195,7 @@ module.exports = {
     },
     PATH: {
         NOT_FOUND: '*'
-    },
-    STORE_NAME: 'doz-routes'
+    }
 };
 
 /***/ })

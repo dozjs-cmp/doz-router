@@ -1,4 +1,4 @@
-const DozRoutes = require('../src/doz-routes');
+const DozRouter = require('../src/doz-router');
 const be = require('bejs');
 
 // Mock
@@ -13,14 +13,14 @@ const navLink = `
     </nav>
 `;
 
-DozRoutes.mount = function () {
+DozRouter.mount = function () {
     return {
         destroy() {
         }
     }
 };
 
-DozRoutes.rawChildren = [
+DozRouter.rawChildren = [
     '<div-1 d:route="/"></div-1>',
     '<div-2 d:route="/about/"></div-2>',
     '<div-3 d:route="/profile/me"></div-3>',
@@ -36,7 +36,7 @@ describe('doz-routes', function () {
 
     before(function () {
         this.jsdom = require('jsdom-global')();
-        DozRoutes.onAppReady();
+        DozRouter.onAppReady();
     });
 
     after(function () {
@@ -51,7 +51,7 @@ describe('doz-routes', function () {
 
     describe('$setView', function () {
         it('should be ok', function () {
-            DozRoutes.$setView('<div></div>');
+            DozRouter.$setView('<div></div>');
         });
     });
 
@@ -60,10 +60,10 @@ describe('doz-routes', function () {
             document.body.innerHTML = navLink;
         });
         it('should be ok', function () {
-            DozRoutes.onAppReady();
-            DozRoutes.$navigate('/about/');
+            DozRouter.onAppReady();
+            DozRouter.$navigate('/about/');
             be.err.true(document.getElementById('about').classList.contains('nav-link-active'));
-            DozRoutes.$navigate('/user/10');
+            DozRouter.$navigate('/user/10');
             be.err.true(document.getElementById('user').classList.contains('nav-link-active'));
             be.err.false(document.getElementById('about').classList.contains('nav-link-active'));
         });
@@ -71,39 +71,39 @@ describe('doz-routes', function () {
 
     describe('$navigate', function () {
         it('should be "/"', function () {
-            DozRoutes.$navigate('/');
-            be.err.equal(DozRoutes.$currentPath, '');
+            DozRouter.$navigate('/');
+            be.err.equal(DozRouter.$currentPath, '');
         });
 
         it('should be "/about/"', function () {
-            DozRoutes.$navigate('/about/');
-            be.err.equal(DozRoutes.$currentPath, 'about');
+            DozRouter.$navigate('/about/');
+            be.err.equal(DozRouter.$currentPath, 'about');
         });
 
         it('should be "/profile/me"', function () {
-            DozRoutes.$navigate('/profile/me');
-            be.err.equal(DozRoutes.$currentPath, 'profile/me');
+            DozRouter.$navigate('/profile/me');
+            be.err.equal(DozRouter.$currentPath, 'profile/me');
         });
 
         it('should be "/search/?t=hello"', function () {
-            DozRoutes.$navigate('/search/?a=hello&b=world');
-            be.err.equal(DozRoutes.$query.a, 'hello');
-            be.err.equal(DozRoutes.$query.b, 'world');
+            DozRouter.$navigate('/search/?a=hello&b=world');
+            be.err.equal(DozRouter.$query.a, 'hello');
+            be.err.equal(DozRouter.$query.b, 'world');
         });
 
         it('should be "/user/:id"', function () {
-            DozRoutes.$navigate('/user/10');
-            be.err.equal(DozRoutes.$param.id, '10');
+            DozRouter.$navigate('/user/10');
+            be.err.equal(DozRouter.$param.id, '10');
         });
 
         it('should be "/news/:id/:cat/title/"', function () {
-            DozRoutes.$navigate('/news/25/green/title/');
-            be.err.equal(DozRoutes.$currentPath, 'news/25/green/title');
+            DozRouter.$navigate('/news/25/green/title/');
+            be.err.equal(DozRouter.$currentPath, 'news/25/green/title');
         });
 
         it('should be "/not-found"', function () {
-            DozRoutes.$navigate('/not-found');
-            be.err.equal(DozRoutes.$currentPath, null);
+            DozRouter.$navigate('/not-found');
+            be.err.equal(DozRouter.$currentPath, null);
         });
     });
 });

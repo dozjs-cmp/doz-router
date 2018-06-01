@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="DOZ - vdom">
+    <meta name="description" content="DOZ - ROUTER">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Doz - routes</title>
+    <title>Doz - router</title>
     <script src="../node_modules/doz/dist/doz.js?589654888"></script>
-    <script src="../dist/doz-routes.js"></script>
+    <script src="../dist/doz-router.js"></script>
     <style>
         body {
             font-family: sans-serif;
@@ -49,7 +49,7 @@
 
 <script>
 
-    Doz.component('doz-routes', DozRoutes);
+    Doz.component('doz-router', DozRouter);
 
     Doz.component('home-page', {
         template() {
@@ -143,7 +143,7 @@
                 <a nav-link href="#!/not-found-page-bla-bla">Not found</a>
             </nav>
             <div class="container">
-                <doz-routes d:id="routes" hash="#!">
+                <doz-router d:id="routes" hash="#!">
                     <home-page d:route="/"></home-page>
                     <about-page d:route="/about"></about-page>
                     <contact-page d:route="/contact"></contact-page>
@@ -153,7 +153,7 @@
                     <user-page d:route="/user/"></user-page>
                     <user-details-page d:route="/user/:id"></user-details-page>
                     <not-found-page d:route="*"></not-found-page>
-                </doz-routes>
+                </doz-router>
             </div>
         `
     });

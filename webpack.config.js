@@ -5,8 +5,8 @@ const WebpackAutoInject = require('webpack-auto-inject-version');
 module.exports = {
     entry: './index.js',
     output: {
-        filename: './dist/doz-routes.min.js',
-        library: 'DozRoutes',
+        filename: './dist/doz-router.min.js',
+        library: 'DozRouter',
         umdNamedDefine: true,
         libraryTarget: 'umd'
     },
@@ -34,7 +34,7 @@ module.exports = {
         }),
         new WebpackAutoInject({
             PACKAGE_JSON_PATH: './package.json',
-            SHORT: 'DOZ-ROUTES',
+            SHORT: 'DOZ-ROUTER',
             components: {
                 InjectAsComment: true,
                 InjectByTag: true

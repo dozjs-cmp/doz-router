@@ -1,1 +1,1 @@
-module.exports = require('./src/doz-routes');
+module.exports = require('./src/doz-router');

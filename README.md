@@ -1,2 +1,2 @@
-# doz-routes
+# doz-router
 Routing for DOZ framework

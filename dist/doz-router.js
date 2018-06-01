@@ -1,13 +1,13 @@
-// [DOZ-ROUTES]  Build version: 0.0.0  
+// [DOZ-ROUTER]  Build version: 0.0.0  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("DozRoutes", [], factory);
+		define("DozRouter", [], factory);
 	else if(typeof exports === 'object')
-		exports["DozRoutes"] = factory();
+		exports["DozRouter"] = factory();
 	else
-		root["DozRoutes"] = factory();
+		root["DozRouter"] = factory();
 })(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache

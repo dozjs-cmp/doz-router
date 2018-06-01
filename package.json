@@ -1,8 +1,8 @@
 {
-  "name": "doz-routes",
+  "name": "doz-router",
   "version": "0.0.0",
   "description": "Routing for DOZ",
-  "main": "dist/doz-routes.js",
+  "main": "dist/doz-router.js",
   "scripts": {
     "release:before": "npm run-script test",
     "release:major": "webpack --env.major && npm run-script release:publish",
@@ -19,12 +19,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dozjs/doz-routes.git"
+    "url": "git+https://github.com/dozjs/doz-router.git"
   },
   "bugs": {
-    "url": "https://github.com/dozjs/doz-routes/issues"
+    "url": "https://github.com/dozjs/doz-router/issues"
   },
-  "homepage": "https://github.com/dozjs/doz-routes#readme",
+  "homepage": "https://github.com/dozjs/doz-router#readme",
   "author": "Fabio Ricali",
   "license": "MIT",
   "devDependencies": {

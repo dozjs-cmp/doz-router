@@ -189,19 +189,13 @@ module.exports = {
             this.$routes.push({ path: path, view: view });
         }
     },
-    onAppReady: function onAppReady() {
+    $bindLink: function $bindLink() {
         var _this3 = this;
 
-        this.rawChildren.forEach(function (view) {
-            var route = view.match(REGEX.ROUTE);
-            if (route) {
-                _this3.$add(route[1], view);
-            }
-        });
-
         document.querySelectorAll('[' + this.props.linkAttr + ']').forEach(function (el) {
-            var path = el.hash.slice(_this3.props.hash.length);
+            var path = el.pathname || el.href;
             var pathPart = path.split('?');
+            el.href = _this3.props.hash + path + el.search;
             path = clearPath(pathPart[0]);
             if (typeof _this3.$link[path] === 'undefined') {
                 _this3.$link[path] = [el];
@@ -209,12 +203,24 @@ module.exports = {
                 _this3.$link[path].push(el);
             }
         });
+    },
+    onAppReady: function onAppReady() {
+        var _this4 = this;
+
+        this.rawChildren.forEach(function (view) {
+            var route = view.match(REGEX.ROUTE);
+            if (route) {
+                _this4.$add(route[1], view);
+            }
+        });
+
+        this.$bindLink();
 
         window.addEventListener('hashchange', function () {
-            return _this3.$navigate();
+            return _this4.$navigate();
         });
         window.addEventListener('load', function () {
-            return _this3.$navigate();
+            return _this4.$navigate();
         });
     }
 };

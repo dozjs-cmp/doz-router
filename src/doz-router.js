@@ -95,6 +95,20 @@ module.exports = {
         }
     },
 
+    $bindLink() {
+        document.querySelectorAll(`[${this.props.linkAttr}]`).forEach(el => {
+            let path = el.pathname || el.href;
+            let pathPart = path.split('?');
+            el.href = this.props.hash + path + el.search;
+            path = clearPath(pathPart[0]);
+            if (typeof this.$link[path] === 'undefined') {
+                this.$link[path] = [el];
+            } else {
+                this.$link[path].push(el);
+            }
+        });
+    },
+
     onAppReady() {
         this.rawChildren.forEach(view => {
             const route = view.match(REGEX.ROUTE);
@@ -103,16 +117,7 @@ module.exports = {
             }
         });
 
-        document.querySelectorAll(`[${this.props.linkAttr}]`).forEach(el => {
-            let path = el.hash.slice(this.props.hash.length);
-            let pathPart = path.split('?');
-            path = clearPath(pathPart[0]);
-            if (typeof this.$link[path] === 'undefined') {
-                this.$link[path] = [el];
-            } else {
-                this.$link[path].push(el);
-            }
-        });
+        this.$bindLink();
 
         window.addEventListener('hashchange', () => this.$navigate());
         window.addEventListener('load', () => this.$navigate());

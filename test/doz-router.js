@@ -4,12 +4,12 @@ const be = require('bejs');
 // Mock
 const navLink = `
     <nav>
-        <a nav-link href="#/">Home</a> |
-        <a id="about" nav-link href="#/about">About</a> |
-        <a nav-link href="#/profile/me">Profile</a> |
-        <a nav-link href="#/search/">Search</a> |
-        <a id="user" nav-link href="#/user/10">User</a> |
-        <a nav-link href="#/news/20/green/title">Category</a>
+        <a nav-link href="/">Home</a> |
+        <a id="about" nav-link href="/about">About</a> |
+        <a nav-link href="/profile/me">Profile</a> |
+        <a nav-link href="/search/">Search</a> |
+        <a id="user" nav-link href="/user/10">User</a> |
+        <a nav-link href="/news/20/green/title">Category</a>
     </nav>
 `;
 

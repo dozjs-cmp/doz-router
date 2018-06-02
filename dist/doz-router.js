@@ -90,6 +90,8 @@ module.exports = __webpack_require__(1);
 "use strict";
 
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _require = __webpack_require__(2),
     REGEX = _require.REGEX,
     PATH = _require.PATH;
@@ -102,7 +104,11 @@ module.exports = {
         hash: '#',
         classActiveLink: 'router-link-active',
         linkAttr: 'router-link',
-        mode: 'hash'
+        mode: 'hash',
+        /**
+         * Base root, works only in "history" mode
+         */
+        root: '/'
     },
     autoCreateChildren: false,
 
@@ -117,17 +123,54 @@ module.exports = {
     $_queryRaw: '',
     $_link: {},
 
-    $removeView: function $removeCurrentView() {
-        if (this.$currentView) {
-            this.$currentView.destroy();
+    /**
+     * Remove current view
+     */
+    $removeView: function $removeView() {
+        if (this.$_currentView) {
+            this.$_currentView.destroy();
             this.$_currentView = null;
         }
     },
+
+
+    /**
+     * Set current view
+     * @param view {string} component string
+     */
     $setView: function $setView(view) {
-        this.$removeCurrentView();
+        this.$removeView();
         this.$_currentView = this.mount(view);
     },
-    $navigate: function $navigate(path) {
+
+
+    /**
+     * Get query url
+     * @param property {string} property name
+     * @returns {*}
+     */
+    $query: function $query(property) {
+        return this.$_query[property];
+    },
+
+
+    /**
+     * Get param url
+     * @param property {string} property name
+     * @returns {*}
+     */
+    $param: function $param(property) {
+        return this.$_param[property];
+    },
+
+
+    /**
+     * Navigate route
+     * @param path {string} path to navigate
+     * @param [params] {object} optional params
+     * @returns {boolean}
+     */
+    $navigate: function $navigate(path, params) {
         var _this = this;
 
         var found = false;
@@ -136,46 +179,63 @@ module.exports = {
         path = clearPath(pathPart[0]);
         this.$_queryRaw = pathPart[1] || '';
 
-        for (var i = 0; i < this.$routes.length; i++) {
-            var route = this.$routes[i];
+        for (var i = 0; i < this.$_routes.length; i++) {
+            var route = this.$_routes[i];
             var re = new RegExp('^' + route.path + '$');
             var match = path.match(re);
 
             if (match) {
-                var _ret = function () {
-                    found = true;
-                    var param = _this.$_paramMap[route.path];
-                    _this.$_query = queryToObject(_this.$_queryRaw);
-                    match.slice(1).forEach(function (value, i) {
-                        _this.$_param[param[i]] = value;
-                    });
+                found = true;
 
-                    _this.$_currentPath = path;
-                    _this.$setView(route.view);
+                if ((typeof params === 'undefined' ? 'undefined' : _typeof(params)) === 'object') {
+                    this.$_param = Object.assign({}, params);
+                } else {
+                    (function () {
+                        var param = _this.$_paramMap[route.path];
+                        _this.$_query = queryToObject(_this.$_queryRaw);
+                        match.slice(1).forEach(function (value, i) {
+                            _this.$_param[param[i]] = value;
+                        });
+                    })();
+                }
 
-                    return 'break';
-                }();
+                this.$_currentPath = path;
+                this.$setView(route.view);
 
-                if (_ret === 'break') break;
+                break;
             }
         }
 
         if (!found) {
             this.$_currentPath = null;
-            this.$setView(this.$routeNotFound);
+            this.$setView(this.$_routeNotFound);
         }
 
         this.$activeLink();
+
+        return found;
     },
+
+
+    /**
+     * Active current link
+     */
     $activeLink: function $activeLink() {
         var _this2 = this;
 
-        Object.keys(this.$link).forEach(function (link) {
+        Object.keys(this.$_link).forEach(function (link) {
             _this2.$_link[link].forEach(function (el) {
                 if (link === _this2.$_currentPath) el.classList.add(_this2.props.classActiveLink);else el.classList.remove(_this2.props.classActiveLink);
             });
         });
     },
+
+
+    /**
+     * Add a new route
+     * @param route {string} route path
+     * @param view {string} component string
+     */
     $add: function $add(route, view) {
         if (route === PATH.NOT_FOUND) {
             this.$_routeNotFound = view;
@@ -186,10 +246,29 @@ module.exports = {
                 param.push(capture);
                 return '([\\w-]+)';
             });
-            this.$paramMap[path] = param;
-            this.$routes.push({ path: path, view: view });
+            this.$_paramMap[path] = param;
+            this.$_routes.push({ path: path, view: view });
         }
     },
+
+
+    /**
+     * Remove a route
+     * @param path {string} route path
+     */
+    $remove: function $remove(path) {
+        for (var i = 0; i < this.$_routes.length; i++) {
+            var route = this.$_routes[i];
+            if (route.path === clearPath(path)) {
+                this.$_routes.splice(i, 1);
+            }
+        }
+    },
+
+
+    /**
+     * Bind all link to routing controller
+     */
     $bindLink: function $bindLink() {
         var _this3 = this;
 
@@ -201,7 +280,7 @@ module.exports = {
                 el.addEventListener('click', function (e) {
                     e.preventDefault();
                     var _path = path + el.search;
-                    history.pushState(_path, null, '/' + _path);
+                    history.pushState(_path, null, _this3.props.root + _path);
                     _this3.$navigate(_path);
                 });
             } else {

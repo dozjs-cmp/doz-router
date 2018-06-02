@@ -16,37 +16,68 @@ module.exports = {
     autoCreateChildren: false,
 
     //custom properties
-    $currentView: null,
-    $currentPath: null,
-    $routes: [],
-    $paramMap: {},
-    $param: {},
-    $routeNotFound: '',
-    $query: {},
-    $queryRaw: '',
-    $link: {},
+    $_currentView: null,
+    $_currentPath: null,
+    $_routes: [],
+    $_paramMap: {},
+    $_param: {},
+    $_routeNotFound: '',
+    $_query: {},
+    $_queryRaw: '',
+    $_link: {},
 
-    $removeCurrentView() {
-        if (this.$currentView) {
-            this.$currentView.destroy();
-            this.$currentView = null;
+    /**
+     * Remove current view
+     */
+    $removeView() {
+        if (this.$_currentView) {
+            this.$_currentView.destroy();
+            this.$_currentView = null;
         }
     },
 
+    /**
+     * Set current view
+     * @param view {string} component string
+     */
     $setView(view) {
-        this.$removeCurrentView();
-        this.$currentView = this.mount(view);
+        this.$removeView();
+        this.$_currentView = this.mount(view);
     },
 
+    /**
+     * Get query url
+     * @param property {string} property name
+     * @returns {*}
+     */
+    $query(property) {
+        return this.$_query[property];
+    },
+
+    /**
+     * Get param url
+     * @param property {string} property name
+     * @returns {*}
+     */
+    $param(property) {
+        return this.$_param[property];
+    },
+
+    /**
+     * Navigate route
+     * @param path {string} path to navigate
+     * @param [params] {object} optional params
+     * @returns {boolean}
+     */
     $navigate(path, params) {
         let found = false;
         path = path || window.location.hash.slice(this.props.hash.length);
         let pathPart = path.split('?');
         path = clearPath(pathPart[0]);
-        this.$queryRaw = pathPart[1] || '';
+        this.$_queryRaw = pathPart[1] || '';
 
-        for (let i = 0; i < this.$routes.length; i++) {
-            let route = this.$routes[i];
+        for (let i = 0; i < this.$_routes.length; i++) {
+            let route = this.$_routes[i];
             let re = new RegExp('^' + route.path + '$');
             let match = path.match(re);
 
@@ -54,16 +85,16 @@ module.exports = {
                 found = true;
 
                 if (typeof params === 'object') {
-                    this.$param = Object.assign({}, params);
+                    this.$_param = Object.assign({}, params);
                 } else {
-                    let param = this.$paramMap[route.path];
-                    this.$query = queryToObject(this.$queryRaw);
+                    let param = this.$_paramMap[route.path];
+                    this.$_query = queryToObject(this.$_queryRaw);
                     match.slice(1).forEach((value, i) => {
-                        this.$param[param[i]] = value;
+                        this.$_param[param[i]] = value;
                     });
                 }
 
-                this.$currentPath = path;
+                this.$_currentPath = path;
                 this.$setView(route.view);
 
                 break;
@@ -71,17 +102,22 @@ module.exports = {
         }
 
         if (!found) {
-            this.$currentPath = null;
-            this.$setView(this.$routeNotFound);
+            this.$_currentPath = null;
+            this.$setView(this.$_routeNotFound);
         }
 
         this.$activeLink();
+
+        return found;
     },
 
+    /**
+     * Active current link
+     */
     $activeLink() {
-        Object.keys(this.$link).forEach(link => {
-            this.$link[link].forEach(el => {
-                if (link === this.$currentPath)
+        Object.keys(this.$_link).forEach(link => {
+            this.$_link[link].forEach(el => {
+                if (link === this.$_currentPath)
                     el.classList.add(this.props.classActiveLink);
                 else
                     el.classList.remove(this.props.classActiveLink);
@@ -89,9 +125,14 @@ module.exports = {
         });
     },
 
+    /**
+     * Add a new route
+     * @param route {string} route path
+     * @param view {string} component string
+     */
     $add(route, view) {
         if (route === PATH.NOT_FOUND) {
-            this.$routeNotFound = view;
+            this.$_routeNotFound = view;
         } else {
             let param = [];
             let path = clearPath(route);
@@ -99,22 +140,29 @@ module.exports = {
                 param.push(capture);
                 return '([\\w-]+)';
             });
-            this.$paramMap[path] = param;
-            this.$routes.push({path, view});
+            this.$_paramMap[path] = param;
+            this.$_routes.push({path, view});
         }
     },
 
+    /**
+     * Remove a route
+     * @param path {string} route path
+     */
     $remove(path) {
-        for (let i = 0; i < this.$routes.length; i++) {
-            let route = this.$routes[i];
+        for (let i = 0; i < this.$_routes.length; i++) {
+            let route = this.$_routes[i];
             if (route.path === clearPath(path)) {
-                this.$routes.splice(i, 1);
+                this.$_routes.splice(i, 1);
             }
         }
     },
 
+    /**
+     * Bind all link to routing controller
+     */
     $bindLink() {
-        this.$link = {};
+        this.$_link = {};
         document.querySelectorAll(`[${this.props.linkAttr}]`).forEach(el => {
             let path = el.pathname || el.href;
 
@@ -130,10 +178,10 @@ module.exports = {
             }
             let pathPart = path.split('?');
             path = clearPath(pathPart[0]);
-            if (typeof this.$link[path] === 'undefined') {
-                this.$link[path] = [el];
+            if (typeof this.$_link[path] === 'undefined') {
+                this.$_link[path] = [el];
             } else {
-                this.$link[path].push(el);
+                this.$_link[path].push(el);
             }
         });
     },

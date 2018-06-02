@@ -107,25 +107,25 @@ module.exports = {
     autoCreateChildren: false,
 
     //custom properties
-    $currentView: null,
-    $currentPath: null,
-    $routes: [],
-    $paramMap: {},
-    $param: {},
-    $routeNotFound: '',
-    $query: {},
-    $queryRaw: '',
-    $link: {},
+    $_currentView: null,
+    $_currentPath: null,
+    $_routes: [],
+    $_paramMap: {},
+    $_param: {},
+    $_routeNotFound: '',
+    $_query: {},
+    $_queryRaw: '',
+    $_link: {},
 
-    $removeCurrentView: function $removeCurrentView() {
+    $removeView: function $removeCurrentView() {
         if (this.$currentView) {
             this.$currentView.destroy();
-            this.$currentView = null;
+            this.$_currentView = null;
         }
     },
     $setView: function $setView(view) {
         this.$removeCurrentView();
-        this.$currentView = this.mount(view);
+        this.$_currentView = this.mount(view);
     },
     $navigate: function $navigate(path) {
         var _this = this;
@@ -134,7 +134,7 @@ module.exports = {
         path = path || window.location.hash.slice(this.props.hash.length);
         var pathPart = path.split('?');
         path = clearPath(pathPart[0]);
-        this.$queryRaw = pathPart[1] || '';
+        this.$_queryRaw = pathPart[1] || '';
 
         for (var i = 0; i < this.$routes.length; i++) {
             var route = this.$routes[i];
@@ -144,13 +144,13 @@ module.exports = {
             if (match) {
                 var _ret = function () {
                     found = true;
-                    var param = _this.$paramMap[route.path];
-                    _this.$query = queryToObject(_this.$queryRaw);
+                    var param = _this.$_paramMap[route.path];
+                    _this.$_query = queryToObject(_this.$_queryRaw);
                     match.slice(1).forEach(function (value, i) {
-                        _this.$param[param[i]] = value;
+                        _this.$_param[param[i]] = value;
                     });
 
-                    _this.$currentPath = path;
+                    _this.$_currentPath = path;
                     _this.$setView(route.view);
 
                     return 'break';
@@ -161,7 +161,7 @@ module.exports = {
         }
 
         if (!found) {
-            this.$currentPath = null;
+            this.$_currentPath = null;
             this.$setView(this.$routeNotFound);
         }
 
@@ -171,14 +171,14 @@ module.exports = {
         var _this2 = this;
 
         Object.keys(this.$link).forEach(function (link) {
-            _this2.$link[link].forEach(function (el) {
-                if (link === _this2.$currentPath) el.classList.add(_this2.props.classActiveLink);else el.classList.remove(_this2.props.classActiveLink);
+            _this2.$_link[link].forEach(function (el) {
+                if (link === _this2.$_currentPath) el.classList.add(_this2.props.classActiveLink);else el.classList.remove(_this2.props.classActiveLink);
             });
         });
     },
     $add: function $add(route, view) {
         if (route === PATH.NOT_FOUND) {
-            this.$routeNotFound = view;
+            this.$_routeNotFound = view;
         } else {
             var param = [];
             var path = clearPath(route);
@@ -193,7 +193,7 @@ module.exports = {
     $bindLink: function $bindLink() {
         var _this3 = this;
 
-        this.$link = {};
+        this.$_link = {};
         document.querySelectorAll('[' + this.props.linkAttr + ']').forEach(function (el) {
             var path = el.pathname || el.href;
 
@@ -209,10 +209,10 @@ module.exports = {
             }
             var pathPart = path.split('?');
             path = clearPath(pathPart[0]);
-            if (typeof _this3.$link[path] === 'undefined') {
-                _this3.$link[path] = [el];
+            if (typeof _this3.$_link[path] === 'undefined') {
+                _this3.$_link[path] = [el];
             } else {
-                _this3.$link[path].push(el);
+                _this3.$_link[path].push(el);
             }
         });
     },

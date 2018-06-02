@@ -98,7 +98,7 @@
             `
         },
         onCreate() {
-            this.props.id = this.getComponentById('router').$param['id'];
+            this.props.id = this.getComponentById('router').$_param['id'];
         }
     });
 
@@ -109,7 +109,7 @@
             `
         },
         onCreate() {
-            this.props.query = this.getComponentById('router').$query['t'];
+            this.props.query = this.getComponentById('router').$_query['t'];
         }
     });
 

@@ -73,43 +73,43 @@ describe('doz-router', function () {
     describe('$navigate', function () {
         it('should be "/"', function () {
             DozRouter.$navigate('/');
-            be.err.equal(DozRouter.$currentPath, '');
+            be.err.equal(DozRouter.$_currentPath, '');
         });
 
         it('should be "/about/"', function () {
             DozRouter.$navigate('/about/');
-            be.err.equal(DozRouter.$currentPath, 'about');
+            be.err.equal(DozRouter.$_currentPath, 'about');
         });
 
         it('should be "/profile/me"', function () {
             DozRouter.$navigate('/profile/me');
-            be.err.equal(DozRouter.$currentPath, 'profile/me');
+            be.err.equal(DozRouter.$_currentPath, 'profile/me');
         });
 
         it('should be "/search/?t=hello"', function () {
             DozRouter.$navigate('/search/?a=hello&b=world');
-            be.err.equal(DozRouter.$query.a, 'hello');
-            be.err.equal(DozRouter.$query.b, 'world');
+            be.err.equal(DozRouter.$_query.a, 'hello');
+            be.err.equal(DozRouter.$_query.b, 'world');
         });
 
         it('should be "/user/:id"', function () {
             DozRouter.$navigate('/user/10');
-            be.err.equal(DozRouter.$param.id, '10');
+            be.err.equal(DozRouter.$_param.id, '10');
         });
 
         it('should be pass id as param', function () {
             DozRouter.$navigate('/user/', {id: 10});
-            be.err.equal(DozRouter.$param.id, 10);
+            be.err.equal(DozRouter.$_param.id, 10);
         });
 
         it('should be "/news/:id/:cat/title/"', function () {
             DozRouter.$navigate('/news/25/green/title/');
-            be.err.equal(DozRouter.$currentPath, 'news/25/green/title');
+            be.err.equal(DozRouter.$_currentPath, 'news/25/green/title');
         });
 
         it('should be "/not-found"', function () {
             DozRouter.$navigate('/not-found');
-            be.err.equal(DozRouter.$currentPath, null);
+            be.err.equal(DozRouter.$_currentPath, null);
         });
     });
 });

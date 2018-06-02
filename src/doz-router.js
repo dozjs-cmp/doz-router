@@ -5,8 +5,13 @@ const clearPath = require('./clear-path');
 module.exports = {
     props: {
         hash: '#',
-        classActiveLink: 'nav-link-active',
-        linkAttr: 'nav-link'
+        classActiveLink: 'router-link-active',
+        linkAttr: 'router-link',
+        mode: 'hash',
+        /**
+         * Base root, works only in "history" mode
+         */
+        root: '/'
     },
     autoCreateChildren: false,
 
@@ -33,8 +38,7 @@ module.exports = {
         this.$currentView = this.mount(view);
     },
 
-    $navigate(path) {
-
+    $navigate(path, params) {
         let found = false;
         path = path || window.location.hash.slice(this.props.hash.length);
         let pathPart = path.split('?');
@@ -48,11 +52,16 @@ module.exports = {
 
             if (match) {
                 found = true;
-                let param = this.$paramMap[route.path];
-                this.$query = queryToObject(this.$queryRaw);
-                match.slice(1).forEach((value, i) => {
-                    this.$param[param[i]] = value;
-                });
+
+                if (typeof params === 'object') {
+                    this.$param = Object.assign({}, params);
+                } else {
+                    let param = this.$paramMap[route.path];
+                    this.$query = queryToObject(this.$queryRaw);
+                    match.slice(1).forEach((value, i) => {
+                        this.$param[param[i]] = value;
+                    });
+                }
 
                 this.$currentPath = path;
                 this.$setView(route.view);
@@ -95,11 +104,31 @@ module.exports = {
         }
     },
 
+    $remove(path) {
+        for (let i = 0; i < this.$routes.length; i++) {
+            let route = this.$routes[i];
+            if (route.path === clearPath(path)) {
+                this.$routes.splice(i, 1);
+            }
+        }
+    },
+
     $bindLink() {
+        this.$link = {};
         document.querySelectorAll(`[${this.props.linkAttr}]`).forEach(el => {
             let path = el.pathname || el.href;
+
+            if (this.props.mode === 'history') {
+                el.addEventListener('click', e => {
+                    e.preventDefault();
+                    let _path = path + el.search;
+                    history.pushState(_path, null, this.props.root + _path);
+                    this.$navigate(_path);
+                });
+            } else {
+                el.href = this.props.hash + path + el.search;
+            }
             let pathPart = path.split('?');
-            el.href = this.props.hash + path + el.search;
             path = clearPath(pathPart[0]);
             if (typeof this.$link[path] === 'undefined') {
                 this.$link[path] = [el];
@@ -118,8 +147,10 @@ module.exports = {
         });
 
         this.$bindLink();
-
+        window.addEventListener('popstate', (e) => {
+            this.$navigate(e.state)
+        });
         window.addEventListener('hashchange', () => this.$navigate());
-        window.addEventListener('load', () => this.$navigate());
+        window.addEventListener('DOMContentLoaded', () => this.$navigate());
     }
 };

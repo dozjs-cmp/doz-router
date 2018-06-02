@@ -100,8 +100,9 @@ var clearPath = __webpack_require__(4);
 module.exports = {
     props: {
         hash: '#',
-        classActiveLink: 'nav-link-active',
-        linkAttr: 'nav-link'
+        classActiveLink: 'router-link-active',
+        linkAttr: 'router-link',
+        mode: 'hash'
     },
     autoCreateChildren: false,
 
@@ -192,10 +193,21 @@ module.exports = {
     $bindLink: function $bindLink() {
         var _this3 = this;
 
+        this.$link = {};
         document.querySelectorAll('[' + this.props.linkAttr + ']').forEach(function (el) {
             var path = el.pathname || el.href;
+
+            if (_this3.props.mode === 'history') {
+                el.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var _path = path + el.search;
+                    history.pushState(_path, null, '/' + _path);
+                    _this3.$navigate(_path);
+                });
+            } else {
+                el.href = _this3.props.hash + path + el.search;
+            }
             var pathPart = path.split('?');
-            el.href = _this3.props.hash + path + el.search;
             path = clearPath(pathPart[0]);
             if (typeof _this3.$link[path] === 'undefined') {
                 _this3.$link[path] = [el];
@@ -215,11 +227,13 @@ module.exports = {
         });
 
         this.$bindLink();
-
+        window.addEventListener('popstate', function (e) {
+            _this4.$navigate(e.state);
+        });
         window.addEventListener('hashchange', function () {
             return _this4.$navigate();
         });
-        window.addEventListener('load', function () {
+        window.addEventListener('DOMContentLoaded', function () {
             return _this4.$navigate();
         });
     }

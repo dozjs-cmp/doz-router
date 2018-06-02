@@ -4,12 +4,12 @@ const be = require('bejs');
 // Mock
 const navLink = `
     <nav>
-        <a nav-link href="/">Home</a> |
-        <a id="about" nav-link href="/about">About</a> |
-        <a nav-link href="/profile/me">Profile</a> |
-        <a nav-link href="/search/">Search</a> |
-        <a id="user" nav-link href="/user/10">User</a> |
-        <a nav-link href="/news/20/green/title">Category</a>
+        <a router-link href="/">Home</a> |
+        <a id="about" router-link href="/about">About</a> |
+        <a router-link href="/profile/me">Profile</a> |
+        <a router-link href="/search/">Search</a> |
+        <a id="user" router-link href="/user/10">User</a> |
+        <a router-link href="/news/20/green/title">Category</a>
     </nav>
 `;
 
@@ -25,6 +25,7 @@ DozRouter.rawChildren = [
     '<div-2 d:route="/about/"></div-2>',
     '<div-3 d:route="/profile/me"></div-3>',
     '<div-4 d:route="/search/"></div-4>',
+    '<div-8 d:route="/user/"></div-8>',
     '<div-5 d:route="/user/:id"></div-5>',
     '<div-6 d:route="/news/:id/:cat/title/"></div-6>',
     '<div-7 d:route="*"></div-7>',
@@ -62,10 +63,10 @@ describe('doz-router', function () {
         it('should be ok', function () {
             DozRouter.onAppReady();
             DozRouter.$navigate('/about/');
-            be.err.true(document.getElementById('about').classList.contains('nav-link-active'));
+            be.err.true(document.getElementById('about').classList.contains('router-link-active'));
             DozRouter.$navigate('/user/10');
-            be.err.true(document.getElementById('user').classList.contains('nav-link-active'));
-            be.err.false(document.getElementById('about').classList.contains('nav-link-active'));
+            be.err.true(document.getElementById('user').classList.contains('router-link-active'));
+            be.err.false(document.getElementById('about').classList.contains('router-link-active'));
         });
     });
 
@@ -94,6 +95,11 @@ describe('doz-router', function () {
         it('should be "/user/:id"', function () {
             DozRouter.$navigate('/user/10');
             be.err.equal(DozRouter.$param.id, '10');
+        });
+
+        it('should be pass id as param', function () {
+            DozRouter.$navigate('/user/', {id: 10});
+            be.err.equal(DozRouter.$param.id, 10);
         });
 
         it('should be "/news/:id/:cat/title/"', function () {

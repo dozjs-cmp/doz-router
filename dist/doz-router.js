@@ -208,7 +208,7 @@ module.exports = {
 
         if (!found) {
             this.$_currentPath = null;
-            this.$setView(this.$_routeNotFound);
+            this.$setView(this.$_routeNotFound || '"' + path + '" not found');
         }
 
         this.$activeLink();

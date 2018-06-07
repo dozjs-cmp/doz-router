@@ -327,7 +327,7 @@ module.exports = {
 
 module.exports = {
     REGEX: {
-        ROUTE: /d:route(?:\s+)?=(?:\s+)?"(.*)"/
+        ROUTE: /route(?:\s+)?=(?:\s+)?"(.*)"/
     },
     PATH: {
         NOT_FOUND: '*'

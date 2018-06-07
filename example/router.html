@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <title>Doz - router</title>
     <script src="../node_modules/doz/dist/doz.js?589654888l30"></script>
-    <script src="../dist/doz-router.js?754542608"></script>
+    <script src="../dist/doz-router.js?7545426208"></script>
     <style>
         body {
             font-family: sans-serif;
@@ -121,6 +121,15 @@
         }
     });
 
+    Doz.component('section-page', {
+        template() {
+            let id = this.getComponentById('router').$_param['id'];
+            return `
+                <div>I'm section page index ${id}</div>
+            `
+        }
+    });
+
     Doz.component('not-found-page', {
         template() {
             return `
@@ -141,18 +150,23 @@
                 <a router-link href="/search/?t=hello">Search</a>
                 <a router-link href="/contact">Contact</a>
                 <a router-link href="/not-found-page-bla-bla">Not found</a>
+                <a router-link href="/section/1">Section 1</a>
+                <a router-link href="/section/2">Section 2</a>
+                <a router-link href="/section/3">Section 3</a>
+                <a router-link href="/section/4">Section 4</a>
             </nav>
             <div class="container">
                 <doz-router d:id="router">
-                    <home-page d:route="/"></home-page>
-                    <about-page d:route="/about"></about-page>
-                    <contact-page d:route="/contact"></contact-page>
-                    <extension-page d:route="/profile.html"></extension-page>
-                    <profile-page d:route="/profile/me"></profile-page>
-                    <search-page d:route="/search"></search-page>
-                    <user-page d:route="/user/"></user-page>
-                    <user-details-page d:route="/user/:id"></user-details-page>
-                    <not-found-page d:route="*"></not-found-page>
+                    <home-page route="/"></home-page>
+                    <about-page route="/about"></about-page>
+                    <contact-page route="/contact"></contact-page>
+                    <extension-page route="/profile.html"></extension-page>
+                    <profile-page route="/profile/me"></profile-page>
+                    <search-page route="/search"></search-page>
+                    <user-page route="/user/"></user-page>
+                    <user-details-page route="/user/:id"></user-details-page>
+                    <not-found-page route="*"></not-found-page>
+                    <section-page route="/section/:id" update="render"></section-page>
                 </doz-router>
             </div>
         `

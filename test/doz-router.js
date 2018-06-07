@@ -21,14 +21,14 @@ DozRouter.mount = function () {
 };
 
 DozRouter.rawChildren = [
-    '<div-1 d:route="/"></div-1>',
-    '<div-2 d:route="/about/"></div-2>',
-    '<div-3 d:route="/profile/me"></div-3>',
-    '<div-4 d:route="/search/"></div-4>',
-    '<div-8 d:route="/user/"></div-8>',
-    '<div-5 d:route="/user/:id"></div-5>',
-    '<div-6 d:route="/news/:id/:cat/title/"></div-6>',
-    '<div-7 d:route="*"></div-7>',
+    '<div-1 route="/"></div-1>',
+    '<div-2 route="/about/"></div-2>',
+    '<div-3 route="/profile/me"></div-3>',
+    '<div-4 route="/search/"></div-4>',
+    '<div-8 route="/user/"></div-8>',
+    '<div-5 route="/user/:id"></div-5>',
+    '<div-6 route="/news/:id/:cat/title/"></div-6>',
+    '<div-7 route="*"></div-7>',
 ];
 
 describe('doz-router', function () {

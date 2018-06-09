@@ -17,6 +17,7 @@ module.exports = {
 
     //custom properties
     $_currentView: null,
+    $_currentViewRaw: '',
     $_currentPath: null,
     $_routes: [],
     $_paramMap: {},
@@ -39,10 +40,24 @@ module.exports = {
     /**
      * Set current view
      * @param view {string} component string
+     * @param [cb] {string} callback function name
+     * @param [preserve] {boolean} preserve view
      */
-    $setView(view) {
-        this.$removeView();
-        this.$_currentView = this.mount(view);
+    $setView(view, cb, preserve) {
+        const sameView = this.$_currentViewRaw === view;
+        if(cb && sameView) {
+            let childCmp = this.$_currentView.children[0];
+            let cbFunc = childCmp[cb];
+            if (typeof cbFunc === 'function') {
+                cbFunc.call(childCmp, this);
+            }
+        } else if (preserve && sameView) {
+            this.$_currentView.children[0].render();
+        } else {
+            this.$removeView();
+            this.$_currentView = this.mount(view);
+        }
+        this.$_currentViewRaw = view;
     },
 
     /**
@@ -95,7 +110,7 @@ module.exports = {
                 }
 
                 this.$_currentPath = path;
-                this.$setView(route.view);
+                this.$setView(route.view, route.cb, route.preserve);
 
                 break;
             }
@@ -141,7 +156,15 @@ module.exports = {
                 return '([\\w-]+)';
             });
             this.$_paramMap[path] = param;
-            this.$_routes.push({path, view});
+
+            let cbChange = view.match(REGEX.CHANGE);
+            if (cbChange) {
+                cbChange = cbChange[1]
+            }
+
+            const preserve = REGEX.IS_PRESERVE.test(view);
+
+            this.$_routes.push({path, view, cb: cbChange, preserve});
         }
     },
 
@@ -195,10 +218,13 @@ module.exports = {
         });
 
         this.$bindLink();
-        window.addEventListener('popstate', (e) => {
-            this.$navigate(e.state)
-        });
-        window.addEventListener('hashchange', () => this.$navigate());
+        if(this.props.mode === 'history') {
+            window.addEventListener('popstate', (e) => {
+                this.$navigate(e.state)
+            });
+        } else {
+            window.addEventListener('hashchange', () => this.$navigate());
+        }
         window.addEventListener('DOMContentLoaded', () => this.$navigate());
     }
 };

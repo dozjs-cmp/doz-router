@@ -114,6 +114,7 @@ module.exports = {
 
     //custom properties
     $_currentView: null,
+    $_currentViewRaw: '',
     $_currentPath: null,
     $_routes: [],
     $_paramMap: {},
@@ -137,10 +138,24 @@ module.exports = {
     /**
      * Set current view
      * @param view {string} component string
+     * @param [cb] {string} callback function name
+     * @param [preserve] {boolean} preserve view
      */
-    $setView: function $setView(view) {
-        this.$removeView();
-        this.$_currentView = this.mount(view);
+    $setView: function $setView(view, cb, preserve) {
+        var sameView = this.$_currentViewRaw === view;
+        if (cb && sameView) {
+            var childCmp = this.$_currentView.children[0];
+            var cbFunc = childCmp[cb];
+            if (typeof cbFunc === 'function') {
+                cbFunc.call(childCmp, this);
+            }
+        } else if (preserve && sameView) {
+            this.$_currentView.children[0].render();
+        } else {
+            this.$removeView();
+            this.$_currentView = this.mount(view);
+        }
+        this.$_currentViewRaw = view;
     },
 
 
@@ -200,7 +215,7 @@ module.exports = {
                 }
 
                 this.$_currentPath = path;
-                this.$setView(route.view);
+                this.$setView(route.view, route.cb, route.preserve);
 
                 break;
             }
@@ -247,7 +262,15 @@ module.exports = {
                 return '([\\w-]+)';
             });
             this.$_paramMap[path] = param;
-            this.$_routes.push({ path: path, view: view });
+
+            var cbChange = view.match(REGEX.CHANGE);
+            if (cbChange) {
+                cbChange = cbChange[1];
+            }
+
+            var preserve = REGEX.IS_PRESERVE.test(view);
+
+            this.$_routes.push({ path: path, view: view, cb: cbChange, preserve: preserve });
         }
     },
 
@@ -306,12 +329,15 @@ module.exports = {
         });
 
         this.$bindLink();
-        window.addEventListener('popstate', function (e) {
-            _this4.$navigate(e.state);
-        });
-        window.addEventListener('hashchange', function () {
-            return _this4.$navigate();
-        });
+        if (this.props.mode === 'history') {
+            window.addEventListener('popstate', function (e) {
+                _this4.$navigate(e.state);
+            });
+        } else {
+            window.addEventListener('hashchange', function () {
+                return _this4.$navigate();
+            });
+        }
         window.addEventListener('DOMContentLoaded', function () {
             return _this4.$navigate();
         });
@@ -327,7 +353,9 @@ module.exports = {
 
 module.exports = {
     REGEX: {
-        ROUTE: /route(?:\s+)?=(?:\s+)?"(.*)"/
+        ROUTE: /route(?:\s+)?=(?:\s+)?"(.*)"/,
+        CHANGE: /route-change(?:\s+)?=(?:\s+)?"(.*?)"/,
+        IS_PRESERVE: /\spreserve[>\s=]/
     },
     PATH: {
         NOT_FOUND: '*'

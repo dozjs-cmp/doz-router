@@ -56,6 +56,12 @@
             return `
                 <div>I'm home page</div>
             `
+        },
+        onCreate() {
+            console.log(this.tag, 'created')
+        },
+        onDestroy() {
+            console.log(this.tag, 'destroyed')
         }
     });
 
@@ -64,6 +70,12 @@
             return `
                 <div>I'm about page</div>
             `
+        },
+        onCreate() {
+            console.log(this.tag, 'created')
+        },
+        onDestroy() {
+            console.log(this.tag, 'destroyed')
         }
     });
 
@@ -72,6 +84,12 @@
             return `
                 <div>I'm .html page</div>
             `
+        },
+        onCreate() {
+            console.log(this.tag, 'created')
+        },
+        onDestroy() {
+            console.log(this.tag, 'destroyed')
         }
     });
 
@@ -80,6 +98,12 @@
             return `
                 <div>I'm contact page</div>
             `
+        },
+        onCreate() {
+            console.log(this.tag, 'created')
+        },
+        onDestroy() {
+            console.log(this.tag, 'destroyed')
         }
     });
 
@@ -88,6 +112,12 @@
             return `
                 <div>I'm profile me page</div>
             `
+        },
+        onCreate() {
+            console.log(this.tag, 'created')
+        },
+        onDestroy() {
+            console.log(this.tag, 'destroyed')
         }
     });
 
@@ -99,6 +129,10 @@
         },
         onCreate() {
             this.props.id = this.getComponentById('router').$_param['id'];
+            console.log(this.tag, 'created')
+        },
+        onDestroy() {
+            console.log(this.tag, 'destroyed')
         }
     });
 
@@ -110,6 +144,10 @@
         },
         onCreate() {
             this.props.query = this.getComponentById('router').$_query['t'];
+            console.log(this.tag, 'created')
+        },
+        onDestroy() {
+            console.log(this.tag, 'destroyed')
         }
     });
 
@@ -118,6 +156,12 @@
             return `
                 <div>I'm user page index, <a href="#/user/10">show id 10</a></div>
             `
+        },
+        onCreate() {
+            console.log(this.tag, 'created')
+        },
+        onDestroy() {
+            console.log(this.tag, 'destroyed')
         }
     });
 
@@ -127,6 +171,12 @@
             return `
                 <div>I'm section page index ${id}</div>
             `
+        },
+        onCreate() {
+            console.log(this.tag, 'created')
+        },
+        onDestroy() {
+            console.log(this.tag, 'destroyed')
         }
     });
 
@@ -135,6 +185,12 @@
             return `
                 <div>404 page not found</div>
             `
+        },
+        onCreate() {
+            console.log(this.tag, 'created')
+        },
+        onDestroy() {
+            console.log(this.tag, 'destroyed')
         }
     });
 
@@ -166,7 +222,7 @@
                     <user-page route="/user/"></user-page>
                     <user-details-page route="/user/:id"></user-details-page>
                     <not-found-page route="*"></not-found-page>
-                    <section-page route="/section/:id" update="render"></section-page>
+                    <section-page route="/section/:id" preserve></section-page>
                 </doz-router>
             </div>
         `

@@ -45,7 +45,7 @@ module.exports = {
      */
     $setView(view, cb, preserve) {
         const sameView = this.$_currentViewRaw === view;
-        if(cb && sameView) {
+        if (cb && sameView) {
             let childCmp = this.$_currentView.children[0];
             let cbFunc = childCmp[cb];
             if (typeof cbFunc === 'function') {
@@ -131,8 +131,13 @@ module.exports = {
      */
     $activeLink() {
         Object.keys(this.$_link).forEach(link => {
+            const checkAlsoQuery = Boolean(this.$_link[link].length > 1 && this.$_queryRaw);
+
             this.$_link[link].forEach(el => {
-                if (link === this.$_currentPath)
+                let queryEq = true;
+                if (checkAlsoQuery)
+                    queryEq = new RegExp(`${this.$_queryRaw}$`, 'g').test(el.href);
+                if (link === this.$_currentPath && queryEq)
                     el.classList.add(this.props.classActiveLink);
                 else
                     el.classList.remove(this.props.classActiveLink);
@@ -218,7 +223,7 @@ module.exports = {
         });
 
         this.$bindLink();
-        if(this.props.mode === 'history') {
+        if (this.props.mode === 'history') {
             window.addEventListener('popstate', (e) => {
                 this.$navigate(e.state)
             });

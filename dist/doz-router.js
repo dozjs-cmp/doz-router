@@ -239,8 +239,14 @@ module.exports = {
         var _this2 = this;
 
         Object.keys(this.$_link).forEach(function (link) {
+            //console.log(/*this.$_link,*/ this.$_queryRaw);
+
+            var checkAlsoQuery = Boolean(_this2.$_link[link].length > 1 && _this2.$_queryRaw);
+
             _this2.$_link[link].forEach(function (el) {
-                if (link === _this2.$_currentPath) el.classList.add(_this2.props.classActiveLink);else el.classList.remove(_this2.props.classActiveLink);
+                var queryEq = true;
+                if (checkAlsoQuery) queryEq = new RegExp(_this2.$_queryRaw + '$', 'g').test(el.href);
+                if (link === _this2.$_currentPath && queryEq) el.classList.add(_this2.props.classActiveLink);else el.classList.remove(_this2.props.classActiveLink);
             });
         });
     },

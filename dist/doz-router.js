@@ -1,4 +1,4 @@
-// [DOZ-ROUTER]  Build version: 0.1.0  
+// [DOZ-ROUTER]  Build version: 0.1.1  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -239,8 +239,6 @@ module.exports = {
         var _this2 = this;
 
         Object.keys(this.$_link).forEach(function (link) {
-            //console.log(/*this.$_link,*/ this.$_queryRaw);
-
             var checkAlsoQuery = Boolean(_this2.$_link[link].length > 1 && _this2.$_queryRaw);
 
             _this2.$_link[link].forEach(function (el) {

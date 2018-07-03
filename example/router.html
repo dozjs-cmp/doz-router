@@ -198,6 +198,22 @@
         }
     });
 
+    Doz.component('navigate-buttons', {
+        template() {
+            return `
+                <div style="color: #fff; margin: 20px">Navigate by "$navigate" method</div>
+                <div>
+                    <button onclick="this.$router('/about')">About</button>
+                    <button onclick="this.$router('/profile/me')">Profile</button>
+                    <button onclick="this.$router('/search/?t=hello')">Search hello</button>
+                </div>
+            `
+        },
+        $router(path){
+            this.getComponentById('router').$navigate(path);
+        }
+    });
+
     new Doz({
         root: '#app',
         template: `
@@ -216,6 +232,7 @@
                 <a router-link href="/section/3">Section 3</a>
                 <a router-link href="/section/4">Section 4</a>
             </nav>
+            <navigate-buttons></navigate-buttons>
             <div class="container">
                 <doz-router d:id="router">
                     <home-page route="/"></home-page>

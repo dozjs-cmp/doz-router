@@ -26,6 +26,7 @@ module.exports = {
     $_query: {},
     $_queryRaw: '',
     $_link: {},
+    $_pauseHashListener: false,
 
     /**
      * Remove current view
@@ -77,7 +78,6 @@ module.exports = {
     $param(property) {
         return this.$_param[property];
     },
-
     /**
      * Navigate route
      * @param path {string} path to navigate
@@ -85,10 +85,35 @@ module.exports = {
      * @returns {boolean}
      */
     $navigate(path, params) {
+        if (this.props.mode === 'history') {
+            history.pushState(path, null, this.props.root + path);
+            this.$_navigate(path, params);
+        } else {
+            this.$_pauseHashListener = true;
+            window.location.href = this.props.hash + path;
+            this.$_navigate(path, params);
+            this.$_pauseHashListener = false;
+        }
+    },
+
+    /**
+     * Navigate route
+     * @param path {string} path to navigate
+     * @param [params] {object} optional params
+     * @returns {boolean}
+     * @private
+     * @ignore
+     */
+    $_navigate(path, params) {
         let found = false;
         path = path || window.location.hash.slice(this.props.hash.length);
+
         let pathPart = path.split('?');
         path = clearPath(pathPart[0]);
+
+        if (this.$_currentPath === path)
+            return false;
+
         this.$_queryRaw = pathPart[1] || '';
 
         for (let i = 0; i < this.$_routes.length; i++) {
@@ -199,7 +224,7 @@ module.exports = {
                     e.preventDefault();
                     let _path = path + el.search;
                     history.pushState(_path, null, this.props.root + _path);
-                    this.$navigate(_path);
+                    this.$_navigate(_path);
                 });
             } else {
                 el.href = this.props.hash + path + el.search;
@@ -225,11 +250,14 @@ module.exports = {
         this.$bindLink();
         if (this.props.mode === 'history') {
             window.addEventListener('popstate', (e) => {
-                this.$navigate(e.state)
+                this.$_navigate(e.state)
             });
         } else {
-            window.addEventListener('hashchange', () => this.$navigate());
+            window.addEventListener('hashchange', () => {
+                if (!this.$_pauseHashListener)
+                    this.$_navigate()
+            });
         }
-        window.addEventListener('DOMContentLoaded', () => this.$navigate());
+        window.addEventListener('DOMContentLoaded', () => this.$_navigate());
     }
 };

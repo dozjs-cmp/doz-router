@@ -11,7 +11,9 @@
         "release:publish": "echo git commit -a -m BUILD && version-to-tag.sh && npm publish",
         "watch": "webpack --watch --progress --debug",
         "build": "webpack --progress",
-        "test": "mocha test"
+        "test": "mocha test",
+        "test-hmr-watch": "parcel watch test/HMR/index.js --out-file bundle --no-cache --out-dir test/HMR/public/dist",
+        "test-hmr-build": "parcel build test/HMR/index.js --out-file bundle --no-cache --out-dir test/HMR/public/dist --public-url ./"
     },
     "keywords": [
         "doz",
@@ -34,11 +36,12 @@
         "babel-preset-env": "^1.6.1",
         "bejs": "^2.0.1",
         "chai": "^4.1.2",
-        "doz": "^1.0.0",
+        "doz": "^1.4.2",
         "jsdoc-to-markdown": "^4.0.1",
         "jsdom": "^11.6.2",
         "jsdom-global": "^3.0.2",
         "mocha": "^5.0.4",
+        "parcel-bundler": "^1.9.4",
         "unminified-webpack-plugin": "^1.4.2",
         "webpack": "^3.10.0",
         "webpack-auto-inject-version": "^1.0.0"

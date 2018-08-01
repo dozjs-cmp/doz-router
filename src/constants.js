@@ -6,5 +6,10 @@ module.exports = {
     },
     PATH: {
         NOT_FOUND: '*'
+    },
+    NS: {
+        hashchange: '___doz_router___hashchangeListener',
+        popstate: '___doz_router___popstateListener',
+        DOMContentLoaded: '___doz_router___DOMContentLoadedListener',
     }
 };

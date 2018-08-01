@@ -1,4 +1,4 @@
-const {REGEX, PATH} = require('./constants');
+const {REGEX, PATH, NS} = require('./constants');
 const queryToObject = require('./query-to-object');
 const clearPath = require('./clear-path');
 
@@ -241,16 +241,19 @@ module.exports = {
 
     onAppReady() {
 
-        const popstateListener = e => {
+        window.removeEventListener('popstate', window[NS.popstate]);
+        window[NS.popstate] = e => {
             this.$_navigate(e.state)
         };
 
-        const hashchangeListener = () => {
+        window.removeEventListener('hashchange', window[NS.hashchange]);
+        window[NS.hashchange] = () => {
             if (!this.$_pauseHashListener)
                 this.$_navigate()
         };
 
-        const DOMContentLoadedListener = () => {
+        window.removeEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
+        window[NS.DOMContentLoaded] = () => {
             this.$_navigate()
         };
 
@@ -264,11 +267,11 @@ module.exports = {
         this.$bindLink();
 
         if (this.props.mode === 'history') {
-            window.addEventListener('popstate', popstateListener);
+            window.addEventListener('popstate', window[NS.popstate]);
         } else {
-            window.addEventListener('hashchange', hashchangeListener, true);
+            window.addEventListener('hashchange', window[NS.hashchange]);
         }
-        window.addEventListener('DOMContentLoaded', DOMContentLoadedListener);
+        window.addEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
 
     },
 

@@ -1,4 +1,4 @@
-// [DOZ-ROUTER]  Build version: 0.1.2  
+// [DOZ-ROUTER]  Build version: 0.1.3  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -94,7 +94,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _require = __webpack_require__(2),
     REGEX = _require.REGEX,
-    PATH = _require.PATH;
+    PATH = _require.PATH,
+    NS = _require.NS;
 
 var queryToObject = __webpack_require__(3);
 var clearPath = __webpack_require__(4);
@@ -350,6 +351,21 @@ module.exports = {
     onAppReady: function onAppReady() {
         var _this4 = this;
 
+        window.removeEventListener('popstate', window[NS.popstate]);
+        window[NS.popstate] = function (e) {
+            _this4.$_navigate(e.state);
+        };
+
+        window.removeEventListener('hashchange', window[NS.hashchange]);
+        window[NS.hashchange] = function () {
+            if (!_this4.$_pauseHashListener) _this4.$_navigate();
+        };
+
+        window.removeEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
+        window[NS.DOMContentLoaded] = function () {
+            _this4.$_navigate();
+        };
+
         this.rawChildren.forEach(function (view) {
             var route = view.match(REGEX.ROUTE);
             if (route) {
@@ -358,18 +374,16 @@ module.exports = {
         });
 
         this.$bindLink();
+
         if (this.props.mode === 'history') {
-            window.addEventListener('popstate', function (e) {
-                _this4.$_navigate(e.state);
-            });
+            window.addEventListener('popstate', window[NS.popstate]);
         } else {
-            window.addEventListener('hashchange', function () {
-                if (!_this4.$_pauseHashListener) _this4.$_navigate();
-            });
+            window.addEventListener('hashchange', window[NS.hashchange]);
         }
-        window.addEventListener('DOMContentLoaded', function () {
-            return _this4.$_navigate();
-        });
+        window.addEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
+    },
+    onMountAsync: function onMountAsync() {
+        this.$_navigate();
     }
 };
 
@@ -388,6 +402,11 @@ module.exports = {
     },
     PATH: {
         NOT_FOUND: '*'
+    },
+    NS: {
+        hashchange: '___doz_router___hashchangeListener',
+        popstate: '___doz_router___popstateListener',
+        DOMContentLoaded: '___doz_router___DOMContentLoadedListener'
     }
 };
 

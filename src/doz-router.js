@@ -240,6 +240,20 @@ module.exports = {
     },
 
     onAppReady() {
+
+        const popstateListener = e => {
+            this.$_navigate(e.state)
+        };
+
+        const hashchangeListener = () => {
+            if (!this.$_pauseHashListener)
+                this.$_navigate()
+        };
+
+        const DOMContentLoadedListener = () => {
+            this.$_navigate()
+        };
+
         this.rawChildren.forEach(view => {
             const route = view.match(REGEX.ROUTE);
             if (route) {
@@ -248,16 +262,17 @@ module.exports = {
         });
 
         this.$bindLink();
+
         if (this.props.mode === 'history') {
-            window.addEventListener('popstate', (e) => {
-                this.$_navigate(e.state)
-            });
+            window.addEventListener('popstate', popstateListener);
         } else {
-            window.addEventListener('hashchange', () => {
-                if (!this.$_pauseHashListener)
-                    this.$_navigate()
-            });
+            window.addEventListener('hashchange', hashchangeListener, true);
         }
-        window.addEventListener('DOMContentLoaded', () => this.$_navigate());
+        window.addEventListener('DOMContentLoaded', DOMContentLoadedListener);
+
+    },
+
+    onMountAsync() {
+        this.$_navigate()
     }
 };

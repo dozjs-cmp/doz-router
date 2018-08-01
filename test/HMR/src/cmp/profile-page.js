@@ -3,7 +3,7 @@ import {component} from 'doz'
 component('profile-page', {
     template() {
         return `
-                <div>I'm profile me page 2</div>
+                <div>I'm profile me page</div>
             `
     },
     onCreate() {

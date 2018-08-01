@@ -1,5 +1,5 @@
 import {component} from 'doz'
-import DozRouter from '../../../'
+import DozRouter from '../../../index'
 import './cmp/about-page'
 import './cmp/contact-page'
 import './cmp/extension-page'
@@ -50,9 +50,3 @@ component('app-ui', {
         `
     }
 });
-
-if (module.hot) {
-    module.hot.dispose(function () {
-
-    })
-}

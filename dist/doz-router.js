@@ -1,4 +1,4 @@
-// [DOZ-ROUTER]  Build version: 0.1.3  
+// [DOZ-ROUTER]  Build version: 0.1.4  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -99,6 +99,7 @@ var _require = __webpack_require__(2),
 
 var queryToObject = __webpack_require__(3);
 var clearPath = __webpack_require__(4);
+var normalizePath = __webpack_require__(5);
 
 module.exports = {
     props: {
@@ -111,20 +112,25 @@ module.exports = {
          */
         root: '/'
     },
+
     autoCreateChildren: false,
 
-    //custom properties
-    $_currentView: null,
-    $_currentViewRaw: '',
-    $_currentPath: null,
-    $_routes: [],
-    $_paramMap: {},
-    $_param: {},
-    $_routeNotFound: '',
-    $_query: {},
-    $_queryRaw: '',
-    $_link: {},
-    $_pauseHashListener: false,
+    onCreate: function onCreate() {
+        //custom properties
+        this.$_currentView = null;
+        this.$_currentViewRaw = '';
+        this.$_currentFullPath = null;
+        this.$_currentPath = null;
+        this.$_routes = [];
+        this.$_paramMap = {};
+        this.$_param = {};
+        this.$_routeNotFound = '';
+        this.$_query = {};
+        this.$_queryRaw = '';
+        this.$_link = {};
+        this.$_pauseHashListener = false;
+    },
+
 
     /**
      * Remove current view
@@ -184,11 +190,10 @@ module.exports = {
      * Navigate route
      * @param path {string} path to navigate
      * @param [params] {object} optional params
-     * @returns {boolean}
      */
     $navigate: function $navigate(path, params) {
         if (this.props.mode === 'history') {
-            history.pushState(path, null, this.props.root + path);
+            history.pushState(path, null, normalizePath(this.props.root + path));
             this.$_navigate(path, params);
         } else {
             this.$_pauseHashListener = true;
@@ -211,12 +216,20 @@ module.exports = {
         var _this = this;
 
         var found = false;
-        path = path || window.location.hash.slice(this.props.hash.length);
+        var hashPath = window.location.hash.slice(this.props.hash.length);
+        var historyPath = window.location.pathname + window.location.search;
+        var fullPath = void 0;
+
+        path = path || hashPath;
+
+        if (this.props.mode === 'history') path = historyPath;
+
+        fullPath = path;
 
         var pathPart = path.split('?');
         path = clearPath(pathPart[0]);
 
-        if (this.$_currentPath === path) return false;
+        if (this.$_currentFullPath === fullPath) return false;
 
         this.$_queryRaw = pathPart[1] || '';
 
@@ -241,6 +254,7 @@ module.exports = {
                 }
 
                 this.$_currentPath = path;
+                this.$_currentFullPath = fullPath;
                 this.$setView(route.view, route.cb, route.preserve);
 
                 break;
@@ -249,6 +263,7 @@ module.exports = {
 
         if (!found) {
             this.$_currentPath = null;
+            this.$_currentFullPath = null;
             this.$setView(this.$_routeNotFound || '"' + path + '" not found');
         }
 
@@ -333,7 +348,7 @@ module.exports = {
                 el.addEventListener('click', function (e) {
                     e.preventDefault();
                     var _path = path + el.search;
-                    history.pushState(_path, null, _this3.props.root + _path);
+                    history.pushState(_path, null, normalizePath(_this3.props.root + _path));
                     _this3.$_navigate(_path);
                 });
             } else {
@@ -432,6 +447,17 @@ module.exports = function (query) {
 
 module.exports = function (path) {
     return path.toString().replace(/\/+$/, '').replace(/^\//, '');
+};
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = function (path) {
+    return path.replace(/\/{2,}/g, '/');
 };
 
 /***/ })

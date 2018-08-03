@@ -7,6 +7,8 @@ const app = new Koa();
 const router = new Router();
 const fs = require('fs');
 
+process.chdir('test/server-history');
+
 router.get('*', ctx => {
     ctx.body = fs.readFileSync('./public/index.html').toString();
 });

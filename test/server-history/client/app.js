@@ -106,7 +106,7 @@ Doz.component('search-page', {
 Doz.component('user-page', {
     template() {
         return `
-                <div>I'm user page index, <a href="#/user/10">show id 10</a></div>
+                <div>I'm user page index, <a href="/user/10">show id 10</a></div>
             `
     },
     onCreate() {

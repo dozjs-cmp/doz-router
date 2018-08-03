@@ -37,6 +37,7 @@ describe('doz-router', function () {
 
     before(function () {
         this.jsdom = require('jsdom-global')();
+        DozRouter.onCreate();
         DozRouter.onAppReady();
     });
 

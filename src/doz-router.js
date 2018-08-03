@@ -1,6 +1,7 @@
 const {REGEX, PATH, NS} = require('./constants');
 const queryToObject = require('./query-to-object');
 const clearPath = require('./clear-path');
+const normalizePath = require('./normalize-path');
 
 module.exports = {
     props: {
@@ -13,20 +14,24 @@ module.exports = {
          */
         root: '/'
     },
+
     autoCreateChildren: false,
 
-    //custom properties
-    $_currentView: null,
-    $_currentViewRaw: '',
-    $_currentPath: null,
-    $_routes: [],
-    $_paramMap: {},
-    $_param: {},
-    $_routeNotFound: '',
-    $_query: {},
-    $_queryRaw: '',
-    $_link: {},
-    $_pauseHashListener: false,
+    onCreate() {
+        //custom properties
+        this.$_currentView = null;
+        this.$_currentViewRaw = '';
+        this.$_currentFullPath =  null;
+        this.$_currentPath =  null;
+        this.$_routes = [];
+        this.$_paramMap = {};
+        this.$_param = {};
+        this.$_routeNotFound = '';
+        this.$_query = {};
+        this.$_queryRaw = '';
+        this.$_link = {};
+        this.$_pauseHashListener = false;
+    },
 
     /**
      * Remove current view
@@ -82,11 +87,10 @@ module.exports = {
      * Navigate route
      * @param path {string} path to navigate
      * @param [params] {object} optional params
-     * @returns {boolean}
      */
     $navigate(path, params) {
         if (this.props.mode === 'history') {
-            history.pushState(path, null, this.props.root + path);
+            history.pushState(path, null, normalizePath(this.props.root + path));
             this.$_navigate(path, params);
         } else {
             this.$_pauseHashListener = true;
@@ -106,12 +110,21 @@ module.exports = {
      */
     $_navigate(path, params) {
         let found = false;
-        path = path || window.location.hash.slice(this.props.hash.length);
+        let hashPath = window.location.hash.slice(this.props.hash.length);
+        let historyPath = window.location.pathname + window.location.search;
+        let fullPath;
+
+        path = path || hashPath;
+
+        if (this.props.mode === 'history')
+            path = historyPath;
+
+        fullPath =  path;
 
         let pathPart = path.split('?');
         path = clearPath(pathPart[0]);
 
-        if (this.$_currentPath === path)
+        if (this.$_currentFullPath === fullPath)
             return false;
 
         this.$_queryRaw = pathPart[1] || '';
@@ -135,6 +148,7 @@ module.exports = {
                 }
 
                 this.$_currentPath = path;
+                this.$_currentFullPath = fullPath;
                 this.$setView(route.view, route.cb, route.preserve);
 
                 break;
@@ -143,6 +157,7 @@ module.exports = {
 
         if (!found) {
             this.$_currentPath = null;
+            this.$_currentFullPath = null;
             this.$setView(this.$_routeNotFound || `"${path}" not found`);
         }
 
@@ -223,7 +238,7 @@ module.exports = {
                 el.addEventListener('click', e => {
                     e.preventDefault();
                     let _path = path + el.search;
-                    history.pushState(_path, null, this.props.root + _path);
+                    history.pushState(_path, null, normalizePath(this.props.root + _path));
                     this.$_navigate(_path);
                 });
             } else {

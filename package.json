@@ -15,7 +15,8 @@
         "test-hmr-watch": "parcel watch test/HMR/index.js --out-file bundle --no-cache --out-dir test/HMR/public/dist",
         "test-hmr-build": "parcel build test/HMR/index.js --out-file bundle --no-cache --out-dir test/HMR/public/dist --public-url ./",
         "test-history-watch": "parcel watch test/server-history/client/app.js --out-file bundle --no-cache --out-dir test/server-history/public/dist",
-        "test-history-build": "parcel build test/server-history/client/app.js --out-file bundle --no-cache --out-dir test/server-history/public/dist --public-url ./"
+        "test-history-build": "parcel build test/server-history/client/app.js --out-file bundle --no-cache --out-dir test/server-history/public/dist --public-url ./",
+        "test-history-start-server": "node test/server-history/index.js"
     },
     "keywords": [
         "doz",

@@ -3,7 +3,7 @@ const queryToObject = require('./query-to-object');
 const clearPath = require('./clear-path');
 const normalizePath = require('./normalize-path');
 
-module.exports = {
+export default {
     props: {
         hash: '#',
         classActiveLink: 'router-link-active',

@@ -1,5 +1,5 @@
-const DozRouter = require('../src/doz-router');
-const be = require('bejs');
+import DozRouter from '../src'
+import be from 'bejs'
 
 // Mock
 const navLink = `
@@ -32,8 +32,6 @@ DozRouter.rawChildren = [
 ];
 
 describe('doz-router', function () {
-
-    this.timeout(5000);
 
     before(function () {
         this.jsdom = require('jsdom-global')();

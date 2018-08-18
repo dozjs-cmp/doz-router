@@ -182,6 +182,21 @@
         }
     });
 
+    Doz.component('wild-page', {
+        template() {
+            let currentPath = this.getComponentById('router').$currentPath();
+            return `
+                <div>I'm wild page: ${currentPath}</div>
+            `
+        },
+        onCreate() {
+            console.log(this.tag, 'created')
+        },
+        onDestroy() {
+            console.log(this.tag, 'destroyed')
+        }
+    });
+
     Doz.component('not-found-page', {
         template() {
             return `
@@ -196,7 +211,7 @@
         }
     });
 
-    Doz.component('navigate-buttons', {
+    Doz.component('other-buttons', {
         template() {
             return `
                 <div style="color: #fff; margin: 20px">Navigate by "$navigate" method</div>
@@ -205,10 +220,17 @@
                     <button onclick="this.$router('/profile/me')">Profile</button>
                     <button onclick="this.$router('/search/?t=hello')">Search hello</button>
                 </div>
+                <div style="color: #fff; margin: 20px">Path</div>
+                <div>
+                    <button onclick="alert(this.$currentPath())">Get current path</button>
+                </div>
             `
         },
         $router(path){
             this.getComponentById('router').$navigate(path);
+        },
+        $currentPath(full){
+            return this.getComponentById('router').$currentPath(full);
         }
     });
 
@@ -229,8 +251,10 @@
                 <a router-link href="/section/2">Section 2</a>
                 <a router-link href="/section/3">Section 3</a>
                 <a router-link href="/section/4">Section 4</a>
+                <a router-link href="/wild/">Wild card *</a>
+                <a router-link href="/wild/sub-path">Wild card sub-path</a>
             </nav>
-            <navigate-buttons></navigate-buttons>
+            <other-buttons></other-buttons>
             <div class="container">
                 <doz-router d:id="router">
                     <home-page route="/"></home-page>
@@ -243,6 +267,7 @@
                     <user-details-page route="/user/:id"></user-details-page>
                     <not-found-page route="*"></not-found-page>
                     <section-page route="/section/:id" preserve></section-page>
+                    <wild-page route="/wild/*" preserve></wild-page>
                 </doz-router>
             </div>
         `

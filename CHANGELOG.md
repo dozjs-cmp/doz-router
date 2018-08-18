@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.0] - 2018-08-18
+- **Added** wild cards support
+- **Added** `$currentPath` method
+
 ## [0.1.4] - 2018-08-03
 - **Fixed** HTML5 api issue
 - **Improvement** documentation

@@ -101,6 +101,17 @@ export default {
     },
 
     /**
+     * Returns current path
+     * @param full {boolean}
+     * @returns {*}
+     */
+    $currentPath(full = true) {
+        return full
+            ? this.$_currentFullPath
+            : this.$_currentPath
+    },
+
+    /**
      * Navigate route
      * @param path {string} path to navigate
      * @param [params] {object} optional params
@@ -133,6 +144,9 @@ export default {
             let route = this.$_routes[i];
             let re = new RegExp('^' + route.path + '$');
             let match = path.match(re);
+
+            //console.log('PATH', path);
+            //console.log('REGEX', route.path);
 
             if (match) {
                 found = true;
@@ -200,6 +214,9 @@ export default {
                 param.push(capture);
                 return '([\\w-]+)';
             });
+
+            // Wild card
+            path = path.replace(/\/\*/g, '(?:/.*)?');
             this.$_paramMap[path] = param;
 
             let cbChange = view.match(REGEX.CHANGE);

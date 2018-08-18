@@ -1,6 +1,8 @@
 # doz-router
 Routing for DOZ framework
 
+Live <a href="https://dozjs-cmp.github.io/doz-router/dist/index.html">here</a>
+
 ## Install
 ```
 npm install --save doz-router
@@ -104,6 +106,21 @@ new Doz({
 
 ```
 
+## Wild cards
+
+```javascript
+
+new Doz({
+    root: '#app',
+    template: `
+        <doz-router>
+            <docs-page route="/docs/*"></docs-page>
+        </doz-router>
+    `
+});
+
+```
+
 ## Props
 | Name | Default | Description |
 | ---- | ------- | ----------- |
@@ -127,6 +144,9 @@ new Doz({
 ```javascript
 this.getCmp('my-router-id').$navigate('/about');
 ```
+
+### $currentPath
+Returns current path. (since 1.0.0)
 
 ### $param
 

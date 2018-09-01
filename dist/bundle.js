@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.0.0  
+// [DozRouter]  Build version: 1.1.0  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -75,7 +75,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "4b482e13d122e8b99cf0";
+/******/ 	var hotCurrentHash = "93faea031111d74e34f5";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -919,6 +919,7 @@ exports.default = {
      * @param [preserve] {boolean} preserve view
      */
     $setView: function $setView(view, cb, preserve) {
+
         var sameView = this.$_currentViewRaw === view;
         if (cb && sameView) {
             var childCmp = this.$_currentView.children[0];
@@ -1005,6 +1006,8 @@ exports.default = {
 
         if (this.props.mode === 'history') path = historyPath;
 
+        path = window.__DOZ_SSR_PATH__ || path;
+
         fullPath = path;
 
         var pathPart = path.split('?');
@@ -1018,9 +1021,6 @@ exports.default = {
             var route = this.$_routes[i];
             var re = new RegExp('^' + route.path + '$');
             var match = path.match(re);
-
-            //console.log('PATH', path);
-            //console.log('REGEX', route.path);
 
             if (match) {
                 found = true;

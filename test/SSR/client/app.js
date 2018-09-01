@@ -1,8 +1,6 @@
 import Doz from 'doz';
 import DozRouter from '../../../index'
 
-Doz.component('doz-router', DozRouter);
-
 Doz.component('home-page', {
     template() {
         return `

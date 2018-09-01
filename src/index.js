@@ -131,12 +131,8 @@ export default {
         if (this.props.mode === 'history')
             path = historyPath;
 
-        const SSR_PATH = window.__DOZ_SSR_PATH__;
 
-        if(SSR_PATH)
-            path = SSR_PATH;
-
-        console.log('PATH', path);
+        path = window.__DOZ_SSR_PATH__ || path;
 
         fullPath =  path;
 
@@ -152,9 +148,6 @@ export default {
             let route = this.$_routes[i];
             let re = new RegExp('^' + route.path + '$');
             let match = path.match(re);
-
-            //console.log('PATH', path);
-            //console.log('REGEX', route.path);
 
             if (match) {
                 found = true;

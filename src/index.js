@@ -50,6 +50,7 @@ export default {
      * @param [preserve] {boolean} preserve view
      */
     $setView(view, cb, preserve) {
+
         const sameView = this.$_currentViewRaw === view;
         if (cb && sameView) {
             let childCmp = this.$_currentView.children[0];
@@ -129,6 +130,13 @@ export default {
 
         if (this.props.mode === 'history')
             path = historyPath;
+
+        const SSR_PATH = window.__DOZ_SSR_PATH__;
+
+        if(SSR_PATH)
+            path = SSR_PATH;
+
+        console.log('PATH', path);
 
         fullPath =  path;
 
@@ -304,7 +312,6 @@ export default {
             window.addEventListener('hashchange', window[NS.hashchange]);
         }
         window.addEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
-
     },
 
     onMountAsync() {

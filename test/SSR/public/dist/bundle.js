@@ -2929,7 +2929,7 @@ module.exports = component;
 /***/ })
 /******/ ]);
 }); 
-},{}],33:[function(require,module,exports) {
+},{}],9:[function(require,module,exports) {
 module.exports = {
     REGEX: {
         ROUTE: /route(?:\s+)?=(?:\s+)?"(.*)"/,
@@ -2945,21 +2945,21 @@ module.exports = {
         DOMContentLoaded: '___doz_router___DOMContentLoadedListener'
     }
 };
-},{}],35:[function(require,module,exports) {
+},{}],11:[function(require,module,exports) {
 module.exports = function (query) {
     if (query) return JSON.parse('{"' + query.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
         return key === '' ? value : decodeURIComponent(value);
     });else return {};
 };
-},{}],37:[function(require,module,exports) {
+},{}],13:[function(require,module,exports) {
 module.exports = function (path) {
     return path.toString().replace(/\/+$/, '').replace(/^\//, '');
 };
-},{}],39:[function(require,module,exports) {
+},{}],15:[function(require,module,exports) {
 module.exports = function (path) {
     return path.replace(/\/{2,}/g, '/');
 };
-},{}],31:[function(require,module,exports) {
+},{}],7:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3026,6 +3026,7 @@ exports.default = {
      * @param [preserve] {boolean} preserve view
      */
     $setView: function $setView(view, cb, preserve) {
+
         var sameView = this.$_currentViewRaw === view;
         if (cb && sameView) {
             var childCmp = this.$_currentView.children[0];
@@ -3111,6 +3112,12 @@ exports.default = {
         path = path || hashPath;
 
         if (this.props.mode === 'history') path = historyPath;
+
+        var SSR_PATH = window.__DOZ_SSR_PATH__;
+
+        if (SSR_PATH) path = SSR_PATH;
+
+        console.log('PATH', path);
 
         fullPath = path;
 
@@ -3295,7 +3302,7 @@ exports.default = {
         this.$_navigate();
     }
 };
-},{"./constants":33,"./query-to-object":35,"./clear-path":37,"./normalize-path":39}],7:[function(require,module,exports) {
+},{"./constants":9,"./query-to-object":11,"./clear-path":13,"./normalize-path":15}],3:[function(require,module,exports) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3329,60 +3336,22 @@ if (module.hot) {
         register();
     });
 }
-},{"doz":5,"./src":31}],9:[function(require,module,exports) {
+},{"doz":5,"./src":7}],1:[function(require,module,exports) {
 'use strict';
 
 var _doz = require('doz');
 
-(0, _doz.component)('about-page', {
-    template: function template() {
-        return '\n                <div>I\'m about page</div>\n            ';
-    },
-    onCreate: function onCreate() {
-        console.log(this.tag, 'created');
-    },
-    onDestroy: function onDestroy() {
-        console.log(this.tag, 'destroyed');
-    }
-});
-},{"doz":5}],11:[function(require,module,exports) {
-'use strict';
+var _doz2 = _interopRequireDefault(_doz);
 
-var _doz = require('doz');
+var _index = require('../../../index');
 
-(0, _doz.component)('contact-page', {
-    template: function template() {
-        return '\n                <div>I\'m contact page</div>\n            ';
-    },
-    onCreate: function onCreate() {
-        console.log(this.tag, 'created');
-    },
-    onDestroy: function onDestroy() {
-        console.log(this.tag, 'destroyed');
-    }
-});
-},{"doz":5}],13:[function(require,module,exports) {
-'use strict';
+var _index2 = _interopRequireDefault(_index);
 
-var _doz = require('doz');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-(0, _doz.component)('extension-page', {
-    template: function template() {
-        return '\n                <div>I\'m .html page</div>\n            ';
-    },
-    onCreate: function onCreate() {
-        console.log(this.tag, 'created');
-    },
-    onDestroy: function onDestroy() {
-        console.log(this.tag, 'destroyed');
-    }
-});
-},{"doz":5}],15:[function(require,module,exports) {
-'use strict';
+_doz2.default.component('doz-router', _index2.default);
 
-var _doz = require('doz');
-
-(0, _doz.component)('home-page', {
+_doz2.default.component('home-page', {
     template: function template() {
         return '\n                <div>I\'m home page</div>\n            ';
     },
@@ -3393,27 +3362,10 @@ var _doz = require('doz');
         console.log(this.tag, 'destroyed');
     }
 });
-},{"doz":5}],17:[function(require,module,exports) {
-'use strict';
 
-var _doz = require('doz');
-
-(0, _doz.component)('navigate-buttons', {
+_doz2.default.component('about-page', {
     template: function template() {
-        return '\n                <div style="color: #fff; margin: 20px">Navigate by "$navigate" method</div>\n                <div>\n                    <button onclick="this.$router(\'/about\')">About</button>\n                    <button onclick="this.$router(\'/profile/me\')">Profile</button>\n                    <button onclick="this.$router(\'/search/?t=hello\')">Search hello</button>\n                </div>\n            ';
-    },
-    $router: function $router(path) {
-        this.getComponentById('router').$navigate(path);
-    }
-});
-},{"doz":5}],19:[function(require,module,exports) {
-'use strict';
-
-var _doz = require('doz');
-
-(0, _doz.component)('not-found-page', {
-    template: function template() {
-        return '\n            <div>404 page not found</div>\n        ';
+        return '\n                <div>I\'m about page</div>\n            ';
     },
     onCreate: function onCreate() {
         console.log(this.tag, 'created');
@@ -3422,12 +3374,32 @@ var _doz = require('doz');
         console.log(this.tag, 'destroyed');
     }
 });
-},{"doz":5}],21:[function(require,module,exports) {
-'use strict';
 
-var _doz = require('doz');
+_doz2.default.component('extension-page', {
+    template: function template() {
+        return '\n                <div>I\'m .html page</div>\n            ';
+    },
+    onCreate: function onCreate() {
+        console.log(this.tag, 'created');
+    },
+    onDestroy: function onDestroy() {
+        console.log(this.tag, 'destroyed');
+    }
+});
 
-(0, _doz.component)('profile-page', {
+_doz2.default.component('contact-page', {
+    template: function template() {
+        return '\n                <div>I\'m contact page</div>\n            ';
+    },
+    onCreate: function onCreate() {
+        console.log(this.tag, 'created');
+    },
+    onDestroy: function onDestroy() {
+        console.log(this.tag, 'destroyed');
+    }
+});
+
+_doz2.default.component('profile-page', {
     template: function template() {
         return '\n                <div>I\'m profile me page</div>\n            ';
     },
@@ -3438,46 +3410,8 @@ var _doz = require('doz');
         console.log(this.tag, 'destroyed');
     }
 });
-},{"doz":5}],23:[function(require,module,exports) {
-'use strict';
 
-var _doz = require('doz');
-
-(0, _doz.component)('search-page', {
-    template: function template() {
-        return '\n            <div>I\'m search page with query "' + this.props.query + '"</div>\n        ';
-    },
-    onCreate: function onCreate() {
-        this.props.query = this.getComponentById('router').$_query['t'];
-        console.log(this.tag, 'created');
-    },
-    onDestroy: function onDestroy() {
-        console.log(this.tag, 'destroyed');
-    }
-});
-},{"doz":5}],25:[function(require,module,exports) {
-'use strict';
-
-var _doz = require('doz');
-
-(0, _doz.component)('section-page', {
-    template: function template() {
-        var id = this.getComponentById('router').$_param['id'];
-        return '\n                <div>I\'m section page index ' + id + '</div>\n            ';
-    },
-    onCreate: function onCreate() {
-        console.log(this.tag, 'created');
-    },
-    onDestroy: function onDestroy() {
-        console.log(this.tag, 'destroyed');
-    }
-});
-},{"doz":5}],27:[function(require,module,exports) {
-'use strict';
-
-var _doz = require('doz');
-
-(0, _doz.component)('user-details-page', {
+_doz2.default.component('user-details-page', {
     template: function template() {
         return '\n                <div>I\'m user page with id "' + this.props.id + '", <a href="javascript:history.back()">back</a></div>\n            ';
     },
@@ -3489,14 +3423,23 @@ var _doz = require('doz');
         console.log(this.tag, 'destroyed');
     }
 });
-},{"doz":5}],29:[function(require,module,exports) {
-'use strict';
 
-var _doz = require('doz');
-
-(0, _doz.component)('user-page', {
+_doz2.default.component('search-page', {
     template: function template() {
-        return '\n                <div>I\'m user page index, <a href="#/user/10">show id 10</a></div>\n            ';
+        return '\n                <div>I\'m search page with query "' + this.props.query + '"</div>\n            ';
+    },
+    onCreate: function onCreate() {
+        this.props.query = this.getComponentById('router').$_query['t'];
+        console.log(this.tag, 'created');
+    },
+    onDestroy: function onDestroy() {
+        console.log(this.tag, 'destroyed');
+    }
+});
+
+_doz2.default.component('user-page', {
+    template: function template() {
+        return '\n                <div>I\'m user page index, <a href="/user/10">show id 10</a></div>\n            ';
     },
     onCreate: function onCreate() {
         console.log(this.tag, 'created');
@@ -3505,62 +3448,46 @@ var _doz = require('doz');
         console.log(this.tag, 'destroyed');
     }
 });
-},{"doz":5}],3:[function(require,module,exports) {
-'use strict';
 
-var _doz = require('doz');
-
-var _index = require('../../../index');
-
-var _index2 = _interopRequireDefault(_index);
-
-require('./cmp/about-page');
-
-require('./cmp/contact-page');
-
-require('./cmp/extension-page');
-
-require('./cmp/home-page');
-
-require('./cmp/navigate-buttons');
-
-require('./cmp/not-found-page');
-
-require('./cmp/profile-page');
-
-require('./cmp/search-page');
-
-require('./cmp/section-page');
-
-require('./cmp/user-details-page');
-
-require('./cmp/user-page');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-(0, _doz.component)('doz-router', _index2.default);
-
-(0, _doz.component)('app-ui', {
+_doz2.default.component('section-page', {
     template: function template() {
-        return '\n            <nav>\n                <a router-link href="/">Home</a>\n                <a router-link href="/about">About</a>\n                <a router-link href="/profile/me">Profile</a>\n                <a router-link href="/profile.html">.html</a>\n                <a router-link href="/user/">User</a>\n                <a router-link href="/search/?t=hello">Search hello</a>\n                <a router-link href="/search/?t=ciao">Search ciao</a>\n                <a router-link href="/contact">Contact</a>\n                <a router-link href="/not-found-page-bla-bla">Not found</a>\n                <a router-link href="/section/1">Section 1</a>\n                <a router-link href="/section/2">Section 2</a>\n                <a router-link href="/section/3">Section 3</a>\n                <a router-link href="/section/4">Section 4</a>\n            </nav>\n            <navigate-buttons></navigate-buttons>\n            <div class="container">\n                <doz-router d:id="router">\n                    <home-page route="/"></home-page>\n                    <about-page route="/about"></about-page>\n                    <contact-page route="/contact"></contact-page>\n                    <extension-page route="/profile.html"></extension-page>\n                    <profile-page route="/profile/me"></profile-page>\n                    <search-page route="/search"></search-page>\n                    <user-page route="/user/"></user-page>\n                    <user-details-page route="/user/:id"></user-details-page>\n                    <not-found-page route="*"></not-found-page>\n                    <section-page route="/section/:id" preserve></section-page>\n                </doz-router>\n            </div>\n        ';
+        var id = this.getComponentById('router').$_param['id'];
+        return '\n                <div>I\'m section page index ' + id + '</div>\n            ';
+    },
+    onCreate: function onCreate() {
+        console.log(this.tag, 'created');
+    },
+    onDestroy: function onDestroy() {
+        console.log(this.tag, 'destroyed');
     }
 });
-},{"doz":5,"../../../index":7,"./cmp/about-page":9,"./cmp/contact-page":11,"./cmp/extension-page":13,"./cmp/home-page":15,"./cmp/navigate-buttons":17,"./cmp/not-found-page":19,"./cmp/profile-page":21,"./cmp/search-page":23,"./cmp/section-page":25,"./cmp/user-details-page":27,"./cmp/user-page":29}],1:[function(require,module,exports) {
-'use strict';
 
-var _doz = require('doz');
-
-var _doz2 = _interopRequireDefault(_doz);
-
-require('./src/ui');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-window.MyApp = new _doz2.default({
-    root: '#app',
-    template: '\n        <app-ui></app-ui>\n    '
+_doz2.default.component('not-found-page', {
+    template: function template() {
+        return '\n                <div>404 page not found</div>\n            ';
+    },
+    onCreate: function onCreate() {
+        console.log(this.tag, 'created');
+    },
+    onDestroy: function onDestroy() {
+        console.log(this.tag, 'destroyed');
+    }
 });
-},{"doz":5,"./src/ui":3}],41:[function(require,module,exports) {
+
+_doz2.default.component('navigate-buttons', {
+    template: function template() {
+        return '\n                <div>\n                    <button onclick="this.$router(\'/about\')">About</button>\n                    <button onclick="this.$router(\'/profile/me\')">Profile</button>\n                    <button onclick="this.$router(\'/search/?t=hello\')">Search hello</button>\n                </div>\n            ';
+    },
+    $router: function $router(path) {
+        this.getComponentById('router').$navigate(path);
+    }
+});
+
+new _doz2.default({
+    root: '#app',
+    template: '\n            <div class="container">\n                <nav>\n                    <a router-link href="/">Home</a> |\n                    <a router-link href="/about">About</a> |\n                    <a router-link href="/profile/me">Profile</a> |\n                    <a router-link href="/profile.html">.html</a> |\n                    <a router-link href="/user/">User</a> |\n                    <a router-link href="/search/?t=hello">Search hello</a> |\n                    <a router-link href="/search/?t=ciao">Search ciao</a> |\n                    <a router-link href="/contact">Contact</a> |\n                    <a router-link href="/not-found-page-bla-bla">Not found</a> |\n                    <a router-link href="/section/1">Section 1</a> |\n                    <a router-link href="/section/2">Section 2</a> |\n                    <a router-link href="/section/3">Section 3</a> |\n                    <a router-link href="/section/4">Section 4</a>\n                </nav>\n                <navigate-buttons></navigate-buttons>\n                <doz-router d:id="router" mode="history">\n                    <home-page route="/"></home-page>\n                    <about-page route="/about"></about-page>\n                    <contact-page route="/contact"></contact-page>\n                    <extension-page route="/profile.html"></extension-page>\n                    <profile-page route="/profile/me"></profile-page>\n                    <search-page route="/search"></search-page>\n                    <user-page route="/user/"></user-page>\n                    <user-details-page route="/user/:id"></user-details-page>\n                    <not-found-page route="*"></not-found-page>\n                    <section-page route="/section/:id" preserve></section-page>\n                </doz-router>\n            </div>\n        '
+});
+},{"doz":5,"../../../index":3}],17:[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -3589,7 +3516,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '59258' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '58517' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
@@ -3730,5 +3657,5 @@ function hmrAccept(bundle, id) {
     return hmrAccept(global.parcelRequire, id);
   });
 }
-},{}]},{},[41,1], null)
-//# sourceMappingURL=/bundle.map
+},{}]},{},[17,1], null)
+//# sourceMappingURL=bundle.map

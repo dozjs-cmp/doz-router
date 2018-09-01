@@ -103,9 +103,9 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   // Override the current require with this new one
   return newRequire;
-})({5:[function(require,module,exports) {
+})({"..\\..\\..\\node_modules\\doz\\dist\\doz.js":[function(require,module,exports) {
 var define;
-// [DOZ]  Build version: 1.4.3  
+// [DOZ]  Build version: 1.4.4  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -178,7 +178,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 14);
+/******/ 	return __webpack_require__(__webpack_require__.s = 15);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -364,10 +364,11 @@ var html = __webpack_require__(4);
 var _require = __webpack_require__(0),
     TAG = _require.TAG,
     CMP_INSTANCE = _require.CMP_INSTANCE,
-    INSTANCE = _require.INSTANCE;
+    INSTANCE = _require.INSTANCE,
+    REGEX = _require.REGEX;
 
 var collection = __webpack_require__(2);
-var observer = __webpack_require__(18);
+var observer = __webpack_require__(19);
 var hooks = __webpack_require__(6);
 
 var _require2 = __webpack_require__(8),
@@ -375,19 +376,20 @@ var _require2 = __webpack_require__(8),
     serializeProps = _require2.serializeProps;
 
 var update = __webpack_require__(11).updateElement;
-var store = __webpack_require__(23);
-var ids = __webpack_require__(24);
+var store = __webpack_require__(24);
+var ids = __webpack_require__(25);
 
-var _require3 = __webpack_require__(25),
+var _require3 = __webpack_require__(26),
     extract = _require3.extract;
 
 var proxy = __webpack_require__(5);
 var toInlineStyle = __webpack_require__(13);
-var hmr = __webpack_require__(26);
-var style = __webpack_require__(27);
-var queueReady = __webpack_require__(29);
-var extendInstance = __webpack_require__(30);
-var cloneObject = __webpack_require__(31);
+var hmr = __webpack_require__(27);
+var style = __webpack_require__(28);
+var queueReady = __webpack_require__(30);
+var extendInstance = __webpack_require__(31);
+var cloneObject = __webpack_require__(32);
+var toLiteralString = __webpack_require__(14);
 
 function get() {
     var cfg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -496,6 +498,21 @@ function get() {
 function create(cmp, cfg) {
 
     var props = extend.copy(cfg.props, typeof cmp.cfg.props === 'function' ? cmp.cfg.props() : cmp.cfg.props);
+
+    if (typeof cmp.cfg.template === 'string') {
+        var contentTpl = cmp.cfg.template;
+        if (REGEX.IS_ID_SELECTOR.test(contentTpl)) {
+            cmp.cfg.template = function () {
+                var contentStr = toLiteralString(document.querySelector(contentTpl).innerHTML);
+                return eval('`' + contentStr + '`');
+            };
+        } else {
+            cmp.cfg.template = function () {
+                contentTpl = toLiteralString(contentTpl);
+                return eval('`' + contentTpl + '`');
+            };
+        }
+    }
 
     var instance = Object.defineProperties({}, {
         _isCreated: {
@@ -1571,7 +1588,7 @@ module.exports = ObservableSlim;
 "use strict";
 
 
-var deprecate = __webpack_require__(19);
+var deprecate = __webpack_require__(20);
 
 function callBeforeCreate(context) {
     if (typeof context.onBeforeCreate === 'function') {
@@ -1825,7 +1842,7 @@ module.exports = dashToCamel;
 "use strict";
 
 
-var element = __webpack_require__(20);
+var element = __webpack_require__(21);
 
 module.exports = {
     updateElement: element.update
@@ -1877,7 +1894,11 @@ module.exports = toInlineStyle;
 "use strict";
 
 
-module.exports = __webpack_require__(15);
+function toLiteralString(str) {
+    return str.replace(/{{/gm, '${').replace(/}}/gm, '}');
+}
+
+module.exports = toLiteralString;
 
 /***/ }),
 /* 15 */
@@ -1887,15 +1908,24 @@ module.exports = __webpack_require__(15);
 
 
 module.exports = __webpack_require__(16);
-module.exports.component = __webpack_require__(32);
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = __webpack_require__(17);
+module.exports.component = __webpack_require__(33);
 module.exports.collection = __webpack_require__(2);
 module.exports.update = __webpack_require__(11).updateElement;
 module.exports.transform = __webpack_require__(8).transform;
 module.exports.html = __webpack_require__(4);
-module.exports.version = '1.4.3';
+module.exports.version = '1.4.4';
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1908,12 +1938,14 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var extend = __webpack_require__(1);
-var bind = __webpack_require__(17);
+var bind = __webpack_require__(18);
 var instances = __webpack_require__(3);
 
 var _require = __webpack_require__(0),
     TAG = _require.TAG,
     REGEX = _require.REGEX;
+
+var toLiteralString = __webpack_require__(14);
 
 var Doz = function () {
     function Doz() {
@@ -1996,7 +2028,7 @@ var Doz = function () {
                 enumerable: true
             },
             mount: {
-                value: function value(_template, root) {
+                value: function value(template, root) {
                     var parent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this._tree;
 
 
@@ -2010,12 +2042,13 @@ var Doz = function () {
                         throw new TypeError('root must be an HTMLElement or an valid selector like #example-root');
                     }
 
+                    var contentStr = eval('`' + toLiteralString(template) + '`');
                     var autoCmp = {
                         tag: TAG.MOUNT,
                         cfg: {
                             props: {},
                             template: function template() {
-                                return '<' + TAG.ROOT + '>' + _template + '</' + TAG.ROOT + '>';
+                                return '<' + TAG.ROOT + '>' + contentStr + '</' + TAG.ROOT + '>';
                             }
                         }
                     };
@@ -2052,7 +2085,8 @@ var Doz = function () {
             tag: TAG.APP,
             cfg: {
                 template: typeof cfg.template === 'function' ? cfg.template : function () {
-                    return cfg.template;
+                    var contentStr = toLiteralString(cfg.template);
+                    return eval('`' + contentStr + '`');
                 }
             }
         };
@@ -2088,7 +2122,7 @@ var Doz = function () {
 module.exports = Doz;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2120,7 +2154,7 @@ function bind(obj, context) {
 module.exports = bind;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2179,7 +2213,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2226,7 +2260,7 @@ module.exports.once = once;
 module.exports._list = _list;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2234,7 +2268,7 @@ module.exports._list = _list;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _require = __webpack_require__(21),
+var _require = __webpack_require__(22),
     attach = _require.attach,
     updateAttributes = _require.updateAttributes;
 
@@ -2347,7 +2381,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2365,7 +2399,7 @@ var _require = __webpack_require__(0),
 var castStringTo = __webpack_require__(9);
 var dashToCamel = __webpack_require__(10);
 var camelToDash = __webpack_require__(12);
-var objectPath = __webpack_require__(22);
+var objectPath = __webpack_require__(23);
 var delay = __webpack_require__(7);
 
 function isEventAttribute(name) {
@@ -2588,7 +2622,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2613,7 +2647,7 @@ module.exports = getByPath;
 module.exports.getLast = getLast;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2634,7 +2668,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2655,7 +2689,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2696,7 +2730,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2728,7 +2762,7 @@ function hmr(instance, _module) {
 module.exports = hmr;
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2736,7 +2770,7 @@ module.exports = hmr;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var composeStyle = __webpack_require__(28);
+var composeStyle = __webpack_require__(29);
 
 function scoped(instance) {
     if (_typeof(instance.style) !== 'object') return;
@@ -2759,7 +2793,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2784,7 +2818,7 @@ function composeStyle(style, tag) {
 module.exports = composeStyle;
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2802,7 +2836,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2835,7 +2869,7 @@ function extendInstance(instance, cfg, dProps) {
 module.exports = extendInstance;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2848,7 +2882,7 @@ function cloneObject(obj) {
 module.exports = cloneObject;
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2895,7 +2929,7 @@ module.exports = component;
 /***/ })
 /******/ ]);
 }); 
-},{}],9:[function(require,module,exports) {
+},{}],"..\\..\\..\\src\\constants.js":[function(require,module,exports) {
 module.exports = {
     REGEX: {
         ROUTE: /route(?:\s+)?=(?:\s+)?"(.*)"/,
@@ -2911,21 +2945,27 @@ module.exports = {
         DOMContentLoaded: '___doz_router___DOMContentLoadedListener'
     }
 };
-},{}],11:[function(require,module,exports) {
+},{}],"..\\..\\..\\src\\query-to-object.js":[function(require,module,exports) {
 module.exports = function (query) {
     if (query) return JSON.parse('{"' + query.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
         return key === '' ? value : decodeURIComponent(value);
     });else return {};
 };
-},{}],13:[function(require,module,exports) {
+},{}],"..\\..\\..\\src\\clear-path.js":[function(require,module,exports) {
 module.exports = function (path) {
     return path.toString().replace(/\/+$/, '').replace(/^\//, '');
 };
-},{}],15:[function(require,module,exports) {
+},{}],"..\\..\\..\\src\\normalize-path.js":[function(require,module,exports) {
 module.exports = function (path) {
     return path.replace(/\/{2,}/g, '/');
 };
-},{}],7:[function(require,module,exports) {
+},{}],"..\\..\\..\\src\\index.js":[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _require = require('./constants'),
@@ -2937,7 +2977,7 @@ var queryToObject = require('./query-to-object');
 var clearPath = require('./clear-path');
 var normalizePath = require('./normalize-path');
 
-module.exports = {
+exports.default = {
     props: {
         hash: '#',
         classActiveLink: 'router-link-active',
@@ -3041,6 +3081,18 @@ module.exports = {
 
 
     /**
+     * Returns current path
+     * @param full {boolean}
+     * @returns {*}
+     */
+    $currentPath: function $currentPath() {
+        var full = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+        return full ? this.$_currentFullPath : this.$_currentPath;
+    },
+
+
+    /**
      * Navigate route
      * @param path {string} path to navigate
      * @param [params] {object} optional params
@@ -3073,6 +3125,9 @@ module.exports = {
             var route = this.$_routes[i];
             var re = new RegExp('^' + route.path + '$');
             var match = path.match(re);
+
+            //console.log('PATH', path);
+            //console.log('REGEX', route.path);
 
             if (match) {
                 found = true;
@@ -3142,6 +3197,9 @@ module.exports = {
                 param.push(capture);
                 return '([\\w-]+)';
             });
+
+            // Wild card
+            path = path.replace(/\/\*/g, '(?:/.*)?');
             this.$_paramMap[path] = param;
 
             var cbChange = view.match(REGEX.CHANGE);
@@ -3237,9 +3295,41 @@ module.exports = {
         this.$_navigate();
     }
 };
-},{"./constants":9,"./query-to-object":11,"./clear-path":13,"./normalize-path":15}],3:[function(require,module,exports) {
-module.exports = require('./src/doz-router');
-},{"./src/doz-router":7}],1:[function(require,module,exports) {
+},{"./constants":"..\\..\\..\\src\\constants.js","./query-to-object":"..\\..\\..\\src\\query-to-object.js","./clear-path":"..\\..\\..\\src\\clear-path.js","./normalize-path":"..\\..\\..\\src\\normalize-path.js"}],"..\\..\\..\\index.js":[function(require,module,exports) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _doz = require('doz');
+
+var _doz2 = _interopRequireDefault(_doz);
+
+var _src = require('./src');
+
+var _src2 = _interopRequireDefault(_src);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// expose component to global scope
+function register() {
+    if (typeof window !== 'undefined') {
+        _doz2.default.component('doz-router', _src2.default);
+    }
+}
+
+register();
+
+exports.default = _src2.default;
+
+
+if (module.hot) {
+    module.hot.dispose(function () {
+        register();
+    });
+}
+},{"doz":"..\\..\\..\\node_modules\\doz\\dist\\doz.js","./src":"..\\..\\..\\src\\index.js"}],"app.js":[function(require,module,exports) {
 'use strict';
 
 var _doz = require('doz');
@@ -3388,9 +3478,9 @@ _doz2.default.component('navigate-buttons', {
 
 new _doz2.default({
     root: '#app',
-    template: '\n            <div class="container">\n                <nav>\n                    <a router-link href="/">Home</a> |\n                    <a router-link href="/about">About</a> |\n                    <a router-link href="/profile/me">Profile</a> |\n                    <a router-link href="/profile.html">.html</a> |\n                    <a router-link href="/user/">User</a> |\n                    <a router-link href="/search/?t=hello">Search hello</a> |\n                    <a router-link href="/search/?t=ciao">Search ciao</a> |\n                    <a router-link href="/contact">Contact</a> |\n                    <a router-link href="/not-found-page-bla-bla">Not found</a> |\n                    <a router-link href="/section/1">Section 1</a> |\n                    <a router-link href="/section/2">Section 2</a> |\n                    <a router-link href="/section/3">Section 3</a> |\n                    <a router-link href="/section/4">Section 4</a>\n                </nav>\n                <navigate-buttons></navigate-buttons>\n            \n                <doz-router d:id="router" mode="history">\n                    <home-page route="/"></home-page>\n                    <about-page route="/about"></about-page>\n                    <contact-page route="/contact"></contact-page>\n                    <extension-page route="/profile.html"></extension-page>\n                    <profile-page route="/profile/me"></profile-page>\n                    <search-page route="/search"></search-page>\n                    <user-page route="/user/"></user-page>\n                    <user-details-page route="/user/:id"></user-details-page>\n                    <not-found-page route="*"></not-found-page>\n                    <section-page route="/section/:id" preserve></section-page>\n                </doz-router>\n            </div>\n        '
+    template: '\n            <div class="container">\n                <nav>\n                    <a router-link href="/">Home</a> |\n                    <a router-link href="/about">About</a> |\n                    <a router-link href="/profile/me">Profile</a> |\n                    <a router-link href="/profile.html">.html</a> |\n                    <a router-link href="/user/">User</a> |\n                    <a router-link href="/search/?t=hello">Search hello</a> |\n                    <a router-link href="/search/?t=ciao">Search ciao</a> |\n                    <a router-link href="/contact">Contact</a> |\n                    <a router-link href="/not-found-page-bla-bla">Not found</a> |\n                    <a router-link href="/section/1">Section 1</a> |\n                    <a router-link href="/section/2">Section 2</a> |\n                    <a router-link href="/section/3">Section 3</a> |\n                    <a router-link href="/section/4">Section 4</a>\n                </nav>\n                <navigate-buttons></navigate-buttons>\n                <doz-router d:id="router" mode="history">\n                    <home-page route="/"></home-page>\n                    <about-page route="/about"></about-page>\n                    <contact-page route="/contact"></contact-page>\n                    <extension-page route="/profile.html"></extension-page>\n                    <profile-page route="/profile/me"></profile-page>\n                    <search-page route="/search"></search-page>\n                    <user-page route="/user/"></user-page>\n                    <user-details-page route="/user/:id"></user-details-page>\n                    <not-found-page route="*"></not-found-page>\n                    <section-page route="/section/:id" preserve></section-page>\n                </doz-router>\n            </div>\n        '
 });
-},{"doz":5,"../../../index":3}],19:[function(require,module,exports) {
+},{"doz":"..\\..\\..\\node_modules\\doz\\dist\\doz.js","../../../index":"..\\..\\..\\index.js"}],"..\\..\\..\\node_modules\\parcel-bundler\\src\\builtins\\hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 
@@ -3419,7 +3509,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = '' || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + '57449' + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + '56404' + '/');
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
 
@@ -3496,7 +3586,7 @@ function getParents(bundle, id) {
     for (d in modules[k][1]) {
       dep = modules[k][1][d];
       if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) {
-        parents.push(+k);
+        parents.push(k);
       }
     }
   }
@@ -3560,5 +3650,5 @@ function hmrAccept(bundle, id) {
     return hmrAccept(global.parcelRequire, id);
   });
 }
-},{}]},{},[19,1], null)
+},{}]},{},["..\\..\\..\\node_modules\\parcel-bundler\\src\\builtins\\hmr-runtime.js","app.js"], null)
 //# sourceMappingURL=/bundle.map

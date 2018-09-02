@@ -5,6 +5,8 @@ const webpack = require('webpack');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const isDevServer = process.argv[1].indexOf('webpack-dev-server') !== -1;
 
+const HMRPlugin = isDevServer ? new webpack.HotModuleReplacementPlugin() : function(){};
+
 function dashToCamelCase(str) {
     return str
         .toLowerCase()
@@ -87,7 +89,7 @@ module.exports = {
             }
         }),
         new unminifiedWebpackPlugin(),
-        new webpack.HotModuleReplacementPlugin(),
+        HMRPlugin,
         new HardSourceWebpackPlugin()
     ]
 };

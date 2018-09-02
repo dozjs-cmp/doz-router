@@ -50,7 +50,6 @@ export default {
      * @param [preserve] {boolean} preserve view
      */
     $setView(view, cb, preserve) {
-
         const sameView = this.$_currentViewRaw === view;
         if (cb && sameView) {
             let childCmp = this.$_currentView.children[0];

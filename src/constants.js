@@ -11,5 +11,7 @@ module.exports = {
         hashchange: '___doz_router___hashchangeListener',
         popstate: '___doz_router___popstateListener',
         DOMContentLoaded: '___doz_router___DOMContentLoadedListener',
-    }
+    },
+    PRERENDER: '__DOZ_PRERENDER_PUBLIC_URL__',
+    SSR: '__DOZ_SSR_PATH__'
 };

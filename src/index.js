@@ -1,4 +1,4 @@
-const {REGEX, PATH, NS} = require('./constants');
+const {REGEX, PATH, NS, PRERENDER, SSR} = require('./constants');
 const queryToObject = require('./query-to-object');
 const clearPath = require('./clear-path');
 const normalizePath = require('./normalize-path');
@@ -18,6 +18,7 @@ export default {
     autoCreateChildren: false,
 
     onCreate() {
+
         //custom properties
         this.$_currentView = null;
         this.$_currentViewRaw = '';
@@ -50,6 +51,7 @@ export default {
      * @param [preserve] {boolean} preserve view
      */
     $setView(view, cb, preserve) {
+
         const sameView = this.$_currentViewRaw === view;
         if (cb && sameView) {
             let childCmp = this.$_currentView.children[0];
@@ -90,7 +92,12 @@ export default {
      */
     $navigate(path, params) {
         if (this.props.mode === 'history') {
-            history.pushState(path, null, normalizePath(this.props.root + path));
+
+            if (window[PRERENDER]) {
+                history.pushState(path, null, normalizePath(window[PRERENDER].replace(location.origin, '') + path));
+            } else {
+                history.pushState(path, null, normalizePath(this.props.root + path));
+            }
             this.$_navigate(path, params);
         } else {
             this.$_pauseHashListener = true;
@@ -120,6 +127,7 @@ export default {
      * @ignore
      */
     $_navigate(path, params) {
+
         let found = false;
         let hashPath = window.location.hash.slice(this.props.hash.length);
         let historyPath = window.location.pathname + window.location.search;
@@ -130,8 +138,11 @@ export default {
         if (this.props.mode === 'history')
             path = historyPath;
 
+        path = window[SSR] || path;
 
-        path = window.__DOZ_SSR_PATH__ || path;
+        if (window[PRERENDER]) {
+            path = (location.origin + path).replace(window[PRERENDER], '');
+        }
 
         fullPath =  path;
 
@@ -252,12 +263,16 @@ export default {
             let path = el.pathname || el.href;
 
             if (this.props.mode === 'history') {
-                el.addEventListener('click', e => {
-                    e.preventDefault();
-                    let _path = path + el.search;
-                    history.pushState(_path, null, normalizePath(this.props.root + _path));
-                    this.$_navigate(_path);
-                });
+                if (window[PRERENDER]) {
+                    //el.href = this.props.root + path + el.search;
+                } else {
+                    el.addEventListener('click', e => {
+                        e.preventDefault();
+                        let _path = path + el.search;
+                        history.pushState(_path, null, normalizePath(this.props.root + _path));
+                        this.$_navigate(_path);
+                    });
+                }
             } else {
                 el.href = this.props.hash + path + el.search;
             }
@@ -272,7 +287,6 @@ export default {
     },
 
     onAppReady() {
-
         window.removeEventListener('popstate', window[NS.popstate]);
         window[NS.popstate] = e => {
             this.$_navigate(e.state)
@@ -303,6 +317,7 @@ export default {
         } else {
             window.addEventListener('hashchange', window[NS.hashchange]);
         }
+
         window.addEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
     },
 

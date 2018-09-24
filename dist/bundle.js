@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.1.1  
+// [DozRouter]  Build version: 1.2.0  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -152,7 +152,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 var _require = __webpack_require__(3),
     REGEX = _require.REGEX,
     PATH = _require.PATH,
-    NS = _require.NS;
+    NS = _require.NS,
+    PRERENDER = _require.PRERENDER,
+    SSR = _require.SSR;
 
 var queryToObject = __webpack_require__(4);
 var clearPath = __webpack_require__(5);
@@ -173,6 +175,7 @@ exports.default = {
     autoCreateChildren: false,
 
     onCreate: function onCreate() {
+
         //custom properties
         this.$_currentView = null;
         this.$_currentViewRaw = '';
@@ -207,6 +210,7 @@ exports.default = {
      * @param [preserve] {boolean} preserve view
      */
     $setView: function $setView(view, cb, preserve) {
+
         var sameView = this.$_currentViewRaw === view;
         if (cb && sameView) {
             var childCmp = this.$_currentView.children[0];
@@ -250,7 +254,12 @@ exports.default = {
      */
     $navigate: function $navigate(path, params) {
         if (this.props.mode === 'history') {
-            history.pushState(path, null, normalizePath(this.props.root + path));
+
+            if (window[PRERENDER]) {
+                history.pushState(path, null, normalizePath(window[PRERENDER].replace(location.origin, '') + path));
+            } else {
+                history.pushState(path, null, normalizePath(this.props.root + path));
+            }
             this.$_navigate(path, params);
         } else {
             this.$_pauseHashListener = true;
@@ -293,7 +302,11 @@ exports.default = {
 
         if (this.props.mode === 'history') path = historyPath;
 
-        path = window.__DOZ_SSR_PATH__ || path;
+        path = window[SSR] || path;
+
+        if (window[PRERENDER]) {
+            path = (location.origin + path).replace(window[PRERENDER], '');
+        }
 
         fullPath = path;
 
@@ -419,12 +432,16 @@ exports.default = {
             var path = el.pathname || el.href;
 
             if (_this3.props.mode === 'history') {
-                el.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    var _path = path + el.search;
-                    history.pushState(_path, null, normalizePath(_this3.props.root + _path));
-                    _this3.$_navigate(_path);
-                });
+                if (window[PRERENDER]) {
+                    //el.href = this.props.root + path + el.search;
+                } else {
+                    el.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        var _path = path + el.search;
+                        history.pushState(_path, null, normalizePath(_this3.props.root + _path));
+                        _this3.$_navigate(_path);
+                    });
+                }
             } else {
                 el.href = _this3.props.hash + path + el.search;
             }
@@ -469,6 +486,7 @@ exports.default = {
         } else {
             window.addEventListener('hashchange', window[NS.hashchange]);
         }
+
         window.addEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
     },
     onMountAsync: function onMountAsync() {
@@ -496,7 +514,9 @@ module.exports = {
         hashchange: '___doz_router___hashchangeListener',
         popstate: '___doz_router___popstateListener',
         DOMContentLoaded: '___doz_router___DOMContentLoadedListener'
-    }
+    },
+    PRERENDER: '__DOZ_PRERENDER_PUBLIC_URL__',
+    SSR: '__DOZ_SSR_PATH__'
 };
 
 /***/ }),

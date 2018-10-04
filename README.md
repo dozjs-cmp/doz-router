@@ -61,10 +61,10 @@ new Doz({
     root: '#app',
     template: `
         <nav>
-            <a router-link href="/">Home</a>
-            <a router-link href="/about">About</a>
-            <a router-link href="/contact">Contact</a>
-            <a router-link href="/not-found-page-bla-bla">Not found</a>
+            <a data-router-link href="/">Home</a>
+            <a data-router-link href="/about">About</a>
+            <a data-router-link href="/contact">Contact</a>
+            <a data-router-link href="/not-found-page-bla-bla">Not found</a>
         </nav>
         <doz-router>
             <home-page route="/"></home-page>

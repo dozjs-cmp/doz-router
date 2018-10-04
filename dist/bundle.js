@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.2.0  
+// [DozRouter]  Build version: 1.2.1  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -164,7 +164,7 @@ exports.default = {
     props: {
         hash: '#',
         classActiveLink: 'router-link-active',
-        linkAttr: 'router-link',
+        linkAttr: 'data-router-link',
         mode: 'hash',
         /**
          * Base root, works only in "history" mode

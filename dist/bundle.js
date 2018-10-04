@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.2.1  
+// [DozRouter]  Build version: 1.2.2  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));

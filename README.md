@@ -126,7 +126,7 @@ new Doz({
 | ---- | ------- | ----------- |
 | hash | # | hash symbol |
 | class-active-link | router-link-active | css class for active router link |
-| link-attr | router-link | attribute that identify link |
+| link-attr | data-router-link | attribute that identify link |
 | mode | hash | router mode "hash" or "history" (html5 api) |
 | root | / | base root, works only in "history" mode |
 

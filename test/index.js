@@ -4,12 +4,12 @@ import be from 'bejs'
 // Mock
 const navLink = `
     <nav>
-        <a router-link href="/">Home</a> |
-        <a id="about" router-link href="/about">About</a> |
-        <a router-link href="/profile/me">Profile</a> |
-        <a router-link href="/search/">Search</a> |
-        <a id="user" router-link href="/user/10">User</a> |
-        <a router-link href="/news/20/green/title">Category</a>
+        <a data-router-link href="/">Home</a> |
+        <a id="about" data-router-link href="/about">About</a> |
+        <a data-router-link href="/profile/me">Profile</a> |
+        <a data-router-link href="/search/">Search</a> |
+        <a id="user" data-router-link href="/user/10">User</a> |
+        <a data-router-link href="/news/20/green/title">Category</a>
     </nav>
 `;
 

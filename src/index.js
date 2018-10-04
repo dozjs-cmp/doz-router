@@ -7,7 +7,7 @@ export default {
     props: {
         hash: '#',
         classActiveLink: 'router-link-active',
-        linkAttr: 'router-link',
+        linkAttr: 'data-router-link',
         mode: 'hash',
         /**
          * Base root, works only in "history" mode

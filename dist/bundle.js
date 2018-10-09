@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.2.2  
+// [DozRouter]  Build version: 1.2.3  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -503,7 +503,7 @@ exports.default = {
 
 module.exports = {
     REGEX: {
-        ROUTE: /route(?:\s+)?=(?:\s+)?"(.*)"/,
+        ROUTE: /route(?:\s+)?=(?:\s+)?"(.*?)"/,
         CHANGE: /route-change(?:\s+)?=(?:\s+)?"(.*?)"/,
         IS_PRESERVE: /\spreserve[>\s=]/
     },

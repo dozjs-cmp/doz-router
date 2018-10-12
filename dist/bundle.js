@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.2.3  
+// [DozRouter]  Build version: 1.3.0  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -8,7 +8,7 @@
 		exports["DozRouter"] = factory(require("doz"));
 	else
 		root["DozRouter"] = factory(root["Doz"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE__1__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE__0__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -92,11 +92,17 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE__0__;
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -106,7 +112,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _doz = __webpack_require__(1);
+var _doz = __webpack_require__(0);
 
 var _doz2 = _interopRequireDefault(_doz);
 
@@ -131,12 +137,6 @@ exports.default = _src2.default;
 if (false) {}
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE__1__;
-
-/***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -159,6 +159,7 @@ var _require = __webpack_require__(3),
 var queryToObject = __webpack_require__(4);
 var clearPath = __webpack_require__(5);
 var normalizePath = __webpack_require__(6);
+var Doz = __webpack_require__(0);
 
 exports.default = {
     props: {
@@ -189,6 +190,12 @@ exports.default = {
         this.$_queryRaw = '';
         this.$_link = {};
         this.$_pauseHashListener = false;
+
+        if (typeof Doz.mixin === 'function') {
+            Doz.mixin({
+                router: this
+            });
+        }
     },
 
 
@@ -317,9 +324,21 @@ exports.default = {
 
         this.$_queryRaw = pathPart[1] || '';
 
+        var re = void 0;
+
         for (var i = 0; i < this.$_routes.length; i++) {
             var route = this.$_routes[i];
-            var re = new RegExp('^' + route.path + '$');
+
+            if (route.path === '*') {
+                if (path) {
+                    re = new RegExp('.+');
+                } else {
+                    re = new RegExp('^$');
+                }
+            } else {
+                re = new RegExp('^' + route.path + '$');
+            }
+
             var match = path.match(re);
 
             if (match) {

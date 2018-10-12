@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.3.0  
+// [DozRouter]  Build version: 1.4.0  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -161,6 +161,10 @@ var clearPath = __webpack_require__(5);
 var normalizePath = __webpack_require__(6);
 var Doz = __webpack_require__(0);
 
+function deprecate(prev, next) {
+    console.warn('[DEPRECATION]', '"' + prev + '" is deprecated use "' + next + '" instead');
+}
+
 exports.default = {
     props: {
         hash: '#',
@@ -170,7 +174,8 @@ exports.default = {
         /**
          * Base root, works only in "history" mode
          */
-        root: '/'
+        root: '/',
+        initialRedirect: ''
     },
 
     autoCreateChildren: false,
@@ -178,18 +183,18 @@ exports.default = {
     onCreate: function onCreate() {
 
         //custom properties
-        this.$_currentView = null;
-        this.$_currentViewRaw = '';
-        this.$_currentFullPath = null;
-        this.$_currentPath = null;
-        this.$_routes = [];
-        this.$_paramMap = {};
-        this.$_param = {};
-        this.$_routeNotFound = '';
-        this.$_query = {};
-        this.$_queryRaw = '';
-        this.$_link = {};
-        this.$_pauseHashListener = false;
+        this._currentView = null;
+        this._currentViewRaw = '';
+        this._currentFullPath = null;
+        this._currentPath = null;
+        this._routes = [];
+        this._paramMap = {};
+        this._param = {};
+        this._routeNotFound = '';
+        this._query = {};
+        this._queryRaw = '';
+        this._link = {};
+        this._pauseHashListener = false;
 
         if (typeof Doz.mixin === 'function') {
             Doz.mixin({
@@ -198,14 +203,13 @@ exports.default = {
         }
     },
 
-
     /**
      * Remove current view
      */
-    $removeView: function $removeView() {
-        if (this.$_currentView) {
-            this.$_currentView.destroy();
-            this.$_currentView = null;
+    removeView: function removeView() {
+        if (this._currentView) {
+            this._currentView.destroy();
+            this._currentView = null;
         }
     },
 
@@ -216,22 +220,22 @@ exports.default = {
      * @param [cb] {string} callback function name
      * @param [preserve] {boolean} preserve view
      */
-    $setView: function $setView(view, cb, preserve) {
+    setView: function setView(view, cb, preserve) {
 
-        var sameView = this.$_currentViewRaw === view;
+        var sameView = this._currentViewRaw === view;
         if (cb && sameView) {
-            var childCmp = this.$_currentView.children[0];
+            var childCmp = this._currentView.children[0];
             var cbFunc = childCmp[cb];
             if (typeof cbFunc === 'function') {
                 cbFunc.call(childCmp, this);
             }
         } else if (preserve && sameView) {
-            this.$_currentView.children[0].render();
+            this._currentView.children[0].render();
         } else {
-            this.$removeView();
-            this.$_currentView = this.mount(view);
+            this.removeView();
+            this._currentView = this.mount(view);
         }
-        this.$_currentViewRaw = view;
+        this._currentViewRaw = view;
     },
 
 
@@ -240,8 +244,8 @@ exports.default = {
      * @param property {string} property name
      * @returns {*}
      */
-    $query: function $query(property) {
-        return this.$_query[property];
+    query: function query(property) {
+        return this._query[property];
     },
 
 
@@ -250,16 +254,17 @@ exports.default = {
      * @param property {string} property name
      * @returns {*}
      */
-    $param: function $param(property) {
-        return this.$_param[property];
+    param: function param(property) {
+        return this._param[property];
     },
+
 
     /**
      * Navigate route
      * @param path {string} path to navigate
      * @param [params] {object} optional params
      */
-    $navigate: function $navigate(path, params) {
+    navigate: function navigate(path, params) {
         if (this.props.mode === 'history') {
 
             if (window[PRERENDER]) {
@@ -267,12 +272,12 @@ exports.default = {
             } else {
                 history.pushState(path, null, normalizePath(this.props.root + path));
             }
-            this.$_navigate(path, params);
+            this._navigate(path, params);
         } else {
-            this.$_pauseHashListener = true;
+            this._pauseHashListener = true;
             window.location.href = this.props.hash + path;
-            this.$_navigate(path, params);
-            this.$_pauseHashListener = false;
+            this._navigate(path, params);
+            this._pauseHashListener = false;
         }
     },
 
@@ -282,23 +287,82 @@ exports.default = {
      * @param full {boolean}
      * @returns {*}
      */
-    $currentPath: function $currentPath() {
+    currentPath: function currentPath() {
         var full = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
-        return full ? this.$_currentFullPath : this.$_currentPath;
+        return full ? this._currentFullPath : this._currentPath;
+    },
+
+
+    /**
+     * Get query url
+     * @param property {string} property name
+     * @returns {*}
+     * @deprecated in favor of query
+     */
+    $query: function $query(property) {
+        deprecate('$query', 'query');
+        return this.query(property);
+    },
+
+
+    /**
+     * Get param url
+     * @param property {string} property name
+     * @returns {*}
+     * @deprecated in favor of param
+     */
+    $param: function $param(property) {
+        deprecate('$param', 'param');
+        return this.param(property);
     },
 
 
     /**
      * Navigate route
-     * @param path {string} path to navigate
+     * @param args
+     * @deprecated in favor of navigate
+     */
+    $navigate: function $navigate() {
+        deprecate('$navigate', 'navigate');
+
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        this.navigate.apply(this, args);
+    },
+
+
+    /**
+     * Returns current path
+     * @param args
+     * @returns {*}
+     */
+    $currentPath: function $currentPath() {
+        deprecate('$currentPath', 'currentPath');
+
+        for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+            args[_key2] = arguments[_key2];
+        }
+
+        return this.currentPath.apply(this, args);
+    },
+
+
+    /**
+     * Navigate route
+     * @param path {string|null} path to navigate
      * @param [params] {object} optional params
+     * @param [initial=false] {boolean}
      * @returns {boolean}
-     * @private
      * @ignore
      */
-    $_navigate: function $_navigate(path, params) {
+    _navigate: function _navigate(path, params) {
         var _this = this;
+
+        var initial = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
 
         var found = false;
         var hashPath = window.location.hash.slice(this.props.hash.length);
@@ -315,19 +379,21 @@ exports.default = {
             path = (location.origin + path).replace(window[PRERENDER], '');
         }
 
+        if (path === '/' && initial && this.props.initialRedirect) return this.navigate(this.props.initialRedirect);
+
         fullPath = path;
 
         var pathPart = path.split('?');
         path = clearPath(pathPart[0]);
 
-        if (this.$_currentFullPath === fullPath) return false;
+        if (this._currentFullPath === fullPath) return false;
 
-        this.$_queryRaw = pathPart[1] || '';
+        this._queryRaw = pathPart[1] || '';
 
         var re = void 0;
 
-        for (var i = 0; i < this.$_routes.length; i++) {
-            var route = this.$_routes[i];
+        for (var i = 0; i < this._routes.length; i++) {
+            var route = this._routes[i];
 
             if (route.path === '*') {
                 if (path) {
@@ -344,33 +410,33 @@ exports.default = {
             if (match) {
                 found = true;
 
-                if ((typeof params === 'undefined' ? 'undefined' : _typeof(params)) === 'object') {
-                    this.$_param = Object.assign({}, params);
+                if (params && (typeof params === 'undefined' ? 'undefined' : _typeof(params)) === 'object') {
+                    this._param = Object.assign({}, params);
                 } else {
                     (function () {
-                        var param = _this.$_paramMap[route.path];
-                        _this.$_query = queryToObject(_this.$_queryRaw);
+                        var param = _this._paramMap[route.path];
+                        _this._query = queryToObject(_this._queryRaw);
                         match.slice(1).forEach(function (value, i) {
-                            _this.$_param[param[i]] = value;
+                            _this._param[param[i]] = value;
                         });
                     })();
                 }
 
-                this.$_currentPath = path;
-                this.$_currentFullPath = fullPath;
-                this.$setView(route.view, route.cb, route.preserve);
+                this._currentPath = path;
+                this._currentFullPath = fullPath;
+                this.setView(route.view, route.cb, route.preserve);
 
                 break;
             }
         }
 
         if (!found) {
-            this.$_currentPath = null;
-            this.$_currentFullPath = null;
-            this.$setView(this.$_routeNotFound || '"' + path + '" not found');
+            this._currentPath = null;
+            this._currentFullPath = null;
+            this.setView(this._routeNotFound || '"' + path + '" not found');
         }
 
-        this.$activeLink();
+        this.activeLink();
 
         return found;
     },
@@ -379,16 +445,16 @@ exports.default = {
     /**
      * Active current link
      */
-    $activeLink: function $activeLink() {
+    activeLink: function activeLink() {
         var _this2 = this;
 
-        Object.keys(this.$_link).forEach(function (link) {
-            var checkAlsoQuery = Boolean(_this2.$_link[link].length > 1 && _this2.$_queryRaw);
+        Object.keys(this._link).forEach(function (link) {
+            var checkAlsoQuery = Boolean(_this2._link[link].length > 1 && _this2._queryRaw);
 
-            _this2.$_link[link].forEach(function (el) {
+            _this2._link[link].forEach(function (el) {
                 var queryEq = true;
-                if (checkAlsoQuery) queryEq = new RegExp(_this2.$_queryRaw + '$', 'g').test(el.href);
-                if (link === _this2.$_currentPath && queryEq) el.classList.add(_this2.props.classActiveLink);else el.classList.remove(_this2.props.classActiveLink);
+                if (checkAlsoQuery) queryEq = new RegExp(_this2._queryRaw + '$', 'g').test(el.href);
+                if (link === _this2._currentPath && queryEq) el.classList.add(_this2.props.classActiveLink);else el.classList.remove(_this2.props.classActiveLink);
             });
         });
     },
@@ -399,9 +465,9 @@ exports.default = {
      * @param route {string} route path
      * @param view {string} component string
      */
-    $add: function $add(route, view) {
+    add: function add(route, view) {
         if (route === PATH.NOT_FOUND) {
-            this.$_routeNotFound = view;
+            this._routeNotFound = view;
         } else {
             var param = [];
             var path = clearPath(route);
@@ -412,7 +478,7 @@ exports.default = {
 
             // Wild card
             path = path.replace(/\/\*/g, '(?:/.*)?');
-            this.$_paramMap[path] = param;
+            this._paramMap[path] = param;
 
             var cbChange = view.match(REGEX.CHANGE);
             if (cbChange) {
@@ -421,7 +487,7 @@ exports.default = {
 
             var preserve = REGEX.IS_PRESERVE.test(view);
 
-            this.$_routes.push({ path: path, view: view, cb: cbChange, preserve: preserve });
+            this._routes.push({ path: path, view: view, cb: cbChange, preserve: preserve });
         }
     },
 
@@ -430,11 +496,11 @@ exports.default = {
      * Remove a route
      * @param path {string} route path
      */
-    $remove: function $remove(path) {
-        for (var i = 0; i < this.$_routes.length; i++) {
-            var route = this.$_routes[i];
+    remove: function remove(path) {
+        for (var i = 0; i < this._routes.length; i++) {
+            var route = this._routes[i];
             if (route.path === clearPath(path)) {
-                this.$_routes.splice(i, 1);
+                this._routes.splice(i, 1);
             }
         }
     },
@@ -443,10 +509,10 @@ exports.default = {
     /**
      * Bind all link to routing controller
      */
-    $bindLink: function $bindLink() {
+    bindLink: function bindLink() {
         var _this3 = this;
 
-        this.$_link = {};
+        this._link = {};
         document.querySelectorAll('[' + this.props.linkAttr + ']').forEach(function (el) {
             var path = el.pathname || el.href;
 
@@ -458,7 +524,7 @@ exports.default = {
                         e.preventDefault();
                         var _path = path + el.search;
                         history.pushState(_path, null, normalizePath(_this3.props.root + _path));
-                        _this3.$_navigate(_path);
+                        _this3._navigate(_path);
                     });
                 }
             } else {
@@ -466,10 +532,10 @@ exports.default = {
             }
             var pathPart = path.split('?');
             path = clearPath(pathPart[0]);
-            if (typeof _this3.$_link[path] === 'undefined') {
-                _this3.$_link[path] = [el];
+            if (typeof _this3._link[path] === 'undefined') {
+                _this3._link[path] = [el];
             } else {
-                _this3.$_link[path].push(el);
+                _this3._link[path].push(el);
             }
         });
     },
@@ -478,27 +544,27 @@ exports.default = {
 
         window.removeEventListener('popstate', window[NS.popstate]);
         window[NS.popstate] = function (e) {
-            _this4.$_navigate(e.state);
+            _this4._navigate(e.state);
         };
 
         window.removeEventListener('hashchange', window[NS.hashchange]);
         window[NS.hashchange] = function () {
-            if (!_this4.$_pauseHashListener) _this4.$_navigate();
+            if (!_this4._pauseHashListener) _this4._navigate();
         };
 
         window.removeEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
         window[NS.DOMContentLoaded] = function () {
-            _this4.$_navigate();
+            _this4._navigate(null, null, true);
         };
 
         this.rawChildren.forEach(function (view) {
             var route = view.match(REGEX.ROUTE);
             if (route) {
-                _this4.$add(route[1], view);
+                _this4.add(route[1], view);
             }
         });
 
-        this.$bindLink();
+        this.bindLink();
 
         if (this.props.mode === 'history') {
             window.addEventListener('popstate', window[NS.popstate]);
@@ -509,7 +575,7 @@ exports.default = {
         window.addEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
     },
     onMountAsync: function onMountAsync() {
-        this.$_navigate();
+        this._navigate(null, null, true);
     }
 };
 

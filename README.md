@@ -11,19 +11,14 @@ npm install --save doz-router
 ## Usage
 ```javascript
 //..
-import DozRouter from 'doz-router'
-
-//Register component
-Doz.component('doz-router', DozRouter);
+import 'doz-router'
 
 ```
 
 ## Basic example
 ```javascript
 import Doz from 'doz'
-import DozRouter from 'doz-router'
-
-Doz.component('doz-router', DozRouter);
+import 'doz-router'
 
 Doz.component('home-page', {
     template() {
@@ -160,7 +155,7 @@ Returns current path. (since 1.0.0)
 
 // A route defined like so '/user/:id'
 
-this.getCmp('my-router-id').$param('id');
+this.router.$param('id');
 ```
 
 ### $query

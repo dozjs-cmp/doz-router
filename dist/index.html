@@ -130,7 +130,7 @@
             `
         },
         onCreate() {
-            this.props.id = this.getComponentById('router').$_param['id'];
+            this.props.id = this.router.param('id');
             console.log(this.tag, 'created')
         },
         onDestroy() {
@@ -145,7 +145,7 @@
             `
         },
         onCreate() {
-            this.props.query = this.getComponentById('router').$_query['t'];
+            this.props.query = this.router.query('t');
             console.log(this.tag, 'created')
         },
         onDestroy() {
@@ -169,7 +169,7 @@
 
     Doz.component('section-page', {
         template() {
-            let id = this.getComponentById('router').$_param['id'];
+            let id = this.router.param('id');
             return `
                 <div>I'm section page index ${id}</div>
             `
@@ -184,7 +184,7 @@
 
     Doz.component('wild-page', {
         template() {
-            let currentPath = this.getComponentById('router').$currentPath();
+            let currentPath = this.router.currentPath();
             return `
                 <div>I'm wild page: ${currentPath}</div>
             `
@@ -214,23 +214,17 @@
     Doz.component('other-buttons', {
         template() {
             return `
-                <div style="color: #fff; margin: 20px">Navigate by "$navigate" method</div>
+                <div style="color: #fff; margin: 20px">Navigate by "navigate" method</div>
                 <div>
-                    <button onclick="this.$router('/about')">About</button>
-                    <button onclick="this.$router('/profile/me')">Profile</button>
-                    <button onclick="this.$router('/search/?t=hello')">Search hello</button>
+                    <button onclick="this.router.navigate('/about')">About</button>
+                    <button onclick="this.router.navigate('/profile/me')">Profile</button>
+                    <button onclick="this.router.navigate('/search/?t=hello')">Search hello</button>
                 </div>
                 <div style="color: #fff; margin: 20px">Path</div>
                 <div>
-                    <button onclick="alert(this.$currentPath())">Get current path</button>
+                    <button onclick="alert(this.router.currentPath())">Get current path</button>
                 </div>
             `
-        },
-        $router(path){
-            this.getComponentById('router').$navigate(path);
-        },
-        $currentPath(full){
-            return this.getComponentById('router').$currentPath(full);
         }
     });
 
@@ -256,7 +250,7 @@
             </nav>
             <other-buttons></other-buttons>
             <div class="container">
-                <doz-router d:id="router">
+                <doz-router>
                     <home-page route="/"></home-page>
                     <about-page route="/about"></about-page>
                     <contact-page route="/contact"></contact-page>

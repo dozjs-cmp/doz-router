@@ -4,6 +4,10 @@ const clearPath = require('./clear-path');
 const normalizePath = require('./normalize-path');
 const Doz = require('doz');
 
+function deprecate(prev, next) {
+    console.warn('[DEPRECATION]', `"${prev}" is deprecated use "${next}" instead`);
+}
+
 export default {
     props: {
         hash: '#',
@@ -13,7 +17,8 @@ export default {
         /**
          * Base root, works only in "history" mode
          */
-        root: '/'
+        root: '/',
+        initialRedirect: ''
     },
 
     autoCreateChildren: false,
@@ -21,18 +26,18 @@ export default {
     onCreate() {
 
         //custom properties
-        this.$_currentView = null;
-        this.$_currentViewRaw = '';
-        this.$_currentFullPath =  null;
-        this.$_currentPath =  null;
-        this.$_routes = [];
-        this.$_paramMap = {};
-        this.$_param = {};
-        this.$_routeNotFound = '';
-        this.$_query = {};
-        this.$_queryRaw = '';
-        this.$_link = {};
-        this.$_pauseHashListener = false;
+        this._currentView = null;
+        this._currentViewRaw = '';
+        this._currentFullPath =  null;
+        this._currentPath =  null;
+        this._routes = [];
+        this._paramMap = {};
+        this._param = {};
+        this._routeNotFound = '';
+        this._query = {};
+        this._queryRaw = '';
+        this._link = {};
+        this._pauseHashListener = false;
 
         if (typeof Doz.mixin === 'function') {
             Doz.mixin({
@@ -40,14 +45,13 @@ export default {
             })
         }
     },
-
     /**
      * Remove current view
      */
-    $removeView() {
-        if (this.$_currentView) {
-            this.$_currentView.destroy();
-            this.$_currentView = null;
+    removeView() {
+        if (this._currentView) {
+            this._currentView.destroy();
+            this._currentView = null;
         }
     },
 
@@ -57,22 +61,22 @@ export default {
      * @param [cb] {string} callback function name
      * @param [preserve] {boolean} preserve view
      */
-    $setView(view, cb, preserve) {
+    setView(view, cb, preserve) {
 
-        const sameView = this.$_currentViewRaw === view;
+        const sameView = this._currentViewRaw === view;
         if (cb && sameView) {
-            let childCmp = this.$_currentView.children[0];
+            let childCmp = this._currentView.children[0];
             let cbFunc = childCmp[cb];
             if (typeof cbFunc === 'function') {
                 cbFunc.call(childCmp, this);
             }
         } else if (preserve && sameView) {
-            this.$_currentView.children[0].render();
+            this._currentView.children[0].render();
         } else {
-            this.$removeView();
-            this.$_currentView = this.mount(view);
+            this.removeView();
+            this._currentView = this.mount(view);
         }
-        this.$_currentViewRaw = view;
+        this._currentViewRaw = view;
     },
 
     /**
@@ -80,8 +84,8 @@ export default {
      * @param property {string} property name
      * @returns {*}
      */
-    $query(property) {
-        return this.$_query[property];
+    query(property) {
+        return this._query[property];
     },
 
     /**
@@ -89,15 +93,16 @@ export default {
      * @param property {string} property name
      * @returns {*}
      */
-    $param(property) {
-        return this.$_param[property];
+    param(property) {
+        return this._param[property];
     },
+
     /**
      * Navigate route
      * @param path {string} path to navigate
      * @param [params] {object} optional params
      */
-    $navigate(path, params) {
+    navigate(path, params) {
         if (this.props.mode === 'history') {
 
             if (window[PRERENDER]) {
@@ -105,12 +110,12 @@ export default {
             } else {
                 history.pushState(path, null, normalizePath(this.props.root + path));
             }
-            this.$_navigate(path, params);
+            this._navigate(path, params);
         } else {
-            this.$_pauseHashListener = true;
+            this._pauseHashListener = true;
             window.location.href = this.props.hash + path;
-            this.$_navigate(path, params);
-            this.$_pauseHashListener = false;
+            this._navigate(path, params);
+            this._pauseHashListener = false;
         }
     },
 
@@ -119,21 +124,63 @@ export default {
      * @param full {boolean}
      * @returns {*}
      */
-    $currentPath(full = true) {
+    currentPath(full = true) {
         return full
-            ? this.$_currentFullPath
-            : this.$_currentPath
+            ? this._currentFullPath
+            : this._currentPath
+    },
+
+    /**
+     * Get query url
+     * @param property {string} property name
+     * @returns {*}
+     * @deprecated in favor of query
+     */
+    $query(property) {
+        deprecate('$query', 'query');
+        return this.query(property);
+    },
+
+    /**
+     * Get param url
+     * @param property {string} property name
+     * @returns {*}
+     * @deprecated in favor of param
+     */
+    $param(property) {
+        deprecate('$param', 'param');
+        return this.param(property);
     },
 
     /**
      * Navigate route
-     * @param path {string} path to navigate
+     * @param args
+     * @deprecated in favor of navigate
+     */
+    $navigate(...args) {
+        deprecate('$navigate', 'navigate');
+        this.navigate.apply(this, args)
+    },
+
+    /**
+     * Returns current path
+     * @param args
+     * @returns {*}
+     */
+    $currentPath(...args) {
+        deprecate('$currentPath', 'currentPath');
+        return this.currentPath.apply(this, args)
+    },
+
+    /**
+     * Navigate route
+     * @param path {string|null} path to navigate
      * @param [params] {object} optional params
+     * @param [initial=false] {boolean}
      * @returns {boolean}
-     * @private
      * @ignore
      */
-    $_navigate(path, params) {
+    _navigate(path, params, initial = false) {
 
         let found = false;
         let hashPath = window.location.hash.slice(this.props.hash.length);
@@ -151,20 +198,23 @@ export default {
             path = (location.origin + path).replace(window[PRERENDER], '');
         }
 
+        if (path === '/' && initial && this.props.initialRedirect)
+            return this.navigate(this.props.initialRedirect);
+
         fullPath =  path;
 
         let pathPart = path.split('?');
         path = clearPath(pathPart[0]);
 
-        if (this.$_currentFullPath === fullPath)
+        if (this._currentFullPath === fullPath)
             return false;
 
-        this.$_queryRaw = pathPart[1] || '';
+        this._queryRaw = pathPart[1] || '';
 
         let re;
 
-        for (let i = 0; i < this.$_routes.length; i++) {
-            let route = this.$_routes[i];
+        for (let i = 0; i < this._routes.length; i++) {
+            let route = this._routes[i];
 
             if (route.path === '*') {
                 if (path) {
@@ -181,31 +231,31 @@ export default {
             if (match) {
                 found = true;
 
-                if (typeof params === 'object') {
-                    this.$_param = Object.assign({}, params);
+                if (params && typeof params === 'object') {
+                    this._param = Object.assign({}, params);
                 } else {
-                    let param = this.$_paramMap[route.path];
-                    this.$_query = queryToObject(this.$_queryRaw);
+                    let param = this._paramMap[route.path];
+                    this._query = queryToObject(this._queryRaw);
                     match.slice(1).forEach((value, i) => {
-                        this.$_param[param[i]] = value;
+                        this._param[param[i]] = value;
                     });
                 }
 
-                this.$_currentPath = path;
-                this.$_currentFullPath = fullPath;
-                this.$setView(route.view, route.cb, route.preserve);
+                this._currentPath = path;
+                this._currentFullPath = fullPath;
+                this.setView(route.view, route.cb, route.preserve);
 
                 break;
             }
         }
 
         if (!found) {
-            this.$_currentPath = null;
-            this.$_currentFullPath = null;
-            this.$setView(this.$_routeNotFound || `"${path}" not found`);
+            this._currentPath = null;
+            this._currentFullPath = null;
+            this.setView(this._routeNotFound || `"${path}" not found`);
         }
 
-        this.$activeLink();
+        this.activeLink();
 
         return found;
     },
@@ -213,15 +263,15 @@ export default {
     /**
      * Active current link
      */
-    $activeLink() {
-        Object.keys(this.$_link).forEach(link => {
-            const checkAlsoQuery = Boolean(this.$_link[link].length > 1 && this.$_queryRaw);
+    activeLink() {
+        Object.keys(this._link).forEach(link => {
+            const checkAlsoQuery = Boolean(this._link[link].length > 1 && this._queryRaw);
 
-            this.$_link[link].forEach(el => {
+            this._link[link].forEach(el => {
                 let queryEq = true;
                 if (checkAlsoQuery)
-                    queryEq = new RegExp(`${this.$_queryRaw}$`, 'g').test(el.href);
-                if (link === this.$_currentPath && queryEq)
+                    queryEq = new RegExp(`${this._queryRaw}$`, 'g').test(el.href);
+                if (link === this._currentPath && queryEq)
                     el.classList.add(this.props.classActiveLink);
                 else
                     el.classList.remove(this.props.classActiveLink);
@@ -234,9 +284,9 @@ export default {
      * @param route {string} route path
      * @param view {string} component string
      */
-    $add(route, view) {
+    add(route, view) {
         if (route === PATH.NOT_FOUND) {
-            this.$_routeNotFound = view;
+            this._routeNotFound = view;
         } else {
             let param = [];
             let path = clearPath(route);
@@ -247,7 +297,7 @@ export default {
 
             // Wild card
             path = path.replace(/\/\*/g, '(?:/.*)?');
-            this.$_paramMap[path] = param;
+            this._paramMap[path] = param;
 
             let cbChange = view.match(REGEX.CHANGE);
             if (cbChange) {
@@ -256,7 +306,7 @@ export default {
 
             const preserve = REGEX.IS_PRESERVE.test(view);
 
-            this.$_routes.push({path, view, cb: cbChange, preserve});
+            this._routes.push({path, view, cb: cbChange, preserve});
         }
     },
 
@@ -264,11 +314,11 @@ export default {
      * Remove a route
      * @param path {string} route path
      */
-    $remove(path) {
-        for (let i = 0; i < this.$_routes.length; i++) {
-            let route = this.$_routes[i];
+    remove(path) {
+        for (let i = 0; i < this._routes.length; i++) {
+            let route = this._routes[i];
             if (route.path === clearPath(path)) {
-                this.$_routes.splice(i, 1);
+                this._routes.splice(i, 1);
             }
         }
     },
@@ -276,8 +326,8 @@ export default {
     /**
      * Bind all link to routing controller
      */
-    $bindLink() {
-        this.$_link = {};
+    bindLink() {
+        this._link = {};
         document.querySelectorAll(`[${this.props.linkAttr}]`).forEach(el => {
             let path = el.pathname || el.href;
 
@@ -289,7 +339,7 @@ export default {
                         e.preventDefault();
                         let _path = path + el.search;
                         history.pushState(_path, null, normalizePath(this.props.root + _path));
-                        this.$_navigate(_path);
+                        this._navigate(_path);
                     });
                 }
             } else {
@@ -297,10 +347,10 @@ export default {
             }
             let pathPart = path.split('?');
             path = clearPath(pathPart[0]);
-            if (typeof this.$_link[path] === 'undefined') {
-                this.$_link[path] = [el];
+            if (typeof this._link[path] === 'undefined') {
+                this._link[path] = [el];
             } else {
-                this.$_link[path].push(el);
+                this._link[path].push(el);
             }
         });
     },
@@ -308,28 +358,28 @@ export default {
     onAppReady() {
         window.removeEventListener('popstate', window[NS.popstate]);
         window[NS.popstate] = e => {
-            this.$_navigate(e.state)
+            this._navigate(e.state)
         };
 
         window.removeEventListener('hashchange', window[NS.hashchange]);
         window[NS.hashchange] = () => {
-            if (!this.$_pauseHashListener)
-                this.$_navigate()
+            if (!this._pauseHashListener)
+                this._navigate()
         };
 
         window.removeEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
         window[NS.DOMContentLoaded] = () => {
-            this.$_navigate()
+            this._navigate(null, null, true)
         };
 
         this.rawChildren.forEach(view => {
             const route = view.match(REGEX.ROUTE);
             if (route) {
-                this.$add(route[1], view)
+                this.add(route[1], view)
             }
         });
 
-        this.$bindLink();
+        this.bindLink();
 
         if (this.props.mode === 'history') {
             window.addEventListener('popstate', window[NS.popstate]);
@@ -341,6 +391,6 @@ export default {
     },
 
     onMountAsync() {
-        this.$_navigate()
+        this._navigate(null, null, true)
     }
 };

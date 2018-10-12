@@ -8,13 +8,6 @@ Live <a href="https://dozjs-cmp.github.io/doz-router/dist/index.html">here</a>
 npm install --save doz-router
 ```
 
-## Usage
-```javascript
-//..
-import 'doz-router'
-
-```
-
 ## Basic example
 ```javascript
 import Doz from 'doz'
@@ -117,17 +110,18 @@ new Doz({
 ```
 
 ## Props
-| Name | Default | Description |
-| ---- | ------- | ----------- |
-| hash | # | hash symbol |
-| class-active-link | router-link-active | css class for active router link |
-| link-attr | data-router-link | attribute that identify link |
-| mode | hash | router mode "hash" or "history" (html5 api) |
-| root | / | base root, works only in "history" mode |
+| Name | Default | Description | Since |
+| ---- | ------- | ----------- | ----- |
+| hash | # | hash symbol | |
+| class-active-link | router-link-active | css class for active router link | |
+| link-attr | data-router-link | attribute that identify link | |
+| mode | hash | router mode "hash" or "history" (html5 api) | |
+| root | / | base root, works only in "history" mode | |
+| initial-redirect |  | applies a redirect to specific path if initial path is "/" | 1.4.0 |
 
 ## Instance methods
 
-### $navigate
+### navigate
 
 | Param | Type | Default | Description |
 | ---- | ------- | ----------- | ---------- |
@@ -137,13 +131,13 @@ new Doz({
 #### Example
 
 ```javascript
-this.getCmp('my-router-id').$navigate('/about');
+this.router.navigate('/about');
 ```
 
-### $currentPath
+### currentPath
 Returns current path. (since 1.0.0)
 
-### $param
+### param
 
 | Param | Type | Default | Description |
 | ---- | ------- | ----------- | ---------- |
@@ -155,10 +149,10 @@ Returns current path. (since 1.0.0)
 
 // A route defined like so '/user/:id'
 
-this.router.$param('id');
+this.router.param('id');
 ```
 
-### $query
+### query
 
 | Param | Type | Default | Description |
 | ---- | ------- | ----------- | ---------- |
@@ -170,7 +164,7 @@ this.router.$param('id');
 
 // A route defined like so '/news/?search=tech'
 
-this.getCmp('my-router-id').$query('search');
+this.router.query('search');
 ```
 
 ## Changelog

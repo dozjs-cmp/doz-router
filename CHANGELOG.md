@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.3.0] - 2018-10-11
+- **Added** wild card support for root, now works also "/*"
+- **Added** `router` property to global mixin, now router instance is available in all components without you need call it by ID
+
 ## [1.2.3] - 2018-10-09
 - **Fixed** possible issue when set "preserve"
 

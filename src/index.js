@@ -2,6 +2,7 @@ const {REGEX, PATH, NS, PRERENDER, SSR} = require('./constants');
 const queryToObject = require('./query-to-object');
 const clearPath = require('./clear-path');
 const normalizePath = require('./normalize-path');
+const Doz = require('doz');
 
 export default {
     props: {
@@ -32,6 +33,12 @@ export default {
         this.$_queryRaw = '';
         this.$_link = {};
         this.$_pauseHashListener = false;
+
+        if (typeof Doz.mixin === 'function') {
+            Doz.mixin({
+                router: this
+            })
+        }
     },
 
     /**
@@ -154,9 +161,21 @@ export default {
 
         this.$_queryRaw = pathPart[1] || '';
 
+        let re;
+
         for (let i = 0; i < this.$_routes.length; i++) {
             let route = this.$_routes[i];
-            let re = new RegExp('^' + route.path + '$');
+
+            if (route.path === '*') {
+                if (path) {
+                    re = new RegExp('.+');
+                } else {
+                    re = new RegExp('^$')
+                }
+            } else {
+                re = new RegExp('^' + route.path + '$');
+            }
+
             let match = path.match(re);
 
             if (match) {

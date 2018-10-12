@@ -14,32 +14,32 @@ import Doz from 'doz'
 import 'doz-router'
 
 Doz.component('home-page', {
-    template() {
-        return `
+    template(h) {
+        return h`
             <div>I'm home page</div>
         `
     }
 });
 
 Doz.component('about-page', {
-    template() {
-        return `
+    template(h) {
+        return h`
             <div>I'm about page</div>
         `
     }
 });
 
 Doz.component('contact-page', {
-    template() {
-        return `
+    template(h) {
+        return h`
             <div>I'm contact page</div>
         `
     }
 });
 
 Doz.component('page-not-found', {
-    template() {
-        return `
+    template(h) {
+        return h`
             <div>Page not found</div>
         `
     }
@@ -47,20 +47,22 @@ Doz.component('page-not-found', {
 
 new Doz({
     root: '#app',
-    template: `
-        <nav>
-            <a data-router-link href="/">Home</a>
-            <a data-router-link href="/about">About</a>
-            <a data-router-link href="/contact">Contact</a>
-            <a data-router-link href="/not-found-page-bla-bla">Not found</a>
-        </nav>
-        <doz-router>
-            <home-page route="/"></home-page>
-            <about-page route="/about"></about-page>
-            <contact-page route="/contact"></contact-page>
-            <page-not-found route="*"></page-not-found>
-        </doz-router>
-    `
+    template(h) {
+        return h`
+            <nav>
+                <a data-router-link href="/">Home</a>
+                <a data-router-link href="/about">About</a>
+                <a data-router-link href="/contact">Contact</a>
+                <a data-router-link href="/not-found-page-bla-bla">Not found</a>
+            </nav>
+            <doz-router>
+                <home-page route="/"></home-page>
+                <about-page route="/about"></about-page>
+                <contact-page route="/contact"></contact-page>
+                <page-not-found route="*"></page-not-found>
+            </doz-router>
+        `
+    }
 });
 ```
 
@@ -70,11 +72,13 @@ new Doz({
 
 new Doz({
     root: '#app',
-    template: `
-        <doz-router mode="history">
-            //...
-        </doz-router>
-    `
+    template(h) {
+        return h`
+            <doz-router mode="history">
+                //...
+            </doz-router>
+        `
+    }
 });
 
 ```
@@ -85,11 +89,13 @@ new Doz({
 
 new Doz({
     root: '#app',
-    template: `
-        <doz-router>
-            <user-page route="/user/:id"></user-page>
-        </doz-router>
-    `
+    template(h) {
+        return h`
+            <doz-router>
+                <user-page route="/user/:id"></user-page>
+            </doz-router>
+        `
+    }
 });
 
 ```
@@ -100,11 +106,13 @@ new Doz({
 
 new Doz({
     root: '#app',
-    template: `
-        <doz-router>
-            <docs-page route="/docs/*"></docs-page>
-        </doz-router>
-    `
+    template(h) {
+        return h`
+            <doz-router>
+                <docs-page route="/docs/*"></docs-page>
+            </doz-router>
+        `
+    }
 });
 
 ```

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="DOZ - ROUTER">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Doz - router</title>
+    <!--script src="../node_modules/doz/dist/doz.js?589654888l30"></script-->
+    <!--script src="../doz.js?589654888l303"></script-->
+    <script src="https://unpkg.com/doz/dist/doz.js?5"></script>
+    <script src="bundle.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            padding: 20px;
+            background: #000;
+            color: #fff
+        }
+
+        nav a {
+            padding: 10px;
+            background: coral;
+            color: #000;
+            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 2px;
+        }
+
+        nav a:link {
+            text-decoration: none;
+        }
+
+        nav a.router-link-active {
+            background: blanchedalmond;
+        }
+
+        .container {
+            margin-top: 100px;
+            color: #fff;
+            font-size: 40px;
+        }
+
+        .container a {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+
+    Doz.component('home-page', {
+        template() {
+            return `
+                <div>I'm home page, same page.. with path ${this.router.currentPath()}</div>
+            `
+        },
+        onCreate() {
+            console.log(this.tag, 'created')
+        },
+        onDestroy() {
+            console.log(this.tag, 'destroyed')
+        }
+    });
+
+    Doz.component('other-buttons', {
+        template() {
+            return `
+                <div style="color: #fff; margin: 20px">Navigate by "navigate" method</div>
+                <div>
+                    <button onclick="this.router.navigate('/about')">About</button>
+                    <button onclick="this.router.navigate('/profile/me')">Profile</button>
+                </div>
+                <div style="color: #fff; margin: 20px">Path</div>
+                <div>
+                    <button onclick="alert(this.router.currentPath())">Get current path</button>
+                </div>
+            `
+        }
+    });
+
+    new Doz({
+        root: '#app',
+        template: `
+            <div>
+                <h1>Initial redirect to /about</h1>
+                <nav>
+                    <a data-router-link href="/">Home</a>
+                    <a data-router-link href="/about">About</a>
+                    <a data-router-link href="/profile/me">Profile</a>
+                    <a data-router-link href="/profile.html">.html</a>
+                </nav>
+                <other-buttons></other-buttons>
+                <div class="container">
+                    <doz-router initial-redirect="/about/">
+                        <home-page route="/*" preserve></home-page>
+                    </doz-router>
+                </div>
+            </div>
+        `
+    });
+
+</script>
+</body>
+</html>

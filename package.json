@@ -46,6 +46,7 @@
         "chai": "^4.1.2",
         "css-loader": "^0.28.11",
         "doz": "^1.6.6",
+        "doz-ssr": "^1.0.1",
         "hard-source-webpack-plugin": "^0.12.0",
         "ignore-styles": "^5.0.1",
         "jsdoc-to-markdown": "^4.0.1",

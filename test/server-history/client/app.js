@@ -1,7 +1,5 @@
 import Doz from 'doz';
-import DozRouter from '../../../index'
-
-Doz.component('doz-router', DozRouter);
+import '../../../index'
 
 Doz.component('home-page', {
     template() {
@@ -80,7 +78,7 @@ Doz.component('user-details-page', {
             `
     },
     onCreate() {
-        this.props.id = this.getComponentById('router').$_param['id'];
+        this.props.id = this.getComponentById('router')._param['id'];
         console.log(this.tag, 'created')
     },
     onDestroy() {
@@ -95,7 +93,7 @@ Doz.component('search-page', {
             `
     },
     onCreate() {
-        this.props.query = this.getComponentById('router').$_query['t'];
+        this.props.query = this.getComponentById('router')._query['t'];
         console.log(this.tag, 'created')
     },
     onDestroy() {
@@ -119,7 +117,7 @@ Doz.component('user-page', {
 
 Doz.component('section-page', {
     template() {
-        let id = this.getComponentById('router').$_param['id'];
+        let id = this.getComponentById('router')._param['id'];
         return `
                 <div>I'm section page index ${id}</div>
             `
@@ -157,7 +155,7 @@ Doz.component('navigate-buttons', {
             `
     },
     $router(path){
-        this.getComponentById('router').$navigate(path);
+        this.getComponentById('router').navigate(path);
     }
 });
 
@@ -166,19 +164,19 @@ new Doz({
     template: `
             <div class="container">
                 <nav>
-                    <a router-link href="/">Home</a> |
-                    <a router-link href="/about">About</a> |
-                    <a router-link href="/profile/me">Profile</a> |
-                    <a router-link href="/profile.html">.html</a> |
-                    <a router-link href="/user/">User</a> |
-                    <a router-link href="/search/?t=hello">Search hello</a> |
-                    <a router-link href="/search/?t=ciao">Search ciao</a> |
-                    <a router-link href="/contact">Contact</a> |
-                    <a router-link href="/not-found-page-bla-bla">Not found</a> |
-                    <a router-link href="/section/1">Section 1</a> |
-                    <a router-link href="/section/2">Section 2</a> |
-                    <a router-link href="/section/3">Section 3</a> |
-                    <a router-link href="/section/4">Section 4</a>
+                    <a data-router-link href="/">Home</a> |
+                    <a data-router-link href="/about">About</a> |
+                    <a data-router-link href="/profile/me">Profile</a> |
+                    <a data-router-link href="/profile.html">.html</a> |
+                    <a data-router-link href="/user/">User</a> |
+                    <a data-router-link href="/search/?t=hello">Search hello</a> |
+                    <a data-router-link href="/search/?t=ciao">Search ciao</a> |
+                    <a data-router-link href="/contact">Contact</a> |
+                    <a data-router-link href="/not-found-page-bla-bla">Not found</a> |
+                    <a data-router-link href="/section/1">Section 1</a> |
+                    <a data-router-link href="/section/2">Section 2</a> |
+                    <a data-router-link href="/section/3">Section 3</a> |
+                    <a data-router-link href="/section/4">Section 4</a>
                 </nav>
                 <navigate-buttons></navigate-buttons>
                 <doz-router d:id="router" mode="history">

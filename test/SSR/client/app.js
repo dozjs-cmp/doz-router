@@ -1,5 +1,5 @@
 import Doz from 'doz';
-import DozRouter from '../../../index'
+import '../../../index'
 
 Doz.component('home-page', {
     template() {
@@ -78,7 +78,7 @@ Doz.component('user-details-page', {
             `
     },
     onCreate() {
-        this.props.id = this.getComponentById('router').$_param['id'];
+        this.props.id = this.getComponentById('router')._param['id'];
         console.log(this.tag, 'created')
     },
     onDestroy() {
@@ -93,7 +93,7 @@ Doz.component('search-page', {
             `
     },
     onCreate() {
-        this.props.query = this.getComponentById('router').$_query['t'];
+        this.props.query = this.getComponentById('router')._query['t'];
         console.log(this.tag, 'created')
     },
     onDestroy() {
@@ -117,7 +117,7 @@ Doz.component('user-page', {
 
 Doz.component('section-page', {
     template() {
-        let id = this.getComponentById('router').$_param['id'];
+        let id = this.getComponentById('router')._param['id'];
         return `
                 <div>I'm section page index ${id}</div>
             `
@@ -155,7 +155,7 @@ Doz.component('navigate-buttons', {
             `
     },
     $router(path){
-        this.getComponentById('router').$navigate(path);
+        this.getComponentById('router').navigate(path);
     }
 });
 
@@ -179,7 +179,7 @@ new Doz({
                     <a router-link href="/section/4">Section 4</a>
                 </nav>
                 <navigate-buttons></navigate-buttons>
-                <doz-router d:id="router" mode="history">
+                <doz-router d:id="router" mode="history" initial-redirect="/about">
                     <home-page route="/"></home-page>
                     <about-page route="/about"></about-page>
                     <contact-page route="/contact"></contact-page>

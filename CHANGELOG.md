@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.4.1] - 2018-10-11
+- **Fixed** `initial-redirect` issue when use SSR o PRE-RENDER
+
 ## [1.4.0] - 2018-10-11
 - **Added** `initial-redirect` props
 - **Added** wild card support for root, now works also "/*"

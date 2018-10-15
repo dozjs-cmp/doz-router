@@ -50,10 +50,10 @@ new Doz({
     template(h) {
         return h`
             <nav>
-                <a data-router-link href="/">Home</a>
-                <a data-router-link href="/about">About</a>
-                <a data-router-link href="/contact">Contact</a>
-                <a data-router-link href="/not-found-page-bla-bla">Not found</a>
+                <a data-router-link="true" href="/">Home</a>
+                <a data-router-link="true" href="/about">About</a>
+                <a data-router-link="true" href="/contact">Contact</a>
+                <a data-router-link="true" href="/not-found-page-bla-bla">Not found</a>
             </nav>
             <doz-router>
                 <home-page route="/"></home-page>

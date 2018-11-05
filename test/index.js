@@ -80,6 +80,10 @@ describe('doz-router', function () {
             be.err.equal(DozRouter._query.b, 'world');
         });
 
+        it('should be ok with a cache-buster "/search/?123456"', function () {
+            DozRouter._navigate('/search/?123456');
+        });
+
         it('should be "/user/:id"', function () {
             DozRouter._navigate('/user/10');
             be.err.equal(DozRouter._param.id, '10');

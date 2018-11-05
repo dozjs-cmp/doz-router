@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.4.1  
+// [DozRouter]  Build version: 1.4.2  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -612,7 +612,7 @@ module.exports = {
 
 
 module.exports = function (query) {
-    if (query) return JSON.parse('{"' + query.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
+    if (query && /=/.test(query)) return JSON.parse('{"' + query.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
         return key === '' ? value : decodeURIComponent(value);
     });else return {};
 };

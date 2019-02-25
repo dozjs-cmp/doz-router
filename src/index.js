@@ -13,6 +13,7 @@ export default {
         hash: '#',
         classActiveLink: 'router-link-active',
         linkAttr: 'data-router-link',
+        isLinkAttr: 'data-is-router-link',
         mode: 'hash',
         /**
          * Base root, works only in "history" mode
@@ -329,7 +330,7 @@ export default {
      */
     bindLink() {
         this._link = {};
-        document.querySelectorAll(`[${this.props.linkAttr}]`).forEach(el => {
+        document.querySelectorAll(`[${this.props.linkAttr}]:not([${this.props.isLinkAttr}])`).forEach(el => {
             let path = el.pathname || el.href;
 
             el.dataset.isRouterLink = 'true';

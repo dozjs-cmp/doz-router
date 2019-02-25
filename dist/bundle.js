@@ -516,6 +516,8 @@ exports.default = {
         document.querySelectorAll('[' + this.props.linkAttr + ']').forEach(function (el) {
             var path = el.pathname || el.href;
 
+            el.dataset.isRouterLink = 'true';
+
             if (_this3.props.mode === 'history') {
 
                 if (el.pathname) {

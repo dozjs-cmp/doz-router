@@ -332,6 +332,8 @@ export default {
         document.querySelectorAll(`[${this.props.linkAttr}]`).forEach(el => {
             let path = el.pathname || el.href;
 
+            el.dataset.isRouterLink = 'true';
+
             if (this.props.mode === 'history') {
 
                 if (el.pathname) {

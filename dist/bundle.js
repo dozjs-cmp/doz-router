@@ -513,7 +513,6 @@ exports.default = {
     bindLink: function bindLink() {
         var _this3 = this;
 
-        this._link = {};
         document.querySelectorAll('[' + this.props.linkAttr + ']:not([' + this.props.isLinkAttr + '])').forEach(function (el) {
             var path = el.pathname || el.href;
 

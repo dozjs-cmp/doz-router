@@ -78,6 +78,9 @@
         },
         onDestroy() {
             console.log(this.tag, 'destroyed')
+        },
+        onMount() {
+            this.router.bindLink();
         }
     });
 

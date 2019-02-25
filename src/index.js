@@ -329,7 +329,6 @@ export default {
      * Bind all link to routing controller
      */
     bindLink() {
-        this._link = {};
         document.querySelectorAll(`[${this.props.linkAttr}]:not([${this.props.isLinkAttr}])`).forEach(el => {
             let path = el.pathname || el.href;
 

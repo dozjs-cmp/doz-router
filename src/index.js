@@ -335,9 +335,9 @@ export default {
             if (this.props.mode === 'history') {
 
                 if (el.pathname) {
-                    path = el.pathname = this.props.root + el.pathname;
+                    path = el.pathname = normalizePath(this.props.root + el.pathname);
                 } else if (el.href) {
-                    path = el.href = this.props.root + el.href;
+                    path = el.href = normalizePath(this.props.root + el.href);
                 }
 
                 let _path = path + el.search;
@@ -347,7 +347,7 @@ export default {
                 } else {
                     el.addEventListener('click', e => {
                         e.preventDefault();
-                        history.pushState(_path, null, normalizePath(_path));
+                        history.pushState(_path, null, _path);
                         this._navigate(_path);
                     });
                 }

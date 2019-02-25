@@ -519,9 +519,9 @@ exports.default = {
             if (_this3.props.mode === 'history') {
 
                 if (el.pathname) {
-                    path = el.pathname = _this3.props.root + el.pathname;
+                    path = el.pathname = normalizePath(_this3.props.root + el.pathname);
                 } else if (el.href) {
-                    path = el.href = _this3.props.root + el.href;
+                    path = el.href = normalizePath(_this3.props.root + el.href);
                 }
 
                 var _path = path + el.search;
@@ -531,7 +531,7 @@ exports.default = {
                 } else {
                     el.addEventListener('click', function (e) {
                         e.preventDefault();
-                        history.pushState(_path, null, normalizePath(_path));
+                        history.pushState(_path, null, _path);
                         _this3._navigate(_path);
                     });
                 }

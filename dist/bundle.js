@@ -517,19 +517,28 @@ exports.default = {
             var path = el.pathname || el.href;
 
             if (_this3.props.mode === 'history') {
+
+                if (el.pathname) {
+                    path = el.pathname = _this3.props.root + el.pathname;
+                } else if (el.href) {
+                    path = el.href = _this3.props.root + el.href;
+                }
+
+                var _path = path + el.search;
+
                 if (window[PRERENDER]) {
                     //el.href = this.props.root + path + el.search;
                 } else {
                     el.addEventListener('click', function (e) {
                         e.preventDefault();
-                        var _path = path + el.search;
-                        history.pushState(_path, null, normalizePath(_this3.props.root + _path));
+                        history.pushState(_path, null, normalizePath(_path));
                         _this3._navigate(_path);
                     });
                 }
             } else {
                 el.href = _this3.props.hash + path + el.search;
             }
+
             var pathPart = path.split('?');
             path = clearPath(pathPart[0]);
             if (typeof _this3._link[path] === 'undefined') {

@@ -333,19 +333,28 @@ export default {
             let path = el.pathname || el.href;
 
             if (this.props.mode === 'history') {
+
+                if (el.pathname) {
+                    path = el.pathname = this.props.root + el.pathname;
+                } else if (el.href) {
+                    path = el.href = this.props.root + el.href;
+                }
+
+                let _path = path + el.search;
+
                 if (window[PRERENDER]) {
                     //el.href = this.props.root + path + el.search;
                 } else {
                     el.addEventListener('click', e => {
                         e.preventDefault();
-                        let _path = path + el.search;
-                        history.pushState(_path, null, normalizePath(this.props.root + _path));
+                        history.pushState(_path, null, normalizePath(_path));
                         this._navigate(_path);
                     });
                 }
             } else {
                 el.href = this.props.hash + path + el.search;
             }
+
             let pathPart = path.split('?');
             path = clearPath(pathPart[0]);
             if (typeof this._link[path] === 'undefined') {

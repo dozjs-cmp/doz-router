@@ -513,7 +513,7 @@ exports.default = {
     bindLink: function bindLink() {
         var _this3 = this;
 
-        document.querySelectorAll('[' + this.props.linkAttr + ']:not([' + this.props.isLinkAttr + '])').forEach(function (el) {
+        window.document.querySelectorAll('[' + this.props.linkAttr + ']:not([' + this.props.isLinkAttr + '])').forEach(function (el) {
             var path = el.pathname || el.href;
 
             el.dataset.isRouterLink = 'true';

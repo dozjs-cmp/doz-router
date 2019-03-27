@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.5.0] - 2019-03-27
+- **Added** support to file protocol
+
 ## [1.4.4] - 2018-11-09
 - **Fixed** possible issue when set `root` property
 

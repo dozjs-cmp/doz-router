@@ -203,6 +203,9 @@ export default {
             path = (location.origin + path).replace(window[PRERENDER], '');
         }
 
+        if (location.protocol === 'file:')
+            path = path.substr(3);
+
         fullPath =  path;
 
         let pathPart = path.split('?');

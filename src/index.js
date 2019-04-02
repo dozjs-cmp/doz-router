@@ -26,6 +26,8 @@ export default {
 
     onCreate() {
 
+        console.log(this.props.noDestroy)
+
         //custom properties
         this._currentView = null;
         this._currentViewRaw = '';
@@ -192,8 +194,6 @@ export default {
 
         if (this.props.mode === 'history')
             path = historyPath;
-
-        console.log('path', path, initial);
 
         if (!window[PRERENDER] && !window[SSR])
             if ((path === '/' || path === '') && initial && this.props.initialRedirect)

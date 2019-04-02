@@ -26,13 +26,11 @@ export default {
 
     onCreate() {
 
-        console.log(this.props.noDestroy)
-
         //custom properties
         this._currentView = null;
         this._currentViewRaw = '';
-        this._currentFullPath =  null;
-        this._currentPath =  null;
+        this._currentFullPath = null;
+        this._currentPath = null;
         this._routes = [];
         this._paramMap = {};
         this._param = {};
@@ -41,6 +39,8 @@ export default {
         this._queryRaw = '';
         this._link = {};
         this._pauseHashListener = false;
+        this._noDestroy = this.props.hasOwnProperty('noDestroy');
+        this._noDestroyedInstaces = {};
 
         if (typeof Doz.mixin === 'function') {
             Doz.mixin({
@@ -53,7 +53,12 @@ export default {
      */
     removeView() {
         if (this._currentView) {
-            this._currentView.destroy();
+            if (this._noDestroy) {
+                let noDestroyInstance = this._currentView.unmount();
+                this._noDestroyedInstaces[noDestroyInstance.rawChildren[0]] = noDestroyInstance;
+            } else {
+                this._currentView.destroy();
+            }
             this._currentView = null;
         }
     },
@@ -77,7 +82,9 @@ export default {
             this._currentView.children[0].render();
         } else {
             this.removeView();
-            this._currentView = this.mount(view);
+            this._currentView = this._noDestroy && this._noDestroyedInstaces[view]
+                ? this._noDestroyedInstaces[view].mount()
+                : this.mount(view);
         }
         this._currentViewRaw = view;
     },
@@ -208,7 +215,7 @@ export default {
         if (location.protocol === 'file:')
             path = path.substr(3);
 
-        fullPath =  path;
+        fullPath = path;
 
         let pathPart = path.split('?');
         path = clearPath(pathPart[0]);

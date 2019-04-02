@@ -196,6 +196,8 @@ exports.default = {
         this._queryRaw = '';
         this._link = {};
         this._pauseHashListener = false;
+        this._noDestroy = this.props.hasOwnProperty('noDestroy');
+        this._noDestroyedInstaces = {};
 
         if (typeof Doz.mixin === 'function') {
             Doz.mixin({
@@ -209,7 +211,12 @@ exports.default = {
      */
     removeView: function removeView() {
         if (this._currentView) {
-            this._currentView.destroy();
+            if (this._noDestroy) {
+                var noDestroyInstance = this._currentView.unmount();
+                this._noDestroyedInstaces[noDestroyInstance.rawChildren[0]] = noDestroyInstance;
+            } else {
+                this._currentView.destroy();
+            }
             this._currentView = null;
         }
     },
@@ -234,7 +241,7 @@ exports.default = {
             this._currentView.children[0].render();
         } else {
             this.removeView();
-            this._currentView = this.mount(view);
+            this._currentView = this._noDestroy && this._noDestroyedInstaces[view] ? this._noDestroyedInstaces[view].mount() : this.mount(view);
         }
         this._currentViewRaw = view;
     },
@@ -374,7 +381,7 @@ exports.default = {
 
         if (this.props.mode === 'history') path = historyPath;
 
-        if (!window[PRERENDER] && !window[SSR]) if (path === '/' && initial && this.props.initialRedirect) return this.navigate(this.props.initialRedirect);
+        if (!window[PRERENDER] && !window[SSR]) if ((path === '/' || path === '') && initial && this.props.initialRedirect) return this.navigate(this.props.initialRedirect);
 
         path = window[SSR] || path;
 

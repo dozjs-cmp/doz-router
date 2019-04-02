@@ -193,8 +193,10 @@ export default {
         if (this.props.mode === 'history')
             path = historyPath;
 
+        console.log('path', path, initial);
+
         if (!window[PRERENDER] && !window[SSR])
-            if (path === '/' && initial && this.props.initialRedirect)
+            if ((path === '/' || path === '') && initial && this.props.initialRedirect)
                 return this.navigate(this.props.initialRedirect);
 
         path = window[SSR] || path;

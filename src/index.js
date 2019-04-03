@@ -40,7 +40,7 @@ export default {
         this._link = {};
         this._pauseHashListener = false;
         this._noDestroy = this.props.hasOwnProperty('noDestroy');
-        this._noDestroyedInstaces = {};
+        this._noDestroyedInstances = {};
 
         if (typeof Doz.mixin === 'function') {
             Doz.mixin({
@@ -55,7 +55,7 @@ export default {
         if (this._currentView) {
             if (this._noDestroy) {
                 let noDestroyInstance = this._currentView.unmount();
-                this._noDestroyedInstaces[noDestroyInstance.rawChildren[0]] = noDestroyInstance;
+                this._noDestroyedInstances[noDestroyInstance.rawChildren[0]] = noDestroyInstance;
             } else {
                 this._currentView.destroy();
             }
@@ -82,8 +82,8 @@ export default {
             this._currentView.children[0].render();
         } else {
             this.removeView();
-            this._currentView = this._noDestroy && this._noDestroyedInstaces[view]
-                ? this._noDestroyedInstaces[view].mount()
+            this._currentView = this._noDestroy && this._noDestroyedInstances[view]
+                ? this._noDestroyedInstances[view].mount()
                 : this.mount(view);
         }
         this._currentViewRaw = view;

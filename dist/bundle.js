@@ -389,7 +389,7 @@ exports.default = {
             path = (location.origin + path).replace(window[PRERENDER], '');
         }
 
-        if (location.protocol === 'file:') path = path.substr(3);
+        if (location.protocol === 'file:' && !initial) path = path.substr(3);
 
         fullPath = path;
 

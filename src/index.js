@@ -212,7 +212,7 @@ export default {
             path = (location.origin + path).replace(window[PRERENDER], '');
         }
 
-        if (location.protocol === 'file:' && !initial)
+        if (location.protocol === 'file:' && path.includes(':'))
             path = path.substr(3);
 
         fullPath = path;

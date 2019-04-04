@@ -56,10 +56,10 @@ new Doz({
                 <a data-router-link="true" href="/not-found-page-bla-bla">Not found</a>
             </nav>
             <doz-router>
-                <home-page route="/"></home-page>
-                <about-page route="/about"></about-page>
-                <contact-page route="/contact"></contact-page>
-                <page-not-found route="*"></page-not-found>
+                <home-page route="/"/>
+                <about-page route="/about"/>
+                <contact-page route="/contact"/>
+                <page-not-found route="*"/>
             </doz-router>
         `
     }
@@ -92,7 +92,7 @@ new Doz({
     template(h) {
         return h`
             <doz-router>
-                <user-page route="/user/:id"></user-page>
+                <user-page route="/user/:id"/>
             </doz-router>
         `
     }
@@ -109,7 +109,7 @@ new Doz({
     template(h) {
         return h`
             <doz-router>
-                <docs-page route="/docs/*"></docs-page>
+                <docs-page route="/docs/*"/>
             </doz-router>
         `
     }
@@ -126,6 +126,7 @@ new Doz({
 | mode | hash | router mode "hash" or "history" (html5 api) | |
 | root | / | base root, works only in "history" mode | |
 | initial-redirect |  | applies a redirect to specific path if initial path is "/" | 1.4.0 |
+| no-destroy |  | when a route change the component will not destroyed but only unmounted from the DOM, so the state will not change | 1.6.0 |
 
 ## Instance methods
 

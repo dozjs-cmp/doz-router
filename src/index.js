@@ -212,8 +212,7 @@ export default {
             path = (location.origin + path).replace(window[PRERENDER], '');
         }
 
-        if (location.protocol === 'file:' && path.includes(':'))
-            path = path.substr(3);
+        path = this.electronFixer(path);
 
         fullPath = path;
 
@@ -285,12 +284,21 @@ export default {
                 let queryEq = true;
                 if (checkAlsoQuery)
                     queryEq = new RegExp(`${this._queryRaw}$`, 'g').test(el.href);
+
+                link = this.electronFixer(link);
+
                 if (link === this._currentPath && queryEq)
                     el.classList.add(this.props.classActiveLink);
                 else
                     el.classList.remove(this.props.classActiveLink);
             });
         });
+    },
+
+    electronFixer(path) {
+        if (location.protocol === 'file:' && path.includes(':'))
+            path = path.substr(3);
+        return path;
     },
 
     /**

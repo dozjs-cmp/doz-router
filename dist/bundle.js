@@ -389,7 +389,7 @@ exports.default = {
             path = (location.origin + path).replace(window[PRERENDER], '');
         }
 
-        if (location.protocol === 'file:' && path.includes(':')) path = path.substr(3);
+        path = this.electronFixer(path);
 
         fullPath = path;
 
@@ -464,9 +464,16 @@ exports.default = {
             _this2._link[link].forEach(function (el) {
                 var queryEq = true;
                 if (checkAlsoQuery) queryEq = new RegExp(_this2._queryRaw + '$', 'g').test(el.href);
+
+                link = _this2.electronFixer(link);
+
                 if (link === _this2._currentPath && queryEq) el.classList.add(_this2.props.classActiveLink);else el.classList.remove(_this2.props.classActiveLink);
             });
         });
+    },
+    electronFixer: function electronFixer(path) {
+        if (location.protocol === 'file:' && path.includes(':')) path = path.substr(3);
+        return path;
     },
 
 

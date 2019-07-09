@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.6.1  
+// [DozRouter]  Build version: 1.6.2  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -401,6 +401,10 @@ exports.default = {
         this._queryRaw = pathPart[1] || '';
 
         var re = void 0;
+
+        if ((path === '/' || path === '') && initial && this.props.initialRedirect) {
+            path = normalizePath(clearPath(this.props.root) + this.props.initialRedirect);
+        }
 
         for (var i = 0; i < this._routes.length; i++) {
             var route = this._routes[i];

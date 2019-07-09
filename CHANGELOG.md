@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.6.2] - 2019-07-09
+- **Fixed** an issue with `initial-redirect` and Doz 1.20.x
+
 ## [1.6.1] - 2019-04-06
 - **Fixed** active link in Electron environment
 

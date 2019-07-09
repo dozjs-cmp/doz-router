@@ -226,6 +226,10 @@ export default {
 
         let re;
 
+        if ((path === '/' || path === '') && initial && this.props.initialRedirect) {
+            path = normalizePath(clearPath(this.props.root) + this.props.initialRedirect);
+        }
+
         for (let i = 0; i < this._routes.length; i++) {
             let route = this._routes[i];
 

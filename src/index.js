@@ -240,7 +240,7 @@ export default {
                     re = new RegExp('^$')
                 }
             } else {
-                re = new RegExp('^' + route.path + '$');
+                re = new RegExp('^\/?' + route.path + '$');
             }
 
             let match = path.match(re);

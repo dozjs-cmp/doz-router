@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.6.2  
+// [DozRouter]  Build version: 1.6.3  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -416,7 +416,7 @@ exports.default = {
                     re = new RegExp('^$');
                 }
             } else {
-                re = new RegExp('^' + route.path + '$');
+                re = new RegExp('^\/?' + route.path + '$');
             }
 
             var match = path.match(re);

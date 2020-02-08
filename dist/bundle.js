@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.6.3  
+// [DozRouter]  Build version: 1.6.4  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -614,7 +614,6 @@ exports.default = {
         window.addEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
     },
     onMountAsync: function onMountAsync() {
-        //console.log('adfdsf')
         this._navigate(null, null, true);
     }
 };

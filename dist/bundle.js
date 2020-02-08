@@ -271,14 +271,15 @@ exports.default = {
      * Navigate route
      * @param path {string} path to navigate
      * @param [params] {object} optional params
+     * @param [forceReplaceState] {boolean}
      */
-    navigate: function navigate(path, params) {
+    navigate: function navigate(path, params, forceReplaceState) {
         if (this.props.mode === 'history') {
 
             if (window[PRERENDER]) {
                 history.pushState(path, null, normalizePath(window[PRERENDER].replace(location.origin, '') + path));
             } else {
-                history.pushState(path, null, normalizePath(this.props.root + path));
+                if (forceReplaceState) return history.replaceState(path, null, normalizePath(this.props.root + path));else history.pushState(path, null, normalizePath(this.props.root + path));
             }
             this._navigate(path, params);
         } else {
@@ -575,7 +576,9 @@ exports.default = {
 
         window.removeEventListener('popstate', window[NS.popstate]);
         window[NS.popstate] = function (e) {
-            _this4._navigate(e.state);
+            var route = e.state;
+            if (route == null && _this4.props.initialRedirect) return _this4.navigate(_this4.props.initialRedirect, {}, true);
+            _this4._navigate(route);
         };
 
         window.removeEventListener('hashchange', window[NS.hashchange]);
@@ -595,6 +598,11 @@ exports.default = {
             }
         });
 
+        /* console.log(this.rawChildren);
+         console.log(this.parent);*/
+        //console.log(this.parent._prev.children)
+        //console.log(JSON.stringify(this.parent._prev.children, null, 4));
+
         this.bindLink();
 
         if (this.props.mode === 'history') {
@@ -606,6 +614,7 @@ exports.default = {
         window.addEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
     },
     onMountAsync: function onMountAsync() {
+        //console.log('adfdsf')
         this._navigate(null, null, true);
     }
 };

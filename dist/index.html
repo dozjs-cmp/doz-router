@@ -54,8 +54,8 @@
 <script>
 
     Doz.component('home-page', {
-        template() {
-            return `
+        template(h) {
+            return h`
                 <div>I'm home page</div>
             `
         },
@@ -68,8 +68,8 @@
     });
 
     Doz.component('about-page', {
-        template() {
-            return `
+        template(h) {
+            return h`
                 <div>I'm about page</div>
             `
         },
@@ -82,8 +82,8 @@
     });
 
     Doz.component('extension-page', {
-        template() {
-            return `
+        template(h) {
+            return h`
                 <div>I'm .html page</div>
             `
         },
@@ -96,8 +96,8 @@
     });
 
     Doz.component('contact-page', {
-        template() {
-            return `
+        template(h) {
+            return h`
                 <div>I'm contact page</div>
             `
         },
@@ -110,8 +110,8 @@
     });
 
     Doz.component('profile-page', {
-        template() {
-            return `
+        template(h) {
+            return h`
                 <div>I'm profile me page</div>
             `
         },
@@ -124,8 +124,8 @@
     });
 
     Doz.component('user-details-page', {
-        template() {
-            return `
+        template(h) {
+            return h`
                 <div>I'm user page with id "${this.props.id}", <a href="javascript:history.back()">back</a></div>
             `
         },
@@ -139,8 +139,8 @@
     });
 
     Doz.component('search-page', {
-        template() {
-            return `
+        template(h) {
+            return h`
                 <div>I'm search page with query "${this.props.query}"</div>
             `
         },
@@ -154,8 +154,8 @@
     });
 
     Doz.component('user-page', {
-        template() {
-            return `
+        template(h) {
+            return h`
                 <div>I'm user page index, <a href="#/user/10">show id 10</a></div>
             `
         },
@@ -168,9 +168,9 @@
     });
 
     Doz.component('section-page', {
-        template() {
+        template(h) {
             let id = this.router.param('id');
-            return `
+            return h`
                 <div>I'm section page index ${id}</div>
             `
         },
@@ -183,9 +183,9 @@
     });
 
     Doz.component('wild-page', {
-        template() {
+        template(h) {
             let currentPath = this.router.currentPath();
-            return `
+            return h`
                 <div>I'm wild page: ${currentPath}</div>
             `
         },
@@ -198,8 +198,8 @@
     });
 
     Doz.component('not-found-page', {
-        template() {
-            return `
+        template(h) {
+            return h`
                 <div>404 page not found</div>
             `
         },
@@ -212,8 +212,8 @@
     });
 
     Doz.component('other-buttons', {
-        template() {
-            return `
+        template(h) {
+            return h`
                 <div style="color: #fff; margin: 20px">Navigate by "navigate" method</div>
                 <div>
                     <button onclick="this.router.navigate('/about')">About</button>
@@ -230,7 +230,7 @@
 
     new Doz({
         root: '#app',
-        template: `
+        template(h){ return h`
             <nav>
                 <a data-router-link href="/">Home</a>
                 <a data-router-link href="/about">About</a>
@@ -264,7 +264,7 @@
                     <wild-page route="/wild/*" preserve></wild-page>
                 </doz-router>
             </div>
-        `
+        `}
     });
 
 </script>

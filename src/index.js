@@ -111,14 +111,18 @@ export default {
      * Navigate route
      * @param path {string} path to navigate
      * @param [params] {object} optional params
+     * @param [forceReplaceState] {boolean}
      */
-    navigate(path, params) {
+    navigate(path, params, forceReplaceState) {
         if (this.props.mode === 'history') {
 
             if (window[PRERENDER]) {
                 history.pushState(path, null, normalizePath(window[PRERENDER].replace(location.origin, '') + path));
             } else {
-                history.pushState(path, null, normalizePath(this.props.root + path));
+                if (forceReplaceState)
+                    return history.replaceState(path, null, normalizePath(this.props.root + path));
+                else
+                    history.pushState(path, null, normalizePath(this.props.root + path));
             }
             this._navigate(path, params);
         } else {
@@ -394,7 +398,10 @@ export default {
     onAppReady() {
         window.removeEventListener('popstate', window[NS.popstate]);
         window[NS.popstate] = e => {
-            this._navigate(e.state)
+            let route = e.state;
+            if(route == null && this.props.initialRedirect)
+                return this.navigate(this.props.initialRedirect, {}, true);
+            this._navigate(route);
         };
 
         window.removeEventListener('hashchange', window[NS.hashchange]);
@@ -414,6 +421,11 @@ export default {
                 this.add(route[1], view)
             }
         });
+
+       /* console.log(this.rawChildren);
+        console.log(this.parent);*/
+       //console.log(this.parent._prev.children)
+        //console.log(JSON.stringify(this.parent._prev.children, null, 4));
 
         this.bindLink();
 

@@ -436,6 +436,7 @@ export default {
 
         if (this.rawChildrenObject && this.rawChildrenObject.length) {
             this.rawChildrenObject.forEach(view => {
+                if (!view || typeof view !== 'object') return;
                 let route = view.props.route;
                 //console.log(route, view)
                 if (route) {

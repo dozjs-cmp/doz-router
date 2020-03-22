@@ -329,12 +329,29 @@ export default {
             path = path.replace(/\/\*/g, '(?:/.*)?');
             this._paramMap[path] = param;
 
+            /*
             let cbChange = view.match(REGEX.CHANGE);
             if (cbChange) {
                 cbChange = cbChange[1]
             }
 
             const preserve = REGEX.IS_PRESERVE.test(view);
+            */
+
+            let cbChange = null;
+            let preserve = false;
+
+            if (typeof view === 'string') {
+                cbChange = view.match(REGEX.CHANGE);
+                preserve = REGEX.IS_PRESERVE.test(view);
+            } else {
+                cbChange = view.props['route-change'];
+                preserve = view.props['preserve'];
+            }
+
+            if (cbChange) {
+                cbChange = cbChange[1];
+            }
 
             this._routes.push({path, view, cb: cbChange, preserve});
         }
@@ -415,13 +432,33 @@ export default {
             this._navigate(null, null, true)
         };
 
+        //console.log(this.rawChildrenObject)
+
+        if (this.rawChildrenObject && this.rawChildrenObject.length) {
+            this.rawChildrenObject.forEach(view => {
+                let route = view.props.route;
+                //console.log(route, view)
+                if (route) {
+                    this.add(route, view);
+                }
+            });
+        } else {
+            this.rawChildren.forEach(view => {
+                let route = view.match(REGEX.ROUTE);
+                if (route) {
+                    this.add(route[1], view);
+                }
+            });
+        }
+
+        /*
         this.rawChildren.forEach(view => {
             const route = view.match(REGEX.ROUTE);
             if (route) {
                 this.add(route[1], view)
             }
         });
-
+        */
        /* console.log(this.rawChildren);
         console.log(this.parent);*/
        //console.log(this.parent._prev.children)

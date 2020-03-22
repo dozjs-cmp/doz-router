@@ -502,12 +502,28 @@ exports.default = {
             path = path.replace(/\/\*/g, '(?:/.*)?');
             this._paramMap[path] = param;
 
-            var cbChange = view.match(REGEX.CHANGE);
+            /*
+            let cbChange = view.match(REGEX.CHANGE);
+            if (cbChange) {
+                cbChange = cbChange[1]
+            }
+              const preserve = REGEX.IS_PRESERVE.test(view);
+            */
+
+            var cbChange = null;
+            var preserve = false;
+
+            if (typeof view === 'string') {
+                cbChange = view.match(REGEX.CHANGE);
+                preserve = REGEX.IS_PRESERVE.test(view);
+            } else {
+                cbChange = view.props['route-change'];
+                preserve = view.props['preserve'];
+            }
+
             if (cbChange) {
                 cbChange = cbChange[1];
             }
-
-            var preserve = REGEX.IS_PRESERVE.test(view);
 
             this._routes.push({ path: path, view: view, cb: cbChange, preserve: preserve });
         }
@@ -591,13 +607,33 @@ exports.default = {
             _this4._navigate(null, null, true);
         };
 
-        this.rawChildren.forEach(function (view) {
-            var route = view.match(REGEX.ROUTE);
+        console.log(this.rawChildrenObject);
+
+        if (this.rawChildrenObject && this.rawChildrenObject.length) {
+            this.rawChildrenObject.forEach(function (view) {
+                var route = view.props.route;
+                //console.log(route, view)
+                if (route) {
+                    _this4.add(route, view);
+                }
+            });
+        } else {
+            this.rawChildren.forEach(function (view) {
+                var route = view.match(REGEX.ROUTE);
+                if (route) {
+                    _this4.add(route[1], view);
+                }
+            });
+        }
+
+        /*
+        this.rawChildren.forEach(view => {
+            const route = view.match(REGEX.ROUTE);
             if (route) {
-                _this4.add(route[1], view);
+                this.add(route[1], view)
             }
         });
-
+        */
         /* console.log(this.rawChildren);
          console.log(this.parent);*/
         //console.log(this.parent._prev.children)

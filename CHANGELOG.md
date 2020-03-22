@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.7.0] - 2020-03-22
+- **Added** support to Doz 3.x
+
 ## [1.6.4] - 2020-02-08
 - **Fixed** issue with popState and pushState
 

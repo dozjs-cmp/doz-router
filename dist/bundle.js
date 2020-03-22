@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.7.0  
+// [DozRouter]  Build version: 1.7.1  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -611,6 +611,7 @@ exports.default = {
 
         if (this.rawChildrenObject && this.rawChildrenObject.length) {
             this.rawChildrenObject.forEach(function (view) {
+                if (!view || (typeof view === 'undefined' ? 'undefined' : _typeof(view)) !== 'object') return;
                 var route = view.props.route;
                 //console.log(route, view)
                 if (route) {

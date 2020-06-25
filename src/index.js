@@ -1,4 +1,4 @@
-const {REGEX, PATH, NS, PRERENDER, SSR} = require('./constants');
+const {REGEX, PATH, NS, PRERENDER, SSR, LS_LAST_PATH} = require('./constants');
 const queryToObject = require('./query-to-object');
 const clearPath = require('./clear-path');
 const normalizePath = require('./normalize-path');
@@ -46,6 +46,12 @@ export default {
             Doz.mixin({
                 router: this
             })
+        }
+
+        if (this.props.hasOwnProperty('initialRedirectLast')) {
+            if (window.localStorage && window.localStorage.getItem(LS_LAST_PATH)) {
+                this.props.initialRedirect = window.localStorage.getItem(LS_LAST_PATH);
+            }
         }
     },
     /**
@@ -195,7 +201,6 @@ export default {
      * @ignore
      */
     _navigate(path, params, initial = false) {
-
         let found = false;
         let hashPath = window.location.hash.slice(this.props.hash.length);
         let historyPath = window.location.pathname + window.location.search;
@@ -265,6 +270,9 @@ export default {
                 this._currentPath = path;
                 this._currentFullPath = fullPath;
                 this.setView(route.view, route.cb, route.preserve);
+                if (window.localStorage) {
+                    window.localStorage.setItem(LS_LAST_PATH, fullPath);
+                }
 
                 break;
             }

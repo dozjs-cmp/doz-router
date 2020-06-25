@@ -154,7 +154,8 @@ var _require = __webpack_require__(3),
     PATH = _require.PATH,
     NS = _require.NS,
     PRERENDER = _require.PRERENDER,
-    SSR = _require.SSR;
+    SSR = _require.SSR,
+    LS_LAST_PATH = _require.LS_LAST_PATH;
 
 var queryToObject = __webpack_require__(4);
 var clearPath = __webpack_require__(5);
@@ -203,6 +204,12 @@ exports.default = {
             Doz.mixin({
                 router: this
             });
+        }
+
+        if (this.props.hasOwnProperty('initialRedirectLast')) {
+            if (window.localStorage && window.localStorage.getItem(LS_LAST_PATH)) {
+                this.props.initialRedirect = window.localStorage.getItem(LS_LAST_PATH);
+            }
         }
     },
 
@@ -372,7 +379,6 @@ exports.default = {
 
         var initial = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-
         var found = false;
         var hashPath = window.location.hash.slice(this.props.hash.length);
         var historyPath = window.location.pathname + window.location.search;
@@ -440,6 +446,9 @@ exports.default = {
                 this._currentPath = path;
                 this._currentFullPath = fullPath;
                 this.setView(route.view, route.cb, route.preserve);
+                if (window.localStorage) {
+                    window.localStorage.setItem(LS_LAST_PATH, fullPath);
+                }
 
                 break;
             }
@@ -677,7 +686,8 @@ module.exports = {
         DOMContentLoaded: '___doz_router___DOMContentLoadedListener'
     },
     PRERENDER: '__DOZ_PRERENDER_PUBLIC_URL__',
-    SSR: '__DOZ_SSR_PATH__'
+    SSR: '__DOZ_SSR_PATH__',
+    LS_LAST_PATH: 'dozRouterLastPath'
 };
 
 /***/ }),

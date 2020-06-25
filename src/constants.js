@@ -13,5 +13,6 @@ module.exports = {
         DOMContentLoaded: '___doz_router___DOMContentLoadedListener',
     },
     PRERENDER: '__DOZ_PRERENDER_PUBLIC_URL__',
-    SSR: '__DOZ_SSR_PATH__'
+    SSR: '__DOZ_SSR_PATH__',
+    LS_LAST_PATH: 'dozRouterLastPath'
 };

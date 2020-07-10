@@ -199,6 +199,7 @@ exports.default = {
         this._pauseHashListener = false;
         this._noDestroy = this.props.hasOwnProperty('noDestroy');
         this._noDestroyedInstances = {};
+        this._lastUrl = '';
 
         if (typeof Doz.mixin === 'function') {
             Doz.mixin({
@@ -206,9 +207,11 @@ exports.default = {
             });
         }
 
+        this._LS_LAST_PATH = this.props.initialRedirectLastKeyName || LS_LAST_PATH;
+
         if (this.props.hasOwnProperty('initialRedirectLast')) {
-            if (window.localStorage && window.localStorage.getItem(LS_LAST_PATH)) {
-                this.props.initialRedirect = window.localStorage.getItem(LS_LAST_PATH);
+            if (window.localStorage && window.localStorage.getItem(this._LS_LAST_PATH)) {
+                this._lastUrl = window.localStorage.getItem(this._LS_LAST_PATH);
             }
         }
     },
@@ -383,12 +386,26 @@ exports.default = {
         var hashPath = window.location.hash.slice(this.props.hash.length);
         var historyPath = window.location.pathname + window.location.search;
         var fullPath = void 0;
+        var originPath = path;
 
         path = path || hashPath;
 
         if (this.props.mode === 'history') path = historyPath;
 
-        if (!window[PRERENDER] && !window[SSR]) if ((path === '/' || path === '') && initial && this.props.initialRedirect) return this.navigate(this.props.initialRedirect);
+        if (!window[PRERENDER] && !window[SSR]) {
+            if ((originPath === '/' || originPath === '' || originPath === null) && initial && this._lastUrl) {
+                var _lastUrl = this._lastUrl;
+                if (this.props.root && _lastUrl) {
+                    var _root = this.props.root.replace(/\//g, '\\/');
+                    _lastUrl = _lastUrl.replace(new RegExp('^' + _root, ''), '');
+                }
+                return this.navigate(_lastUrl);
+            }
+
+            if ((path === '/' || path === '') && initial && this.props.initialRedirect) {
+                return this.navigate(this.props.initialRedirect);
+            }
+        }
 
         path = window[SSR] || path;
 
@@ -447,7 +464,7 @@ exports.default = {
                 this._currentFullPath = fullPath;
                 this.setView(route.view, route.cb, route.preserve);
                 if (window.localStorage) {
-                    window.localStorage.setItem(LS_LAST_PATH, fullPath);
+                    window.localStorage.setItem(this._LS_LAST_PATH, fullPath);
                 }
 
                 break;

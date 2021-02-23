@@ -376,6 +376,10 @@ export default {
                 cbChange = cbChange[1];
             }
 
+            // Manage fake boolean attribute
+            if (preserve === '')
+                preserve = true;
+
             this._routes.push({path, view, cb: cbChange, preserve});
         }
     },

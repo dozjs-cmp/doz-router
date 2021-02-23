@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.8.2  
+// [DozRouter]  Build version: 1.8.3  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -167,6 +167,8 @@ function deprecate(prev, next) {
 }
 
 exports.default = {
+    name: 'doz-router',
+
     props: {
         hash: '#',
         classActiveLink: 'router-link-active',

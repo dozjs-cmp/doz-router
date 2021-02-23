@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.8.1  
+// [DozRouter]  Build version: 1.8.2  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -550,6 +550,9 @@ exports.default = {
             if (cbChange) {
                 cbChange = cbChange[1];
             }
+
+            // Manage fake boolean attribute
+            if (preserve === '') preserve = true;
 
             this._routes.push({ path: path, view: view, cb: cbChange, preserve: preserve });
         }

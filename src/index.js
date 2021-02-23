@@ -9,6 +9,8 @@ function deprecate(prev, next) {
 }
 
 export default {
+    name: 'doz-router',
+
     props: {
         hash: '#',
         classActiveLink: 'router-link-active',

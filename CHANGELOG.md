@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.8.3] - 2021-02-23
+- **Fixed** added component name
+
 ## [1.8.2] - 2021-02-23
 - **Fixed** fake boolean attribute `preserve`
 

@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.8.3  
+// [DozRouter]  Build version: 1.9.0  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -573,6 +573,7 @@ exports.default = {
             }
         }
     },
+    checkIfAlreadyRootExists: function checkIfAlreadyRootExists() {},
 
 
     /**
@@ -588,10 +589,12 @@ exports.default = {
 
             if (_this3.props.mode === 'history') {
 
-                if (el.pathname) {
-                    path = el.pathname = normalizePath(_this3.props.root + el.pathname);
-                } else if (el.href) {
-                    path = el.href = normalizePath(_this3.props.root + el.href);
+                if (el.dataset.routerAnchorLink === undefined) {
+                    if (el.pathname) {
+                        path = el.pathname = normalizePath(_this3.props.root + el.pathname);
+                    } else if (el.href) {
+                        path = el.href = normalizePath(_this3.props.root + el.href);
+                    }
                 }
 
                 var _path = path + el.search;

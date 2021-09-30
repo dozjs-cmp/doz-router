@@ -399,6 +399,10 @@ export default {
         }
     },
 
+    checkIfAlreadyRootExists() {
+
+    },
+
     /**
      * Bind all link to routing controller
      */
@@ -410,10 +414,12 @@ export default {
 
             if (this.props.mode === 'history') {
 
-                if (el.pathname) {
-                    path = el.pathname = normalizePath(this.props.root + el.pathname);
-                } else if (el.href) {
-                    path = el.href = normalizePath(this.props.root + el.href);
+                if (el.dataset.routerAnchorLink === undefined) {
+                    if (el.pathname) {
+                        path = el.pathname = normalizePath(this.props.root + el.pathname);
+                    } else if (el.href) {
+                        path = el.href = normalizePath(this.props.root + el.href);
+                    }
                 }
 
                 let _path = path + el.search;

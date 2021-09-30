@@ -16,7 +16,7 @@ import 'doz-router'
 Doz.component('home-page', {
     template(h) {
         return h`
-            <div>I'm home page</div>
+            <div>I'm home page <a data-router-link data-router-anchor-link href="#my-anchor">anchor link</a></div>
         `
     }
 });

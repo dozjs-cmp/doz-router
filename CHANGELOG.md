@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.9.1] - 2022-02-09
+- **Fixed** query params now are available on create
+
 ## [1.9.0] - 2021-09-30
 - **Added** `data-router-anchor-link` option which identifies an anchor link
 

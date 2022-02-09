@@ -26,6 +26,17 @@ export default {
 
     autoCreateChildren: false,
 
+    onBeforeCreate() {
+        var locationParts = location.search.split('?')
+        if (locationParts[1]) {
+            this._query = queryToObject(locationParts[1]);
+            this._queryRaw = locationParts[1];
+        } else {
+            this._query = {};
+            this._queryRaw = '';
+        }
+    },
+
     onCreate() {
 
         //custom properties
@@ -37,8 +48,8 @@ export default {
         this._paramMap = {};
         this._param = {};
         this._routeNotFound = '';
-        this._query = {};
-        this._queryRaw = '';
+        //this._query = {};
+        //this._queryRaw = '';
         this._link = {};
         this._pauseHashListener = false;
         this._noDestroy = this.props.hasOwnProperty('noDestroy');

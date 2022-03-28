@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.9.1  
+// [DozRouter]  Build version: 1.10.0  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -631,7 +631,7 @@ exports.default = {
             }
         });
     },
-    onAppReady: function onAppReady() {
+    init: function init() {
         var _this4 = this;
 
         window.removeEventListener('popstate', window[NS.popstate]);
@@ -671,19 +671,6 @@ exports.default = {
             });
         }
 
-        /*
-        this.rawChildren.forEach(view => {
-            const route = view.match(REGEX.ROUTE);
-            if (route) {
-                this.add(route[1], view)
-            }
-        });
-        */
-        /* console.log(this.rawChildren);
-         console.log(this.parent);*/
-        //console.log(this.parent._prev.children)
-        //console.log(JSON.stringify(this.parent._prev.children, null, 4));
-
         this.bindLink();
 
         if (this.props.mode === 'history') {
@@ -693,6 +680,9 @@ exports.default = {
         }
 
         window.addEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
+    },
+    onAppReady: function onAppReady() {
+        this.init();
     },
     onMountAsync: function onMountAsync() {
         this._navigate(null, null, true);

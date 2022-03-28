@@ -458,7 +458,7 @@ export default {
         });
     },
 
-    onAppReady() {
+    init() {
         window.removeEventListener('popstate', window[NS.popstate]);
         window[NS.popstate] = e => {
             let route = e.state;
@@ -498,19 +498,6 @@ export default {
             });
         }
 
-        /*
-        this.rawChildren.forEach(view => {
-            const route = view.match(REGEX.ROUTE);
-            if (route) {
-                this.add(route[1], view)
-            }
-        });
-        */
-       /* console.log(this.rawChildren);
-        console.log(this.parent);*/
-       //console.log(this.parent._prev.children)
-        //console.log(JSON.stringify(this.parent._prev.children, null, 4));
-
         this.bindLink();
 
         if (this.props.mode === 'history') {
@@ -520,6 +507,10 @@ export default {
         }
 
         window.addEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
+    },
+
+    onAppReady() {
+        this.init();
     },
 
     onMountAsync() {

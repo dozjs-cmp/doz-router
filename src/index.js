@@ -1,3 +1,5 @@
+import {dataset} from "caniuse-lite/data/features";
+
 const {REGEX, PATH, NS, PRERENDER, SSR, LS_LAST_PATH} = require('./constants');
 const queryToObject = require('./query-to-object');
 const clearPath = require('./clear-path');
@@ -322,7 +324,8 @@ export default {
      */
     activeLink() {
         Object.keys(this._link).forEach(link => {
-            const checkAlsoQuery = Boolean(this._link[link].length > 1 && this._queryRaw);
+            //const checkAlsoQuery = Boolean(this._link[link].length > 1 && this._queryRaw);
+            const checkAlsoQuery = Boolean(this._link[link].size > 1 && this._queryRaw);
 
             this._link[link].forEach(el => {
                 let queryEq = true;
@@ -418,7 +421,8 @@ export default {
      * Bind all link to routing controller
      */
     bindLink() {
-        window.document.querySelectorAll(`[${this.props.linkAttr}]:not([${this.props.isLinkAttr}])`).forEach(el => {
+        //window.document.querySelectorAll(`[${this.props.linkAttr}]:not([${this.props.isLinkAttr}])`).forEach(el => {
+        window.document.querySelectorAll(`[${this.props.linkAttr}]`).forEach(el => {
             let path = el.pathname || el.href;
 
             el.dataset.isRouterLink = 'true';
@@ -435,14 +439,25 @@ export default {
 
                 let _path = path + el.search;
 
+                //console.log('_path', path)
+                el.dataset.routerPath = _path;
                 if (window[PRERENDER]) {
                     //el.href = this.props.root + path + el.search;
                 } else {
-                    el.addEventListener('click', e => {
+                    if (!el.dataset.routerListener) {
+                        el.addEventListener('click', e => {
+                            e.preventDefault();
+                            let routerPath = el.dataset.routerPath;
+                            history.pushState(routerPath, null, routerPath);
+                            this._navigate(routerPath);
+                        });
+                        el.dataset.routerListener = 'true';
+                    }
+                    /*el.onclick = e => {
                         e.preventDefault();
                         history.pushState(_path, null, _path);
                         this._navigate(_path);
-                    });
+                    };*/
                 }
             } else {
                 el.href = this.props.hash + path + el.search;
@@ -451,9 +466,13 @@ export default {
             let pathPart = path.split('?');
             path = clearPath(pathPart[0]);
             if (typeof this._link[path] === 'undefined') {
-                this._link[path] = [el];
+                //this._link[path] = [el];
+                this._link[path] = new Set();
+                this._link[path].add(el);
             } else {
-                this._link[path].push(el);
+                //this._link[path].push(el);
+                if (!this._link[path].has(el))
+                    this._link[path].add(el);
             }
         });
     },
@@ -477,8 +496,6 @@ export default {
         window[NS.DOMContentLoaded] = () => {
             this._navigate(null, null, true)
         };
-
-        //console.log(this.rawChildrenObject)
 
         if (this.rawChildrenObject && this.rawChildrenObject.length) {
             this.rawChildrenObject.forEach(view => {

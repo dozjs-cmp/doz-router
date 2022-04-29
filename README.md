@@ -108,6 +108,10 @@ new Doz({
     root: '#app',
     template(h) {
         return h`
+            <nav>
+                <a data-router-link="true" data-router-link-radix="true" href="/docs/">Docs</a>
+                <a data-router-link="true" href="/docs/something">Docs Something</a>
+            </nav>
             <doz-router>
                 <docs-page route="/docs/*"/>
             </doz-router>
@@ -118,16 +122,16 @@ new Doz({
 ```
 
 ## Props
-| Name | Default | Description | Since |
-| ---- | ------- | ----------- | ----- |
-| hash | # | hash symbol | |
-| class-active-link | router-link-active | css class for active router link | |
-| link-attr | data-router-link | attribute that identify link | |
-| mode | hash | router mode "hash" or "history" (html5 api) | |
-| root | / | base root, works only in "history" mode | |
-| initial-redirect |  | applies a redirect to specific path if initial path is "/" | 1.4.0 |
-| initial-redirect-last |  | applies a redirect to last path visited | 1.8.0 |
-| no-destroy |  | when a route change the component will not destroyed but only unmounted from the DOM, so the state will not change | 1.6.0 |
+| Name | Default | Description                                                                                                            | Since |
+| ---- | ------- |------------------------------------------------------------------------------------------------------------------------| ----- |
+| hash | # | hash symbol                                                                                                            | |
+| class-active-link | router-link-active | css class for active router link                                                                                       | |
+| link-attr | data-router-link | attribute that identify link                                                                                           | |
+| mode | hash | router mode "hash" or "history" (html5 api)                                                                            | |
+| root | / | base root, works only in "history" mode                                                                                | |
+| initial-redirect |  | applies a redirect to specific path if initial path is "/"                                                             | 1.4.0 |
+| initial-redirect-last |  | applies a redirect to last path visited                                                                                | 1.8.0 |
+| no-destroy |  | when a route changes the component will not be destroyed but only unmounted from the DOM, so the state will not change | 1.6.0 |
 
 ## Instance methods
 

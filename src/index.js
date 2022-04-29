@@ -334,7 +334,14 @@ export default {
 
                 link = this.electronFixer(link);
 
-                if (link === this._currentPath && queryEq)
+                let linkRadixEq = false;
+                if (el.dataset.routerLinkRadix && link && this._currentPath) {
+                    let linkParts = link.split('/');
+                    let currentLinkParts = this._currentPath.split('/');
+                    linkRadixEq = linkParts[0] === currentLinkParts[0];
+                }
+
+                if ((link === this._currentPath || linkRadixEq) && queryEq)
                     el.classList.add(this.props.classActiveLink);
                 else
                     el.classList.remove(this.props.classActiveLink);

@@ -1,6 +1,6 @@
 {
     "name": "doz-router",
-    "version": "1.11.0",
+    "version": "1.12.0",
     "description": "Routing for DOZ",
     "main": "dist/bundle.js",
     "scripts": {

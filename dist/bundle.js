@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.12.0  
+// [DozRouter]  Build version: 1.12.1  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -514,7 +514,7 @@ exports.default = {
                 link = _this2.electronFixer(link);
 
                 var linkRadixEq = false;
-                if (el.dataset.routerLinkRadix && link && _this2._currentPath) {
+                if (el.dataset.routerLinkRadix !== undefined && link && _this2._currentPath) {
                     var linkParts = link.split('/');
                     var currentLinkParts = _this2._currentPath.split('/');
                     linkRadixEq = linkParts[0] === currentLinkParts[0];

@@ -335,7 +335,7 @@ export default {
                 link = this.electronFixer(link);
 
                 let linkRadixEq = false;
-                if (el.dataset.routerLinkRadix && link && this._currentPath) {
+                if (el.dataset.routerLinkRadix !== undefined && link && this._currentPath) {
                     let linkParts = link.split('/');
                     let currentLinkParts = this._currentPath.split('/');
                     linkRadixEq = linkParts[0] === currentLinkParts[0];

@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.12.1  
+// [DozRouter]  Build version: 1.12.2  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -242,6 +242,7 @@ exports.default = {
                 this._currentView.destroy();
             }
             this._currentView = null;
+            this.flushDeadLink();
         }
     },
 
@@ -656,24 +657,37 @@ exports.default = {
             }
         });
     },
-    init: function init() {
+    flushDeadLink: function flushDeadLink() {
         var _this4 = this;
+
+        Object.keys(this._link).forEach(function (link) {
+            if (_this4._link[link]) {
+                _this4._link[link].forEach(function (el) {
+                    if (!el.isConnected) {
+                        _this4._link[link].delete(el);
+                    }
+                });
+            }
+        });
+    },
+    init: function init() {
+        var _this5 = this;
 
         window.removeEventListener('popstate', window[NS.popstate]);
         window[NS.popstate] = function (e) {
             var route = e.state;
-            if (route == null && _this4.props.initialRedirect) return _this4.navigate(_this4.props.initialRedirect, {}, true);
-            _this4._navigate(route);
+            if (route == null && _this5.props.initialRedirect) return _this5.navigate(_this5.props.initialRedirect, {}, true);
+            _this5._navigate(route);
         };
 
         window.removeEventListener('hashchange', window[NS.hashchange]);
         window[NS.hashchange] = function () {
-            if (!_this4._pauseHashListener) _this4._navigate();
+            if (!_this5._pauseHashListener) _this5._navigate();
         };
 
         window.removeEventListener('DOMContentLoaded', window[NS.DOMContentLoaded]);
         window[NS.DOMContentLoaded] = function () {
-            _this4._navigate(null, null, true);
+            _this5._navigate(null, null, true);
         };
 
         if (this.rawChildrenObject && this.rawChildrenObject.length) {
@@ -682,14 +696,14 @@ exports.default = {
                 var route = view.props.route;
                 //console.log(route, view)
                 if (route) {
-                    _this4.add(route, view);
+                    _this5.add(route, view);
                 }
             });
         } else {
             this.rawChildren.forEach(function (view) {
                 var route = view.match(REGEX.ROUTE);
                 if (route) {
-                    _this4.add(route[1], view);
+                    _this5.add(route[1], view);
                 }
             });
         }

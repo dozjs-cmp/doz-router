@@ -84,6 +84,7 @@ export default {
                 this._currentView.destroy();
             }
             this._currentView = null;
+            this.flushDeadLink();
         }
     },
 
@@ -480,6 +481,18 @@ export default {
                 //this._link[path].push(el);
                 if (!this._link[path].has(el))
                     this._link[path].add(el);
+            }
+        });
+    },
+
+    flushDeadLink() {
+        Object.keys(this._link).forEach((link) => {
+            if(this._link[link]) {
+                this._link[link].forEach((el) => {
+                    if(!el.isConnected) {
+                        this._link[link].delete(el)
+                    }
+                })
             }
         });
     },

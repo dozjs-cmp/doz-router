@@ -2,7 +2,7 @@ const unminifiedWebpackPlugin = require('unminified-webpack-plugin');
 const WebpackAutoInject = require('webpack-auto-inject-version');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+//const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const isDevServer = process.argv[1].indexOf('webpack-dev-server') !== -1;
 
 const HMRPlugin = isDevServer ? new webpack.HotModuleReplacementPlugin() : function(){};
@@ -55,7 +55,7 @@ module.exports = {
                 loader: 'babel-loader?cacheDirectory=true',
                 //loader: 'babel-loader',
                 options: {
-                    presets: ['env']
+                    presets: ['@babel/env']
                 }
             },
             {
@@ -90,6 +90,6 @@ module.exports = {
         }),
         new unminifiedWebpackPlugin(),
         HMRPlugin,
-        new HardSourceWebpackPlugin()
+        //new HardSourceWebpackPlugin()
     ]
 };

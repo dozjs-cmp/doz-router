@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.12.3] - 2022-05-26
+- **Fixed** decreased bundle size
+
 ## [1.12.2] - 2022-05-05
 - **Fixed** memory leak using bindLink
 

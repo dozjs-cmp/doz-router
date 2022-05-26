@@ -1,5 +1,3 @@
-import {dataset} from "caniuse-lite/data/features";
-
 const {REGEX, PATH, NS, PRERENDER, SSR, LS_LAST_PATH} = require('./constants');
 const queryToObject = require('./query-to-object');
 const clearPath = require('./clear-path');

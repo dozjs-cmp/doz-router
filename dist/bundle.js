@@ -1,4 +1,4 @@
-// [DozRouter]  Build version: 1.12.3  
+// [DozRouter]  Build version: 1.12.4  
  (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory(require("doz"));
@@ -622,6 +622,8 @@ function deprecate(prev, next) {
 
     //window.document.querySelectorAll(`[${this.props.linkAttr}]:not([${this.props.isLinkAttr}])`).forEach(el => {
     window.document.querySelectorAll("[".concat(this.props.linkAttr, "]")).forEach(function (el) {
+      //the update of links works only with history mode
+      if (el.dataset.isRouterLink && _this3.props.mode !== 'history') return;
       var path = el.pathname || el.href;
       el.dataset.isRouterLink = 'true';
 

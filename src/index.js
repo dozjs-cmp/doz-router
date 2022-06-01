@@ -429,6 +429,10 @@ export default {
     bindLink() {
         //window.document.querySelectorAll(`[${this.props.linkAttr}]:not([${this.props.isLinkAttr}])`).forEach(el => {
         window.document.querySelectorAll(`[${this.props.linkAttr}]`).forEach(el => {
+
+            //the update of links works only with history mode
+            if (el.dataset.isRouterLink && this.props.mode !== 'history') return;
+
             let path = el.pathname || el.href;
 
             el.dataset.isRouterLink = 'true';

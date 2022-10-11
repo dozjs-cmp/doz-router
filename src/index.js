@@ -552,7 +552,7 @@ export default {
         this.init();
     },
 
-    onMountAsync() {
+    onMount() {
         this._navigate(null, null, true)
     }
 };

@@ -12,7 +12,7 @@ register();
 
 export default cmp
 
-if (module.hot) {
+if (module && module.hot) {
     module.hot.dispose(function () {
         register();
     })

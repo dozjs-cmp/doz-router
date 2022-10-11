@@ -92,7 +92,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -103,80 +103,12 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__0__;
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
-
-module.exports = {
-  REGEX: {
-    ROUTE: /route(?:\s+)?=(?:\s+)?"(.*?)"/,
-    CHANGE: /route-change(?:\s+)?=(?:\s+)?"(.*?)"/,
-    IS_PRESERVE: /\spreserve[>\s=]/
-  },
-  PATH: {
-    NOT_FOUND: '*'
-  },
-  NS: {
-    hashchange: '___doz_router___hashchangeListener',
-    popstate: '___doz_router___popstateListener',
-    DOMContentLoaded: '___doz_router___DOMContentLoadedListener'
-  },
-  PRERENDER: '__DOZ_PRERENDER_PUBLIC_URL__',
-  SSR: '__DOZ_SSR_PATH__',
-  LS_LAST_PATH: 'dozRouterLastPath'
-};
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-module.exports = function (query) {
-  var obj = {};
-  if (!query) return obj;
-  var data = query.split('&');
-
-  for (var i = 0, dataLength = data.length; i < dataLength; i++) {
-    var dataPart = data[i].split('=');
-
-    if (dataPart.length) {
-      var first = dataPart.splice(0, 1)[0];
-      obj[first] = decodeURIComponent(dataPart.join('='));
-    }
-  }
-
-  return obj;
-};
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-module.exports = function (path) {
-  return path.toString().replace(/\/+$/, '').replace(/^\//, '');
-};
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = function (path) {
-  return path.replace(/\/{2,}/g, '/');
-};
-
-/***/ }),
-/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-// ESM COMPAT FLAG
-__webpack_require__.r(__webpack_exports__);
-
-// EXTERNAL MODULE: external {"commonjs":"doz","commonjs2":"doz","amd":"doz","root":"Doz"}
-var external_commonjs_doz_commonjs2_doz_amd_doz_root_Doz_ = __webpack_require__(0);
-var external_commonjs_doz_commonjs2_doz_amd_doz_root_Doz_default = /*#__PURE__*/__webpack_require__.n(external_commonjs_doz_commonjs2_doz_amd_doz_root_Doz_);
-
-// CONCATENATED MODULE: ./src/index.js
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
-var _require = __webpack_require__(1),
+var _require = __webpack_require__(4),
     REGEX = _require.REGEX,
     PATH = _require.PATH,
     NS = _require.NS,
@@ -184,11 +116,11 @@ var _require = __webpack_require__(1),
     SSR = _require.SSR,
     LS_LAST_PATH = _require.LS_LAST_PATH;
 
-var queryToObject = __webpack_require__(2);
+var queryToObject = __webpack_require__(5);
 
-var clearPath = __webpack_require__(3);
+var clearPath = __webpack_require__(6);
 
-var normalizePath = __webpack_require__(4);
+var normalizePath = __webpack_require__(7);
 
 var Doz = __webpack_require__(0);
 
@@ -196,7 +128,7 @@ function deprecate(prev, next) {
   console.warn('[DEPRECATION]', "\"".concat(prev, "\" is deprecated use \"").concat(next, "\" instead"));
 }
 
-/* harmony default export */ var src = ({
+/* harmony default export */ __webpack_exports__["a"] = ({
   name: 'doz-router',
   props: {
     hash: '#',
@@ -747,24 +679,128 @@ function deprecate(prev, next) {
   onAppReady: function onAppReady() {
     this.init();
   },
-  onMountAsync: function onMountAsync() {
+  onMount: function onMount() {
     this._navigate(null, null, true);
   }
 });
-// CONCATENATED MODULE: ./index.js
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(module) {/* harmony import */ var doz__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+/* harmony import */ var doz__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(doz__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _src__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
 
  // expose component to global scope
 
 function register() {
   if (typeof window !== 'undefined') {
-    external_commonjs_doz_commonjs2_doz_amd_doz_root_Doz_default.a.component('doz-router', src);
+    doz__WEBPACK_IMPORTED_MODULE_0___default.a.component('doz-router', _src__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"]);
   }
 }
 
 register();
-/* harmony default export */ var index = __webpack_exports__["default"] = (src);
+/* harmony default export */ __webpack_exports__["default"] = (_src__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"]);
 
-if (false) {}
+if (module && module.hot) {
+  module.hot.dispose(function () {
+    register();
+  });
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(3)(module)))
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+module.exports = function (originalModule) {
+  if (!originalModule.webpackPolyfill) {
+    var module = Object.create(originalModule); // module.parent = undefined by default
+
+    if (!module.children) module.children = [];
+    Object.defineProperty(module, "loaded", {
+      enumerable: true,
+      get: function get() {
+        return module.l;
+      }
+    });
+    Object.defineProperty(module, "id", {
+      enumerable: true,
+      get: function get() {
+        return module.i;
+      }
+    });
+    Object.defineProperty(module, "exports", {
+      enumerable: true
+    });
+    module.webpackPolyfill = 1;
+  }
+
+  return module;
+};
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = {
+  REGEX: {
+    ROUTE: /route(?:\s+)?=(?:\s+)?"(.*?)"/,
+    CHANGE: /route-change(?:\s+)?=(?:\s+)?"(.*?)"/,
+    IS_PRESERVE: /\spreserve[>\s=]/
+  },
+  PATH: {
+    NOT_FOUND: '*'
+  },
+  NS: {
+    hashchange: '___doz_router___hashchangeListener',
+    popstate: '___doz_router___popstateListener',
+    DOMContentLoaded: '___doz_router___DOMContentLoadedListener'
+  },
+  PRERENDER: '__DOZ_PRERENDER_PUBLIC_URL__',
+  SSR: '__DOZ_SSR_PATH__',
+  LS_LAST_PATH: 'dozRouterLastPath'
+};
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+module.exports = function (query) {
+  var obj = {};
+  if (!query) return obj;
+  var data = query.split('&');
+
+  for (var i = 0, dataLength = data.length; i < dataLength; i++) {
+    var dataPart = data[i].split('=');
+
+    if (dataPart.length) {
+      var first = dataPart.splice(0, 1)[0];
+      obj[first] = decodeURIComponent(dataPart.join('='));
+    }
+  }
+
+  return obj;
+};
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = function (path) {
+  return path.toString().replace(/\/+$/, '').replace(/^\//, '');
+};
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+module.exports = function (path) {
+  return path.replace(/\/{2,}/g, '/');
+};
 
 /***/ })
 /******/ ]);

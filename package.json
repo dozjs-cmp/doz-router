@@ -1,6 +1,6 @@
 {
     "name": "doz-router",
-    "version": "1.12.4",
+    "version": "2.0.0",
     "description": "The doz router",
     "main": "dist/bundle.js",
     "type": "module",

@@ -1,4 +1,4 @@
-/* doz-router, version: 2.0.0 - September 7, 2023 13:26:49 */
+/* doz-router, version: 2.0.1 - September 7, 2023 17:11:38 */
 import { mixin } from 'doz';
 
 const REGEX = {
@@ -156,7 +156,9 @@ var index = {
                     this.flushDeadLink();
                 }
 
-
+                if (typeof view === 'string') {
+                    view = this.h`<span>${view}</span>`;
+                }
 
                 this._currentViewSymbol = null;
                 this._currentView = this._noDestroy && this._noDestroyedInstances[view]

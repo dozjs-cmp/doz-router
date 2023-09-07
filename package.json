@@ -11,10 +11,10 @@
         "vite:build": "vite build",
         "vite:preview": "vite preview",
         "release:before": "npm run-script test",
-        "release:major": "npm run-script build && npm version major",
-        "release:minor": "npm run-script build && npm version minor",
-        "release:patch": "npm run-script build && npm version patch",
-        "release:publish": "echo git commit -a -m BUILD && version-to-tag.sh && npm publish"
+        "release:major": "npm version major",
+        "release:minor": "npm version minor",
+        "release:patch": "npm version patch",
+        "postversion": "npm run-script build && git commit -a -m BUILD && version-to-tag.sh && npm publish"
     },
     "keywords": [
         "doz",

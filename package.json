@@ -11,9 +11,9 @@
         "vite:build": "vite build",
         "vite:preview": "vite preview",
         "release:before": "npm run-script test",
-        "release:major": "npm run-script build && npm run-script release:publish",
-        "release:minor": "npm run-script build && npm run-script release:publish",
-        "release:patch": "npm run-script build && npm run-script release:publish",
+        "release:major": "npm run-script build && npm version major",
+        "release:minor": "npm run-script build && npm version minor",
+        "release:patch": "npm run-script build && npm version patch",
         "release:publish": "echo git commit -a -m BUILD && version-to-tag.sh && npm publish"
     },
     "keywords": [

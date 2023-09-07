@@ -145,18 +145,6 @@ var index = {
             }
         } else {
             if (this.inject) {
-                // this.injectTemplates.forEach(injected => this.eject(injected));
-                // if (this._currentView) {
-                //     if (this._noDestroy) {
-                //         let noDestroyInstance = this._currentView.unmount();
-                //         this._noDestroyedInstances[noDestroyInstance.rawChildren[0]] = noDestroyInstance;
-                //     } else {
-                //         this._currentView.destroy();
-                //     }
-                //     this._currentView = null;
-                //     this.flushDeadLink();
-                // }
-                //
                 if (this._currentViewSymbol) {
                     if (this._noDestroy) {
                         let noDestroyInstance = this._currentView.unmount();
@@ -167,7 +155,8 @@ var index = {
                     this._currentView = null;
                     this.flushDeadLink();
                 }
-                // console.log(this._noDestroy)
+
+
 
                 this._currentViewSymbol = null;
                 this._currentView = this._noDestroy && this._noDestroyedInstances[view]

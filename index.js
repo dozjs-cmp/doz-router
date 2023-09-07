@@ -1,5 +1,5 @@
 import Doz from 'doz'
-import cmp from './src'
+import cmp from './src/index.js'
 
 // expose component to global scope
 function register() {
@@ -11,9 +11,3 @@ function register() {
 register();
 
 export default cmp
-
-if (module.hot) {
-    module.hot.dispose(function () {
-        register();
-    })
-}

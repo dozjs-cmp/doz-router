@@ -1,4 +1,4 @@
-module.exports = function (query) {
+export default function (query) {
     const obj = {};
     if (!query) return obj;
     const data = query.split('&');

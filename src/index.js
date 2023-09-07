@@ -1,8 +1,8 @@
-const {REGEX, PATH, NS, PRERENDER, SSR, LS_LAST_PATH} = require('./constants');
-const queryToObject = require('./query-to-object');
-const clearPath = require('./clear-path');
-const normalizePath = require('./normalize-path');
-const Doz = require('doz');
+import {REGEX, PATH, NS, PRERENDER, SSR, LS_LAST_PATH} from './constants';
+import queryToObject from './query-to-object';
+import clearPath from './clear-path';
+import normalizePath from './normalize-path';
+import {mixin} from 'doz';
 
 function deprecate(prev, next) {
     console.warn('[DEPRECATION]', `"${prev}" is deprecated use "${next}" instead`);
@@ -27,7 +27,7 @@ export default {
     autoCreateChildren: false,
 
     onBeforeCreate() {
-        var locationParts = location.search.split('?')
+        let locationParts = location.search.split('?')
         if (locationParts[1]) {
             this._query = queryToObject(locationParts[1]);
             this._queryRaw = locationParts[1];
@@ -38,7 +38,6 @@ export default {
     },
 
     onCreate() {
-
         //custom properties
         this._currentView = null;
         this._currentViewRaw = '';
@@ -56,8 +55,8 @@ export default {
         this._noDestroyedInstances = {};
         this._lastUrl = '';
 
-        if (typeof Doz.mixin === 'function') {
-            Doz.mixin({
+        if (typeof mixin === 'function') {
+            mixin({
                 router: this
             })
         }
@@ -93,7 +92,6 @@ export default {
      * @param [preserve] {boolean} preserve view
      */
     setView(view, cb, preserve) {
-
         const sameView = this._currentViewRaw === view;
         if (cb && sameView) {
             let childCmp = this._currentView.children[0];
@@ -102,12 +100,44 @@ export default {
                 cbFunc.call(childCmp, this);
             }
         } else if (preserve && sameView) {
-            this._currentView.children[0].render();
+            if (this.inject) {
+                this._currentView.render();
+            } else {
+                this._currentView.children[0].render();
+            }
         } else {
-            this.removeView();
-            this._currentView = this._noDestroy && this._noDestroyedInstances[view]
-                ? this._noDestroyedInstances[view].mount()
-                : this.mount(view);
+            if (this.inject) {
+                // this.injectTemplates.forEach(injected => this.eject(injected));
+                // if (this._currentView) {
+                //     if (this._noDestroy) {
+                //         let noDestroyInstance = this._currentView.unmount();
+                //         this._noDestroyedInstances[noDestroyInstance.rawChildren[0]] = noDestroyInstance;
+                //     } else {
+                //         this._currentView.destroy();
+                //     }
+                //     this._currentView = null;
+                //     this.flushDeadLink();
+                // }
+                if (this._currentViewSymbol) {
+                    this.eject(this._currentViewSymbol)
+                }
+                this._currentViewSymbol = null;
+                this._currentView = this._noDestroy && this._noDestroyedInstances[view]
+                    ? this._noDestroyedInstances[view].mount()
+                    : this.inject(view);
+
+                if (this._currentView.cmp) {
+                    this._currentViewSymbol =  this._currentView.cmp;
+                    this._currentView = this._currentView.cmp;
+                }
+
+            } else {
+                this.removeView();
+                this._currentView = this._noDestroy && this._noDestroyedInstances[view]
+                    ? this._noDestroyedInstances[view].mount()
+                    : this.mount(view);
+            }
+
         }
         this._currentViewRaw = view;
     },

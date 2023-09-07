@@ -55,7 +55,7 @@ new Doz({
                 <a data-router-link="true" href="/contact">Contact</a>
                 <a data-router-link="true" href="/not-found-page-bla-bla">Not found</a>
             </nav>
-            <doz-router>
+            <doz-router suspendcontent>
                 <home-page route="/"/>
                 <about-page route="/about"/>
                 <contact-page route="/contact"/>
@@ -74,7 +74,7 @@ new Doz({
     root: '#app',
     template(h) {
         return h`
-            <doz-router mode="history">
+            <doz-router mode="history" suspendcontent>
                 //...
             </doz-router>
         `
@@ -91,7 +91,7 @@ new Doz({
     root: '#app',
     template(h) {
         return h`
-            <doz-router>
+            <doz-router suspendcontent>
                 <user-page route="/user/:id"/>
             </doz-router>
         `
@@ -112,7 +112,7 @@ new Doz({
                 <a data-router-link="true" data-router-link-radix="true" href="/docs/">Docs</a>
                 <a data-router-link="true" href="/docs/something">Docs Something</a>
             </nav>
-            <doz-router>
+            <doz-router suspendcontent>
                 <docs-page route="/docs/*"/>
             </doz-router>
         `

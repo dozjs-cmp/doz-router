@@ -11,9 +11,9 @@
         "vite:build": "vite build",
         "vite:preview": "vite preview",
         "release:before": "npm run-script test",
-        "release:major": "webpack --env.major --mode=production && npm run-script release:publish",
-        "release:minor": "webpack --env.minor --mode=production && npm run-script release:publish",
-        "release:patch": "webpack --env.patch --mode=production && npm run-script release:publish",
+        "release:major": "npm run-script build && npm run-script release:publish",
+        "release:minor": "npm run-script build && npm run-script release:publish",
+        "release:patch": "npm run-script build && npm run-script release:publish",
         "release:publish": "echo git commit -a -m BUILD && version-to-tag.sh && npm publish"
     },
     "keywords": [

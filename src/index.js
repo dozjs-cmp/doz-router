@@ -118,9 +118,19 @@ export default {
                 //     this._currentView = null;
                 //     this.flushDeadLink();
                 // }
+                //
                 if (this._currentViewSymbol) {
-                    this.eject(this._currentViewSymbol)
+                    if (this._noDestroy) {
+                        let noDestroyInstance = this._currentView.unmount();
+                        this._noDestroyedInstances[noDestroyInstance.rawChildren[0]] = noDestroyInstance;
+                    } else {
+                        this.eject(this._currentViewSymbol)
+                    }
+                    this._currentView = null;
+                    this.flushDeadLink();
                 }
+                // console.log(this._noDestroy)
+
                 this._currentViewSymbol = null;
                 this._currentView = this._noDestroy && this._noDestroyedInstances[view]
                     ? this._noDestroyedInstances[view].mount()

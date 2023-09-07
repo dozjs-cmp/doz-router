@@ -199,7 +199,7 @@ new Doz({
             </nav>
             <other-buttons></other-buttons>
             <div class="container">
-                <${DozRouter} suspendcontent>
+                <${DozRouter} suspendcontent no-destroy>
                     <home-page route="/"></home-page>
                     <about-page route="/about"></about-page>
                     <contact-page route="/contact"></contact-page>

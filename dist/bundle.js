@@ -1,4 +1,4 @@
-/* doz-router, version: 2.0.2 - September 9, 2023 20:58:54 */
+/* doz-router, version: 2.0.3 - September 9, 2023 20:59:18 */
 import { mixin } from 'doz';
 
 const REGEX = {

@@ -1,4 +1,4 @@
-import DozRouter from '../src'
+import DozRouter from '../dist/bundle.js'
 import be from 'bejs'
 
 // Mock

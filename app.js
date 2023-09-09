@@ -176,8 +176,7 @@ Doz.component('other-buttons', {
     }
 });
 
-new Doz({
-    root: '#app',
+class Main extends Doz.Component {
     template(h){
         return h`
             <nav>
@@ -199,7 +198,7 @@ new Doz({
             </nav>
             <other-buttons></other-buttons>
             <div class="container">
-                <${DozRouter} suspendcontent no-destroy>
+                <${DozRouter}>
                     <home-page route="/"></home-page>
                     <about-page route="/about"></about-page>
                     <contact-page route="/contact"></contact-page>
@@ -213,5 +212,8 @@ new Doz({
                     <wild-page route="/wild/*" preserve></wild-page>
                 </>
             </div>
-        `}
-});
+        `
+    }
+}
+
+Doz.appCreate('#app', Main)

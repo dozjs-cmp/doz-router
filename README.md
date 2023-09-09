@@ -1,7 +1,7 @@
 # doz-router
 Routing for DOZ framework
 
-Live <a href="https://dozjs-cmp.github.io/doz-router/dist/index.html">here</a>
+Live <a href="https://dozjs-cmp.github.io/doz-router/dist/index.html">here</a> (doesn't work.. I will fix it)
 
 ## Install
 ```

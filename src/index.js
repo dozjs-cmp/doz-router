@@ -11,6 +11,8 @@ function deprecate(prev, next) {
 export default {
     name: 'doz-router',
 
+    suspendContent: true,
+
     props: {
         hash: '#',
         classActiveLink: 'router-link-active',
